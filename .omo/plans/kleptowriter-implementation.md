@@ -564,7 +564,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-14-agent.log
   ```
 
-- [ ] 15. Mailbox Protocol
+- [x] 15. Mailbox Protocol
 
   **What to do**:
   - Define `MailboxMessage` types: evaluation, generation, state_update, query, response, broadcast
@@ -616,7 +616,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-16-registry.log
   ```
 
-- [ ] 17. Writer + Editor + Critic Agent Interfaces
+- [x] 17. Writer + Editor + Critic Agent Interfaces
 
   **What to do**:
   - `WriterAgent`: `generateScene(plan, bible): SceneDocument`
@@ -641,7 +641,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-17-writers.log
   ```
 
-- [ ] 18. Evaluator Agent Interfaces (8 Agents)
+- [x] 18. Evaluator Agent Interfaces (8 Agents)
 
   **What to do**:
   - Define interfaces for: Narratologist, PacingAnalyst, CharacterConsistency, ThematicCoherence, Worldbuilding, Dialogist, Stylesheet, MoodTensionCurator
@@ -665,7 +665,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-18-evaluators.log
   ```
 
-- [ ] 19. Ideator + Researcher + FactChecker Agent Interfaces
+- [x] 19. Ideator + Researcher + FactChecker Agent Interfaces
 
   **What to do**:
   - `IdeatorAgent`: `generateIdeas(constraints, bible): Idea[]`
@@ -689,7 +689,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-19-others.log
   ```
 
-- [ ] 20. Narrative Consistency + Localizer Agent Interfaces
+- [x] 20. Narrative Consistency + Localizer Agent Interfaces
 
   **What to do**:
   - `NarrativeConsistencyAgent`: `checkGlobalConsistency(bible, scenes): ConsistencyReport`
@@ -712,7 +712,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-20-global.log
   ```
 
-- [ ] 21. Archivist Agent Interface
+- [x] 21. Archivist Agent Interface
 
   **What to do**:
   - `ArchivistAgent`: `processRawInput(paths, wiki): WikiUpdate[]`

@@ -8,3 +8,4 @@ export * from "./types/context.js";
 export * from "./types/adapters.js";
 export * from "./data-model/index.js";
 export * from "./wiki/index.js";
+export * from "./mailbox/index.js";

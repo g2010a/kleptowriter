@@ -4,11 +4,57 @@ import { join } from "node:path";
 import { InMemoryStoryBible } from "./data-model/bible/index.js";
 import { readScene, writeScene } from "./data-model/scene/index.js";
 import type { SceneDocument } from "./data-model/scene/index.js";
+import { Mailbox } from "./mailbox/index.js";
 import { SceneStatus } from "./types/index.js";
 import { parseWikiPageContent, WikiLinkExtractor, WikiPageType, WikiToBiblePopulation } from "./wiki/index.js";
 
 test("core barrel loads", () => {
   expect(true).toBe(true);
+});
+
+test("mailbox isolates sessions, consumes polls, broadcasts, and returns reply threads", () => {
+  const mailbox = new Mailbox();
+  mailbox.registerAgent("agent-a");
+  mailbox.registerAgent("agent-b");
+
+  const first = mailbox.deliver(
+    { agentId: "agent-a", sessionId: "session-a" },
+    {
+      type: "query",
+      from: { agentId: "agent-b", sessionId: "session-a" },
+      to: { agentId: "agent-a", sessionId: "session-a" },
+      payload: "question",
+    },
+  );
+  mailbox.deliver(
+    { agentId: "agent-a", sessionId: "session-b" },
+    {
+      type: "query",
+      from: { agentId: "agent-b", sessionId: "session-b" },
+      to: { agentId: "agent-a", sessionId: "session-b" },
+      payload: "other session",
+    },
+  );
+  const reply = mailbox.deliver(
+    { agentId: "agent-b", sessionId: "session-a" },
+    {
+      type: "response",
+      from: { agentId: "agent-a", sessionId: "session-a" },
+      to: { agentId: "agent-b", sessionId: "session-a" },
+      payload: "answer",
+      replyTo: first.id,
+    },
+  );
+
+  expect(mailbox.peek("agent-a", "session-a").map((message) => message.payload)).toEqual(["question"]);
+  expect(mailbox.poll("agent-a", "session-a").map((message) => message.payload)).toEqual(["question"]);
+  expect(mailbox.poll("agent-a", "session-a")).toEqual([]);
+  expect(mailbox.poll("agent-a", "session-b").map((message) => message.payload)).toEqual(["other session"]);
+  expect(mailbox.broadcast("system", "broadcast", { ok: true }).map((message) => message.to.agentId)).toEqual([
+    "agent-a",
+    "agent-b",
+  ]);
+  expect(mailbox.getThread(reply.id).map((message) => message.id)).toEqual([first.id, reply.id]);
 });
 
 test("scene files roundtrip", async () => {
