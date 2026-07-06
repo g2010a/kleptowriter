@@ -1,5 +1,4 @@
-export * from "./types/enums.js";
-export * from "./types/scene.js";
+export * from "./types/index.js";
 export * from "./types/agents.js";
 export * from "./types/narrative.js";
 export * from "./types/pipeline.js";
@@ -7,3 +6,4 @@ export * from "./types/eval.js";
 export * from "./types/context.js";
 export * from "./types/adapters.js";
 export * from "./data-model/index.js";
+export * from "./wiki/index.js";

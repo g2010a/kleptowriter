@@ -211,7 +211,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-01-typecheck.log
   ```
 
-- [ ] 2. Core Types & Enums
+- [x] 2. Core Types & Enums
 
   **What to do**:
   - Define `SceneStatus` enum (0=Outline, 1=Rough, 2=Draft, 3=Revised, 4=Done)
@@ -243,7 +243,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-02-types.log
   ```
 
-- [ ] 3. StoryBible Interfaces
+- [x] 3. StoryBible Interfaces
 
   **What to do**:
   - Implement `StoryBible` interface from blueprint §1.4: `characters`, `locations`, `items`, `chronology`, `arcs`, `plotThreads`, `dramaticQuestions`, `knowledgeState`, `thematicProgression`
@@ -275,7 +275,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-03-interfaces.log
   ```
 
-- [ ] 4. Scene File Format Reader/Writer
+- [x] 4. Scene File Format Reader/Writer
 
   **What to do**:
   - Implement scene file parsing: read YAML frontmatter + markdown body from `scene-001.md`
@@ -309,7 +309,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-04-roundtrip.log
   ```
 
-- [ ] 5. Wiki Page Format + Parser
+- [x] 5. Wiki Page Format + Parser
 
   **What to do**:
   - Define `WikiPage` interface: `{ type, name, aliases, tags, relatedPages, frontmatter, body }`
@@ -344,7 +344,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-05-parse.log
   ```
 
-- [ ] 6. Chapter Assembly + chapters.yaml Reader
+- [x] 6. Chapter Assembly + chapters.yaml Reader
 
   **What to do**:
   - Define `ChapterAssembly` interface: `{ id, title, description, sortOrder, scenes[], type }`

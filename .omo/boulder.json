@@ -22,6 +22,19 @@
       "updated_at": "2026-07-06T11:30:59.614Z",
       "ended_at": "2026-07-06T11:30:59.614Z",
       "elapsed_ms": 328036
+    },
+    "todo:2": {
+      "task_key": "todo:2",
+      "task_label": "2",
+      "task_title": "Core Types & Enums",
+      "session_id": "opencode:ses_0c8cd5d6bffeE3n5O1faWF7Hqr",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-07-06T12:08:13.217Z",
+      "started_at": "2026-07-06T11:32:58.758Z",
+      "status": "completed",
+      "ended_at": "2026-07-06T12:08:13.217Z",
+      "elapsed_ms": 2114459
     }
   },
   "schema_version": 2,
@@ -31,7 +44,7 @@
       "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
       "plan_name": "kleptowriter-implementation",
       "started_at": "2026-07-06T10:49:39.792Z",
-      "updated_at": "2026-07-06T11:30:59.614Z",
+      "updated_at": "2026-07-06T12:08:13.217Z",
       "session_ids": [
         "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
       ],
@@ -52,10 +65,23 @@
           "updated_at": "2026-07-06T11:30:59.614Z",
           "ended_at": "2026-07-06T11:30:59.614Z",
           "elapsed_ms": 328036
+        },
+        "todo:2": {
+          "task_key": "todo:2",
+          "task_label": "2",
+          "task_title": "Core Types & Enums",
+          "session_id": "opencode:ses_0c8cd5d6bffeE3n5O1faWF7Hqr",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-07-06T12:08:13.217Z",
+          "started_at": "2026-07-06T11:32:58.758Z",
+          "status": "completed",
+          "ended_at": "2026-07-06T12:08:13.217Z",
+          "elapsed_ms": 2114459
         }
       }
     }
   },
   "active_work_id": "kleptowriter-implementation-legacy",
-  "updated_at": "2026-07-06T11:30:59.614Z"
+  "updated_at": "2026-07-06T12:08:13.217Z"
 }
