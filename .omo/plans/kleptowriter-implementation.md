@@ -377,7 +377,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-06-chapters.log
   ```
 
-- [ ] 7. WikiDirectory Interface + Page Scanner
+- [x] 7. WikiDirectory Interface + Page Scanner
 
   **What to do**:
   - Implement `WikiDirectory` interface: scan `story/wiki/` tree, catalog all pages by type
@@ -405,7 +405,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-07-scan.log
   ```
 
-- [ ] 8. StoryBible In-Memory Cache
+- [x] 8. StoryBible In-Memory Cache
 
   **What to do**:
   - Implement `InMemoryStoryBible implements StoryBible`
@@ -474,7 +474,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-10-scan.log
   ```
 
-- [ ] 11. KnowledgeGraph
+- [x] 11. KnowledgeGraph
 
   **What to do**:
   - Edge list with `knows()`, `learn()`, `queryFactsByCharacter()`
@@ -496,7 +496,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-11-knowledge.log
   ```
 
-- [ ] 12. DramaticQuestion + PlotThread Tracking
+- [x] 12. DramaticQuestion + PlotThread Tracking
 
   **What to do**:
   - `DramaticQuestionTracker`: raise, partially-answer, answer
@@ -518,7 +518,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-12-questions.log
   ```
 
-- [ ] 13. ArcTracker + ThematicProgression
+- [x] 13. ArcTracker + ThematicProgression
 
   **What to do**:
   - Arc progress from completed/total beats; theme intensity tracking
