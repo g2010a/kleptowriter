@@ -943,7 +943,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-29-paths.log
   ```
 
-- [ ] 30. PipelineOrchestrator
+- [x] 30. PipelineOrchestrator
 
   **What to do**:
   - Implement `PipelineOrchestrator`: manages Phase 0→1→2→3 transitions
@@ -969,7 +969,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-30-orchestrator.log
   ```
 
-- [ ] 31. InterviewProtocol
+- [x] 31. InterviewProtocol
 
   **What to do**:
   - Implement InterviewProtocol: AuthorAgent interviews user to extract story depth
@@ -993,7 +993,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-31-interview.log
   ```
 
-- [ ] 32. ScenePlanGate
+- [x] 32. ScenePlanGate
 
   **What to do**:
   - Implement `ScenePlanGate.evaluate(plan, bible, structure): GateResult`
@@ -1020,7 +1020,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-32-plan-gate.log
   ```
 
-- [ ] 33. SceneProseGate
+- [x] 33. SceneProseGate
 
   **What to do**:
   - Implement `SceneProseGate.evaluate(scene, bible): GateResult`
@@ -1046,7 +1046,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-33-prose-gate.log
   ```
 
-- [ ] 34. ChapterDeductor
+- [x] 34. ChapterDeductor
 
   **What to do**:
   - Implement `ChapterDeductor.deduce(scenes, context): ChapterCandidate[]`
@@ -1071,7 +1071,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-34-deduction.log
   ```
 
-- [ ] 35. BibleUpdateProtocol
+- [x] 35. BibleUpdateProtocol
 
   **What to do**:
   - Implement Bible update: collect `state_update` messages → merge into Bible
@@ -1096,7 +1096,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-35-bible-update.log
   ```
 
-- [ ] 36. IterationBudget
+- [x] 36. IterationBudget
 
   **What to do**:
   - Define `IterationBudget`: `{ maxRevisionsPerScene, maxTokensPerScene, maxApiCallsPerPhase }`
@@ -1122,7 +1122,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-36-budget.log
   ```
 
-- [ ] 37. ConflictResolution
+- [x] 37. ConflictResolution
 
   **What to do**:
   - Implement escalation ladder: weighted voting → lead-agent → human-in-loop
