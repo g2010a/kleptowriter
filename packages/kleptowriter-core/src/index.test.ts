@@ -1,10 +1,11 @@
 import { expect, test } from "bun:test";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { InMemoryStoryBible } from "./data-model/bible/index.js";
 import { readScene, writeScene } from "./data-model/scene/index.js";
 import type { SceneDocument } from "./data-model/scene/index.js";
 import { SceneStatus } from "./types/index.js";
-import { parseWikiPageContent, WikiLinkExtractor, WikiPageType } from "./wiki/index.js";
+import { parseWikiPageContent, WikiLinkExtractor, WikiPageType, WikiToBiblePopulation } from "./wiki/index.js";
 
 test("core barrel loads", () => {
   expect(true).toBe(true);
@@ -108,4 +109,46 @@ test("escapes generated markdown links", () => {
   expect(
     WikiLinkExtractor.replaceLinks(body, (target) => (target === "unsafe" ? "wiki/path with > chars.md" : null)),
   ).toBe("See [A \\[ label](<wiki/path%20with%20%3E%20chars.md>) and [[missing]].");
+});
+
+test("populates bible entities from wiki pages", () => {
+  const bible = new InMemoryStoryBible();
+  const report = new WikiToBiblePopulation().populate(
+    [
+      {
+        type: WikiPageType.Character,
+        name: "Ada",
+        aliases: ["A"],
+        tags: ["protagonist"],
+        relatedPages: [],
+        frontmatter: {},
+        body: "Ada follows [[Nowhere]].",
+      },
+      {
+        type: WikiPageType.Location,
+        name: "Library",
+        aliases: [],
+        tags: ["archive"],
+        relatedPages: [],
+        frontmatter: {},
+        body: "Dusty stacks.",
+      },
+      {
+        type: WikiPageType.Research,
+        name: "Source notes",
+        aliases: [],
+        tags: [],
+        relatedPages: [],
+        frontmatter: {},
+        body: "Context only.",
+      },
+    ],
+    bible,
+  );
+
+  expect(report.entitiesCreated).toBe(2);
+  expect(report.pageTypeCounts[WikiPageType.Research]).toBe(1);
+  expect(report.unresolvedLinks).toEqual([{ text: "Nowhere", target: "Nowhere", isResolved: false }]);
+  expect(bible.getCharacter("Ada")?.traits.description).toBe("Ada follows [[Nowhere]].");
+  expect(bible.getLocation("Library")?.description).toBe("Dusty stacks.");
 });

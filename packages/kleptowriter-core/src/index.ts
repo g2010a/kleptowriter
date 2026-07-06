@@ -1,5 +1,6 @@
 export * from "./types/index.js";
 export * from "./types/agents.js";
+export * from "./agents/index.js";
 export * from "./types/narrative.js";
 export * from "./types/pipeline.js";
 export * from "./types/eval.js";

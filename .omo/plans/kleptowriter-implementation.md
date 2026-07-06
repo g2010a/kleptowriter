@@ -428,7 +428,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-08-cache.log
   ```
 
-- [ ] 9. Wiki → Bible Population Engine
+- [x] 9. Wiki → Bible Population Engine
 
   **What to do**:
   - `WikiToBiblePopulation.populate()`: read all wiki pages, build Bible entities
@@ -452,7 +452,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-09-populate.log
   ```
 
-- [ ] 10. Raw-Inputs Scanner + Archivist Interface
+- [x] 10. Raw-Inputs Scanner + Archivist Interface
 
   **What to do**:
   - Scan `raw-inputs/` directory, classify files by type
@@ -539,7 +539,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-13-arc.log
   ```
 
-- [ ] 14. LiteraryAgent Base Interface + AgentRole
+- [x] 14. LiteraryAgent Base Interface + AgentRole
 
   **What to do**:
   - Define `LiteraryAgent` interface: `{ id, role, capabilityTier, mode, canEvaluate, canGenerate, setStoryContext }`

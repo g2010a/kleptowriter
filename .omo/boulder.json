@@ -48,6 +48,19 @@
       "status": "completed",
       "ended_at": "2026-07-06T12:24:11.863Z",
       "elapsed_ms": 9175
+    },
+    "todo:9": {
+      "task_key": "todo:9",
+      "task_label": "9",
+      "task_title": "Wiki → Bible Population Engine",
+      "session_id": "opencode:ses_0c89ca3e1ffeMOHwW1hwUcLqHS",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-07-06T13:26:12.251Z",
+      "started_at": "2026-07-06T13:26:01.010Z",
+      "status": "completed",
+      "ended_at": "2026-07-06T13:26:12.251Z",
+      "elapsed_ms": 11241
     }
   },
   "schema_version": 2,
@@ -57,7 +70,7 @@
       "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
       "plan_name": "kleptowriter-implementation",
       "started_at": "2026-07-06T10:49:39.792Z",
-      "updated_at": "2026-07-06T12:24:11.863Z",
+      "updated_at": "2026-07-06T13:26:12.251Z",
       "session_ids": [
         "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
       ],
@@ -104,10 +117,23 @@
           "status": "completed",
           "ended_at": "2026-07-06T12:24:11.863Z",
           "elapsed_ms": 9175
+        },
+        "todo:9": {
+          "task_key": "todo:9",
+          "task_label": "9",
+          "task_title": "Wiki → Bible Population Engine",
+          "session_id": "opencode:ses_0c89ca3e1ffeMOHwW1hwUcLqHS",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "updated_at": "2026-07-06T13:26:12.251Z",
+          "started_at": "2026-07-06T13:26:01.010Z",
+          "status": "completed",
+          "ended_at": "2026-07-06T13:26:12.251Z",
+          "elapsed_ms": 11241
         }
       }
     }
   },
   "active_work_id": "kleptowriter-implementation-legacy",
-  "updated_at": "2026-07-06T12:24:11.863Z"
+  "updated_at": "2026-07-06T13:26:12.251Z"
 }
