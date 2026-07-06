@@ -9,8 +9,13 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["bun"]
+    "types": ["bun"],
+    "baseUrl": ".",
+    "paths": {
+      "@kleptowriter/kleptowriter-core": ["packages/kleptowriter-core/src/index.ts"],
+      "@kleptowriter/kleptowriter-core/*": ["packages/kleptowriter-core/src/*"]
+    }
   },
-  "include": ["packages/**/*.ts"],
+  "include": ["packages/**/*.ts", "examples/**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
