@@ -821,7 +821,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-24-checker.log
   ```
 
-- [ ] 25. ScenePlanner
+- [x] 25. ScenePlanner
 
   **What to do**:
   - Implement `ScenePlanner.enrich(beat, bible, state): ScenePlan`
@@ -894,7 +894,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-27-templates.log
   ```
 
-- [ ] 28. MarkovStructureGuidance Interface
+- [x] 28. MarkovStructureGuidance Interface
 
   **What to do**:
   - Define `MarkovStructureGuidance` interface: `{ getCurrentBeat(), getNextBeatCandidates(), getConstraintReport(), getPredictedPath(steps), getStoryProgress() }`
