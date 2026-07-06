@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import {
+  ConstraintChecker,
   createDistanceConstraint,
   createOccurrenceConstraint,
   createOrderingConstraint,
@@ -72,4 +73,32 @@ test("checks narrative constraints", () => {
       maxTension: 9,
     }).check(progress).satisfied,
   ).toBe(true);
+});
+
+test("checks all narrative constraints and scores satisfaction", () => {
+  const checker = new ConstraintChecker();
+  const results = checker.checkAll(
+    [
+      createOrderingConstraint({
+        id: "order",
+        type: "ordering",
+        severity: "blocking",
+        description: "setup before payoff",
+        beforeBeat: "setup",
+        afterBeat: "payoff",
+      }),
+      createOccurrenceConstraint({
+        id: "missing",
+        type: "occurrence",
+        severity: "warning",
+        description: "reveal appears once",
+        beatId: "reveal",
+        exactCount: 1,
+      }),
+    ],
+    progress,
+  );
+
+  expect(results.map((result) => result.satisfied)).toEqual([true, false]);
+  expect(checker.getSatisfactionScore(results)).toBe(0.5);
 });

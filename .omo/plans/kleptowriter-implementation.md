@@ -793,7 +793,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-23-constraints.log
   ```
 
-- [ ] 24. ConstraintChecker
+- [x] 24. ConstraintChecker
 
   **What to do**:
   - Implement `ConstraintChecker.checkAll(progress, bible): ConstraintViolation[]`
@@ -870,7 +870,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-26-plans.log
   ```
 
-- [ ] 27. 12 Narrative Structure YAML Templates
+- [x] 27. 12 Narrative Structure YAML Templates
 
   **What to do**:
   - Create YAML files for: Hero's Journey, Freytag's Pyramid, Three-Act, Kishotenketsu, Save the Cat, Fichtean Curve, In Medias Res, Frame Narrative, Nonlinear, Epistolary, Parallel Narrative, Circular
@@ -918,7 +918,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-28-guidance.log
   ```
 
-- [ ] 29. MarkovPathPredictor
+- [x] 29. MarkovPathPredictor
 
   **What to do**:
   - Implement Monte Carlo simulation for path prediction

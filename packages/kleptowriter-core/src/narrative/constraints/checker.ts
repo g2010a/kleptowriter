@@ -8,6 +8,7 @@ import type {
   ReferenceConstraint,
   TensionConstraint,
 } from "./types.js";
+import type { StoryBible } from "../../data-model/bible/interfaces.js";
 
 type WithoutCheck<T> = Omit<T, "check">;
 
@@ -167,3 +168,19 @@ export const checkConstraint = (
   constraint: Constraint,
   progress: BeatProgress,
 ): ConstraintResult => constraint.check(progress);
+
+export class ConstraintChecker {
+  checkAll(
+    constraints: Constraint[],
+    progress: BeatProgress,
+    _bible?: StoryBible,
+  ): ConstraintResult[] {
+    return constraints.map((constraint) => checkConstraint(constraint, progress));
+  }
+
+  getSatisfactionScore(results: ConstraintResult[]): number {
+    if (results.length === 0) return 1;
+
+    return results.filter((result) => result.satisfied).length / results.length;
+  }
+}
