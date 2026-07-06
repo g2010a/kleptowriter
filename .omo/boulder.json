@@ -1,0 +1,61 @@
+{
+  "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
+  "started_at": "2026-07-06T10:49:39.792Z",
+  "session_ids": [
+    "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
+  ],
+  "plan_name": "kleptowriter-implementation",
+  "worktree_path": null,
+  "session_origins": {
+    "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX": "direct"
+  },
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "Initialize Package Structure",
+      "session_id": "opencode:ses_0c8d16960ffedP16zP6uF200ZJ",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "started_at": "2026-07-06T11:25:31.578Z",
+      "status": "completed",
+      "updated_at": "2026-07-06T11:30:59.614Z",
+      "ended_at": "2026-07-06T11:30:59.614Z",
+      "elapsed_ms": 328036
+    }
+  },
+  "schema_version": 2,
+  "works": {
+    "kleptowriter-implementation-legacy": {
+      "work_id": "kleptowriter-implementation-legacy",
+      "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
+      "plan_name": "kleptowriter-implementation",
+      "started_at": "2026-07-06T10:49:39.792Z",
+      "updated_at": "2026-07-06T11:30:59.614Z",
+      "session_ids": [
+        "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
+      ],
+      "session_origins": {
+        "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX": "direct"
+      },
+      "worktree_path": null,
+      "task_sessions": {
+        "todo:1": {
+          "task_key": "todo:1",
+          "task_label": "1",
+          "task_title": "Initialize Package Structure",
+          "session_id": "opencode:ses_0c8d16960ffedP16zP6uF200ZJ",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "started_at": "2026-07-06T11:25:31.578Z",
+          "status": "completed",
+          "updated_at": "2026-07-06T11:30:59.614Z",
+          "ended_at": "2026-07-06T11:30:59.614Z",
+          "elapsed_ms": 328036
+        }
+      }
+    }
+  },
+  "active_work_id": "kleptowriter-implementation-legacy",
+  "updated_at": "2026-07-06T11:30:59.614Z"
+}
