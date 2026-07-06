@@ -126,6 +126,19 @@
       "status": "completed",
       "ended_at": "2026-07-06T14:07:22.230Z",
       "elapsed_ms": 77994
+    },
+    "todo:38": {
+      "task_key": "todo:38",
+      "task_label": "38",
+      "task_title": "SceneExtractor",
+      "session_id": "opencode:ses_0c83e3bd1ffex45DreXlN4nEgx",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-07-06T14:14:36.133Z",
+      "started_at": "2026-07-06T14:13:19.094Z",
+      "status": "completed",
+      "ended_at": "2026-07-06T14:14:36.133Z",
+      "elapsed_ms": 77039
     }
   },
   "schema_version": 2,
@@ -135,7 +148,7 @@
       "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
       "plan_name": "kleptowriter-implementation",
       "started_at": "2026-07-06T10:49:39.792Z",
-      "updated_at": "2026-07-06T14:07:22.230Z",
+      "updated_at": "2026-07-06T14:14:36.133Z",
       "session_ids": [
         "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
       ],
@@ -260,10 +273,23 @@
           "status": "completed",
           "ended_at": "2026-07-06T14:07:22.230Z",
           "elapsed_ms": 77994
+        },
+        "todo:38": {
+          "task_key": "todo:38",
+          "task_label": "38",
+          "task_title": "SceneExtractor",
+          "session_id": "opencode:ses_0c83e3bd1ffex45DreXlN4nEgx",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "updated_at": "2026-07-06T14:14:36.133Z",
+          "started_at": "2026-07-06T14:13:19.094Z",
+          "status": "completed",
+          "ended_at": "2026-07-06T14:14:36.133Z",
+          "elapsed_ms": 77039
         }
       }
     }
   },
   "active_work_id": "kleptowriter-implementation-legacy",
-  "updated_at": "2026-07-06T14:07:22.230Z"
+  "updated_at": "2026-07-06T14:14:36.133Z"
 }

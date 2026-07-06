@@ -1148,7 +1148,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-37-resolution.log
   ```
 
-- [ ] 38. SceneExtractor
+- [x] 38. SceneExtractor
 
   **What to do**:
   - Implement `SceneExtractor.extract(scene, context): SceneMetadata`
@@ -1198,7 +1198,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-39-diff.log
   ```
 
-- [ ] 40. SceneDatastore
+- [x] 40. SceneDatastore
 
   **What to do**:
   - Implement `SceneDatastore`: store, query, filter scenes by metadata
@@ -1245,7 +1245,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-41-cross.log
   ```
 
-- [ ] 42. EvaluationReport Types
+- [x] 42. EvaluationReport Types
 
   **What to do**:
   - Define `EvaluationReport` base: `{ agentId, sceneId, verdict, confidence, findings[], timestamp }`
@@ -1270,7 +1270,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-42-reports.log
   ```
 
-- [ ] 43. AgentNote Collection + Aggregation
+- [x] 43. AgentNote Collection + Aggregation
 
   **What to do**:
   - Implement `AgentNote` type: `{ agentId, sceneId, note, severity, category }`
@@ -1294,7 +1294,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-43-notes.log
   ```
 
-- [ ] 44. SlidingWindowManager
+- [x] 44. SlidingWindowManager
 
   **What to do**:
   - Implement sliding context window: keep last N scenes + summaries of earlier scenes
@@ -1317,7 +1317,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-44-window.log
   ```
 
-- [ ] 45. CondensationStrategy
+- [x] 45. CondensationStrategy
 
   **What to do**:
   - Implement scene compression: extract key events, ignore prose details
@@ -1341,7 +1341,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-45-condense.log
   ```
 
-- [ ] 46. TieredMemory
+- [x] 46. TieredMemory
 
   **What to do**:
   - Implement 3-tier memory: hot (current scene + window), warm (recent chapters), cold (full story)
@@ -1367,7 +1367,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-46-tiers.log
   ```
 
-- [ ] 47. CheckpointManager
+- [x] 47. CheckpointManager
 
   **What to do**:
   - Implement state serialization: save/load pipeline state to `story/checkpoints/`
@@ -1389,7 +1389,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-47-checkpoint.log
   ```
 
-- [ ] 48. ContextWindowBudget
+- [x] 48. ContextWindowBudget
 
   **What to do**:
   - Implement token tracking: count tokens per context item
@@ -1413,7 +1413,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-48-budget.log
   ```
 
-- [ ] 49. HarnessAdapter Base Interface
+- [x] 49. HarnessAdapter Base Interface
 
   **What to do**:
   - Define `HarnessAdapter` interface: `{ init(config), registerAgents(registry), start(), stop() }`
