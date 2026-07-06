@@ -74,6 +74,19 @@
       "status": "completed",
       "ended_at": "2026-07-06T13:30:53.734Z",
       "elapsed_ms": 11519
+    },
+    "todo:16": {
+      "task_key": "todo:16",
+      "task_label": "16",
+      "task_title": "AgentRegistry",
+      "session_id": "opencode:ses_0c85fcd86ffeY556eyCOvhWZ8r",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-07-06T13:36:39.414Z",
+      "started_at": "2026-07-06T13:32:33.998Z",
+      "status": "completed",
+      "ended_at": "2026-07-06T13:36:39.414Z",
+      "elapsed_ms": 245416
     }
   },
   "schema_version": 2,
@@ -83,7 +96,7 @@
       "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-implementation.md",
       "plan_name": "kleptowriter-implementation",
       "started_at": "2026-07-06T10:49:39.792Z",
-      "updated_at": "2026-07-06T13:30:53.734Z",
+      "updated_at": "2026-07-06T13:36:39.414Z",
       "session_ids": [
         "opencode:ses_0c8f3b752ffeT1YBWIW4iVWisX"
       ],
@@ -156,10 +169,23 @@
           "status": "completed",
           "ended_at": "2026-07-06T13:30:53.734Z",
           "elapsed_ms": 11519
+        },
+        "todo:16": {
+          "task_key": "todo:16",
+          "task_label": "16",
+          "task_title": "AgentRegistry",
+          "session_id": "opencode:ses_0c85fcd86ffeY556eyCOvhWZ8r",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "updated_at": "2026-07-06T13:36:39.414Z",
+          "started_at": "2026-07-06T13:32:33.998Z",
+          "status": "completed",
+          "ended_at": "2026-07-06T13:36:39.414Z",
+          "elapsed_ms": 245416
         }
       }
     }
   },
   "active_work_id": "kleptowriter-implementation-legacy",
-  "updated_at": "2026-07-06T13:30:53.734Z"
+  "updated_at": "2026-07-06T13:36:39.414Z"
 }

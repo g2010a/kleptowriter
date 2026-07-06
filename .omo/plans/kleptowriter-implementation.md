@@ -591,7 +591,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-15-mailbox.log
   ```
 
-- [ ] 16. AgentRegistry
+- [x] 16. AgentRegistry
 
   **What to do**:
   - Implement `AgentRegistry.register(agent)` and `resolve(role): LiteraryAgent`
@@ -736,7 +736,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-21-archivist.log
   ```
 
-- [ ] 22. MarkovInferenceEngine
+- [x] 22. MarkovInferenceEngine
 
   **What to do**:
   - Implement variable-order Markov chain: 1st-order base, higher-order for beats requiring history
@@ -764,7 +764,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-22-markov.log
   ```
 
-- [ ] 23. 5 Constraint Types
+- [x] 23. 5 Constraint Types
 
   **What to do**:
   - Define `Constraint` union type: `OrderingConstraint | OccurrenceConstraint | DistanceConstraint | ReferenceConstraint | TensionConstraint`
@@ -846,7 +846,7 @@ Wave FINAL:
     Evidence: .omo/evidence/task-25-planner.log
   ```
 
-- [ ] 26. ScenePlan Types
+- [x] 26. ScenePlan Types
 
   **What to do**:
   - Define `ScenePlan` interface: `{ beatId, purpose, suggestedPov, suggestedCharacters, targetTension, plotThreads, dramaticQuestions, thematicMotifs, alternatives? }`

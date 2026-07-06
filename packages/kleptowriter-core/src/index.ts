@@ -9,3 +9,4 @@ export * from "./types/adapters.js";
 export * from "./data-model/index.js";
 export * from "./wiki/index.js";
 export * from "./mailbox/index.js";
+export * from "./narrative/markov/index.js";

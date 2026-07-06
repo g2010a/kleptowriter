@@ -5,11 +5,51 @@ import { InMemoryStoryBible } from "./data-model/bible/index.js";
 import { readScene, writeScene } from "./data-model/scene/index.js";
 import type { SceneDocument } from "./data-model/scene/index.js";
 import { Mailbox } from "./mailbox/index.js";
+import { MarkovInferenceEngine } from "./narrative/markov/index.js";
 import { SceneStatus } from "./types/index.js";
 import { parseWikiPageContent, WikiLinkExtractor, WikiPageType, WikiToBiblePopulation } from "./wiki/index.js";
 
 test("core barrel loads", () => {
   expect(true).toBe(true);
+});
+
+test("markov engine prefers higher-order transitions and samples by weight", () => {
+  const engine = new MarkovInferenceEngine();
+
+  engine.train([
+    { from: "setup", to: "reversal", weight: 1 },
+    { from: "setup", to: "reveal", weight: 3 },
+    { from: "setup", to: "callback", weight: 1, context: ["clue"] },
+    { from: "setup", to: "payoff", weight: 1, context: ["clue", "betrayal"] },
+  ]);
+
+  expect(engine.getOrder()).toBe(3);
+  expect(engine.getTransitionProbabilities("setup")).toEqual(
+    new Map([
+      ["reversal", 1 / 6],
+      ["reveal", 3 / 6],
+      ["callback", 1 / 6],
+      ["payoff", 1 / 6],
+    ]),
+  );
+  expect(engine.predictNext({ currentBeat: "setup", history: ["clue", "betrayal"] })).toEqual([
+    { beat: "payoff", probability: 1, order: 3 },
+  ]);
+  expect(engine.predictNext({ currentBeat: "setup", history: ["clue"] })).toEqual([
+    { beat: "callback", probability: 1, order: 2 },
+  ]);
+
+  const random = Math.random;
+  Math.random = () => 0.2;
+
+  try {
+    expect(engine.sample("setup")).toBe("reveal");
+  } finally {
+    Math.random = random;
+  }
+
+  engine.clear();
+  expect(engine.predictNext({ currentBeat: "setup" })).toEqual([]);
 });
 
 test("mailbox isolates sessions, consumes polls, broadcasts, and returns reply threads", () => {
