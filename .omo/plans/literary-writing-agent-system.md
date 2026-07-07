@@ -2581,20 +2581,20 @@ This avoids:
 ## 11. Success Criteria
 
 ### Verification
-- [ ] All 16 agents defined with interface contracts
-- [ ] Scene evaluation metadata schema specified (11 fields)
-- [ ] **Markov chain guidance interface** defined (predictNext, scoreTransition, evaluateConstraints)
-- [ ] **Constraint system** defined (5 constraint types: order, count, distance, reference, tension)
-- [ ] **Markov inference engine** defined (n-order transition matrix, Monte Carlo simulation)
-- [ ] 12 structure plugins listed with transition probabilities and constraints
-- [ ] Position-based beat model **removed** (no min/max/ideal percentages in structure definitions)
-- [ ] Mailbox protocol specified (11 message types)
-- [ ] Pipeline state machine defined (6 phases + transitions)
-- [ ] HarnessAdapter interface specified (4 lifecycle methods)
-- [ ] Capability tier system defined (5 categories, 3 levels each)
-- [ ] Interview protocol specified (9 dimensions + depth assessment)
-- [ ] Harness adapters mapped for OpenCode, Codex, Claude Code, standalone
-- [ ] Data model: Story project directory structure specified
+- [x] All 16 agents defined with interface contracts (Section 2.2, lines 735-754)
+- [x] Scene evaluation metadata schema specified (11 fields) (Section 4.1, SceneMetadata interface)
+- [x] **Markov chain guidance interface** defined (predictNext, scoreTransition, evaluateConstraints) (Section 3.2)
+- [x] **Constraint system** defined (5 constraint types: order, count, distance, reference, tension) (Section 3.2)
+- [x] **Markov inference engine** defined (n-order transition matrix, Monte Carlo simulation) (Section 3.5)
+- [x] 12 structure plugins listed with transition probabilities and constraints (Section 3.3)
+- [x] Position-based beat model **removed** (no min/max/ideal percentages in structure definitions) (Section 3, intro)
+- [x] Mailbox protocol specified (11 message types) (Section 2.3)
+- [x] Pipeline state machine defined (6 phases + transitions) (Sections 6.1, 6.7)
+- [x] HarnessAdapter interface specified (4 lifecycle methods) (Section 8.1)
+- [x] Capability tier system defined (5 categories, 3 levels each) (Section 7)
+- [x] Interview protocol specified (9 dimensions + depth assessment) (Section 5)
+- [x] Harness adapters mapped for OpenCode, Codex, Claude Code, standalone (Sections 8.2-8.5)
+- [x] Data model: Story project directory structure specified (Section 1)
 
 ### Resolved by Architecture Review
 The following questions from the initial draft have been addressed during the Metis gap analysis and are now part of the design:
