@@ -1,0 +1,25 @@
+{
+  "name": "@kleptowriter/adapter-pi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "kleptowriter": "./src/cli.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "start": "bun run src/cli.ts"
+  },
+  "dependencies": {
+    "@kleptowriter/kleptowriter-core": "workspace:*",
+    "@earendil-works/pi-coding-agent": "0.80.3",
+    "@sinclair/typebox": "0.34.49"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14",
+    "typescript": "^5.9.2"
+  }
+}
