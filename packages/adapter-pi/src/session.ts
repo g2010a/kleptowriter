@@ -1,5 +1,7 @@
 import {
-  createAgentSession,
+  createAgentSessionServices,
+  createAgentSessionFromServices,
+  SessionManager,
   DefaultResourceLoader,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, AgentSessionEventListener } from "@earendil-works/pi-coding-agent";
@@ -26,27 +28,27 @@ export async function createKleptowriterSession(
   options: KleptowriterSessionOptions = {},
 ): Promise<KleptowriterSession> {
   const cwd = options.cwd ?? process.cwd();
-  const agentDir = options.agentDir ?? DEFAULT_AGENT_DIR;
 
-  const loader = new DefaultResourceLoader({
+  const services = await createAgentSessionServices({
     cwd,
-    agentDir,
-    noExtensions: true,
-    noSkills: true,
-    noPromptTemplates: true,
-    noThemes: true,
-    noContextFiles: true,
-    systemPromptOverride: () => systemPrompt,
+    agentDir: options.agentDir,
+    resourceLoaderOptions: {
+      noExtensions: true,
+      noSkills: true,
+      noPromptTemplates: true,
+      noThemes: true,
+      noContextFiles: true,
+      systemPromptOverride: () => systemPrompt,
+    },
   });
 
-  await loader.reload();
+  const sessionManager = SessionManager.inMemory();
 
-  const { session } = await createAgentSession({
+  const { session } = await createAgentSessionFromServices({
+    services,
+    sessionManager,
     noTools: "builtin",
     customTools: allKleptowriterTools,
-    resourceLoader: loader,
-    cwd,
-    agentDir,
   });
 
   // Auto-load context at startup — direct tool invocation, no LLM roundtrip
