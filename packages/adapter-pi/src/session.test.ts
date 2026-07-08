@@ -1,9 +1,7 @@
-import { test, expect, describe, afterEach } from "bun:test";
+import { test, expect, describe, afterEach, mock } from "bun:test";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createKleptowriterSession, startNovelSession } from "./session.js";
-import { allKleptowriterTools } from "./tools/registry.js";
 
 const EXPECTED_TOOLS = [
   "write_scene",
@@ -33,6 +31,47 @@ async function tempAgentDir(): Promise<string> {
   return dir;
 }
 
+// ── Mock Pi SDK modules before importing session ──────────────────────────────
+const mockServices = {
+  cwd: "/test/cwd",
+  agentDir: "/test/agentDir",
+  authStorage: {},
+  settingsManager: {},
+  modelRegistry: {},
+  resourceLoader: {},
+  diagnostics: [],
+};
+
+const mockSession = {
+  getActiveToolNames: mock(() => EXPECTED_TOOLS),
+  subscribe: mock(() => () => {}),
+  dispose: mock(() => {}),
+  systemPrompt:
+    "You are a literary writing assistant with access to load_context, write_scene, and other tools.",
+  prompt: mock(async () => {}),
+};
+
+const mockCreateAgentSessionServices = mock(async () => mockServices);
+const mockCreateAgentSessionFromServices = mock(async () => ({
+  session: mockSession,
+  extensionsResult: {},
+  modelFallbackMessage: undefined,
+}));
+const mockSessionManagerInMemory = mock(() => ({}));
+
+mock.module("@earendil-works/pi-coding-agent", () => ({
+  createAgentSessionServices: mockCreateAgentSessionServices,
+  createAgentSessionFromServices: mockCreateAgentSessionFromServices,
+  SessionManager: { inMemory: mockSessionManagerInMemory },
+  DefaultResourceLoader: mock(() => ({})),
+}));
+// ── End Pi SDK mock ───────────────────────────────────────────────────────────
+
+import { createKleptowriterSession, startNovelSession } from "./session.js";
+import { allKleptowriterTools } from "./tools/registry.js";
+
+// ── allKleptowriterTools (no mock needed — pure registry checks) ──────────────
+
 describe("allKleptowriterTools", () => {
   test("exports exactly 9 tool definitions", () => {
     expect(allKleptowriterTools).toHaveLength(9);
@@ -43,6 +82,8 @@ describe("allKleptowriterTools", () => {
     expect(names).toEqual(EXPECTED_TOOLS);
   });
 });
+
+// ── createKleptowriterSession ─────────────────────────────────────────────────
 
 describe("createKleptowriterSession", () => {
   test("session registers exactly 9 Kleptowriter tools in active set", async () => {
@@ -132,6 +173,8 @@ describe("createKleptowriterSession", () => {
     }
   });
 });
+
+// ── startNovelSession ─────────────────────────────────────────────────────────
 
 describe("startNovelSession", () => {
   test("returns a valid session offline (no API key required)", async () => {
