@@ -1,7 +1,6 @@
 import {
   createAgentSession,
   DefaultResourceLoader,
-  SessionManager,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, AgentSessionEventListener } from "@earendil-works/pi-coding-agent";
 import { resolve } from "node:path";
@@ -13,7 +12,7 @@ const DEFAULT_AGENT_DIR = resolve(".omo/.pi-agent");
 export interface KleptowriterSessionOptions {
   cwd?: string;
   agentDir?: string;
-  sessionManager?: SessionManager;
+  sessionDir?: string;
   onEvent?: AgentSessionEventListener;
 }
 
@@ -42,13 +41,10 @@ export async function createKleptowriterSession(
 
   await loader.reload();
 
-  const sm = options.sessionManager ?? SessionManager.inMemory();
-
   const { session } = await createAgentSession({
     noTools: "builtin",
     customTools: allKleptowriterTools,
     resourceLoader: loader,
-    sessionManager: sm,
     cwd,
     agentDir,
   });
