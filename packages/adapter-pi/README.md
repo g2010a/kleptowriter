@@ -39,6 +39,13 @@ export ANTHROPIC_API_KEY=sk-ant-...
 Use the binary matching your platform: `darwin-arm64`, `darwin-x64`,
 `linux-arm64`, or `linux-x64`.
 
+macOS binaries are ad-hoc signed in CI but not Apple-notarized. If Gatekeeper
+blocks a browser-downloaded binary, remove the quarantine attribute once:
+
+```bash
+xattr -dr com.apple.quarantine ./kleptowriter-darwin-arm64
+```
+
 ### Option B: Run from a chosen project directory with Bun
 
 ```bash

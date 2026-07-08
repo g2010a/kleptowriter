@@ -31,6 +31,13 @@ export ANTHROPIC_API_KEY=sk-ant-...
 ./kleptowriter-linux-x64
 ```
 
+macOS binaries are ad-hoc signed in CI but not Apple-notarized. If Gatekeeper
+blocks a browser-downloaded binary, remove the quarantine attribute once:
+
+```bash
+xattr -dr com.apple.quarantine ./kleptowriter-darwin-arm64
+```
+
 ## Packages
 
 | Package | Description |
