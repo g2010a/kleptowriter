@@ -35,22 +35,27 @@ function hasApiKey(): boolean {
 // ── Event handler ───────────────────────────────────────────────────────────
 // ponytail: only prints text-bearing events. Add richer TUI when needed.
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 function onSessionEvent(event: Record<string, unknown>): void {
   // Print text content from events that carry it
-  if (typeof event !== "object" || event === null) return;
+  if (!isRecord(event)) return;
 
   // Some Pi events carry a `text` field with assistant output
-  if (event.type === "text" && typeof (event as any).text === "string") {
-    console.log((event as any).text);
+  if (event.type === "text" && typeof event.text === "string") {
+    console.log(event.text);
     return;
   }
 
   // Agent messages carry content arrays with text blocks
   if (
     (event.type === "message" || event.type === "assistant_message") &&
-    Array.isArray((event as any).content)
+    Array.isArray(event.content)
   ) {
-    for (const part of (event as any).content as Array<Record<string, unknown>>) {
+    for (const part of event.content) {
+      if (!isRecord(part)) continue;
       if (part.type === "text" && typeof part.text === "string") {
         process.stdout.write(part.text);
       }
@@ -60,7 +65,7 @@ function onSessionEvent(event: Record<string, unknown>): void {
 
   // Tool execution notifications (minimal)
   if (event.type === "tool_execution_start") {
-    const toolName = (event as any).toolName ?? (event as any).name ?? "unknown";
+    const toolName = event.toolName ?? event.name ?? "unknown";
     process.stdout.write(`\n[${toolName}]\n`);
     return;
   }
@@ -88,7 +93,7 @@ async function main(): Promise<void> {
     console.log("    export ANTHROPIC_API_KEY=sk-ant-...");
     console.log("    export OPENAI_API_KEY=sk-proj-...");
     console.log("");
-    console.log("  Then run: bun run start");
+    console.log("  Then re-run this command.");
     console.log("─────────────────────────────────────────────");
     process.exit(0);
   }

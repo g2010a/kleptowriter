@@ -4,16 +4,11 @@ import {
   SessionManager,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, AgentSessionEventListener } from "@earendil-works/pi-coding-agent";
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import systemPrompt from "./prompt/system.md" with { type: "text" };
 import { allKleptowriterTools, loadContextTool } from "./tools/registry.js";
 
-const ADAPTER_DIR = import.meta.dirname ?? resolve("packages/adapter-pi/src");
-const SYSTEM_PROMPT_PATH = resolve(ADAPTER_DIR, "prompt/system.md");
 const DEFAULT_AGENT_DIR = resolve(".omo/.pi-agent");
-
-// ponytail: reads file at module load time. Single session, file never changes mid-run.
-const systemPrompt = readFileSync(SYSTEM_PROMPT_PATH, "utf-8");
 
 export interface KleptowriterSessionOptions {
   cwd?: string;
@@ -91,9 +86,17 @@ export async function startNovelSession(
 }
 
 async function invokeLoadContext(): Promise<unknown> {
-  // ponytail: cast to any — execute requires 5 args including ExtensionContext,
-  // but our tool implementations only use (toolCallId, params).
-  const tool = loadContextTool as any;
+  type StartupTool = {
+    execute?: (
+      toolCallId: string,
+      params: { sceneCount: number },
+      extensionContext?: unknown,
+      operationContext?: unknown,
+      abortSignal?: unknown,
+    ) => Promise<{ details?: unknown } | null | undefined>;
+  };
+
+  const tool = loadContextTool as unknown as StartupTool;
   if (typeof tool.execute !== "function") return null;
   const result = await tool.execute("startup", { sceneCount: 5 }, undefined, undefined, undefined);
   return result?.details ?? null;

@@ -8,8 +8,7 @@ Status: Active development.
 ## Overview
 
 This adapter integrates Kleptowriter's narrative pipeline with
-[Pi SDK](https://pi.dev), replacing the 4 stub adapters (OpenCode, Codex,
-Claude Code, Standalone) with one real integration.
+[Pi SDK](https://pi.dev) as the maintained runtime integration.
 
 Unlike the multi-agent architecture of `kleptowriter-core`, the Pi adapter uses
 a **single LLM with custom tools** pattern. The LLM executes the entire
@@ -18,8 +17,10 @@ and 9 custom tools.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) 1.2+
+- [Bun](https://bun.sh) 1.2+ for source/development runs
 - Anthropic API key (`ANTHROPIC_API_KEY`) or OpenAI API key (`OPENAI_API_KEY`)
+
+Release binaries do not require Bun.
 
 ## Quick Start
 
@@ -27,7 +28,18 @@ The workspace (`story/`, `story/scenes/`, `story/bible.json`, `story/.pi-session
 is always rooted at your current working directory. Choose how to start based on
 where you want the workspace to live:
 
-### Option A: Run from a chosen project directory
+### Option A: Download a release binary
+
+```bash
+chmod +x ./kleptowriter-linux-x64
+export ANTHROPIC_API_KEY=sk-ant-...
+./kleptowriter-linux-x64
+```
+
+Use the binary matching your platform: `darwin-arm64`, `darwin-x64`,
+`linux-arm64`, or `linux-x64`.
+
+### Option B: Run from a chosen project directory with Bun
 
 ```bash
 cd my-novel
@@ -36,14 +48,14 @@ bun run /path/to/kleptowriter/packages/adapter-pi/src/cli.ts
 
 This creates `my-novel/story/` — the workspace lands exactly where you are.
 
-### Option B: Use the example runner
+### Option C: Use the example runner
 
 ```bash
 cd /path/to/kleptowriter/examples/novel-session
 ./run.sh              # workspace → examples/novel-session/story/
 ```
 
-### Option C: Monorepo development (package-root workspace)
+### Option D: Monorepo development (package-root workspace)
 
 ```bash
 # From the monorepo root:
@@ -58,6 +70,14 @@ package development. For a novel project, use Option A or B instead.
 
 Missing an API key? Run without one. The CLI creates the workspace directories
 and prints setup instructions, then exits cleanly.
+
+## Building Release Binaries
+
+The repository publishes binaries from tags matching `v*`. To build one locally:
+
+```bash
+bun build --compile --target=bun-linux-x64-baseline src/cli.ts --outfile dist/kleptowriter-linux-x64
+```
 
 ## The Writing Workflow
 
@@ -166,8 +186,7 @@ bun run build                    # Typecheck
 bun run typecheck                # Typecheck (alias)
 ```
 
-## Deprecation Notice
+## Integration Note
 
-The existing adapter stubs (`adapter-opencode`, `adapter-codex`,
-`adapter-claude-code`, `adapter-standalone`) are deprecated. This adapter is
-the sole integration moving forward.
+The Pi adapter is the maintained integration. Earlier harness stub packages were
+removed because they never implemented real runtime behavior.

@@ -1,6 +1,6 @@
 # kleptowriter
 
-Multi-agent narrative generation pipeline.
+Novel-writing harness powered by Kleptowriter core and the Pi SDK adapter.
 
 ## Quick start
 
@@ -9,8 +9,26 @@ bun install
 bun run build
 bun test
 
-# Run the Pi SDK novel-writing session (requires PI_API_KEY)
+# Run the Pi SDK novel-writing session (requires ANTHROPIC_API_KEY or OPENAI_API_KEY)
 cd examples/novel-session && ./run.sh
+```
+
+## Release binaries
+
+Tagged releases build standalone binaries for macOS and Linux:
+
+- `kleptowriter-darwin-arm64`
+- `kleptowriter-darwin-x64`
+- `kleptowriter-linux-arm64`
+- `kleptowriter-linux-x64`
+
+Download the matching file from GitHub Releases, then run it from the directory
+where you want your `story/` workspace:
+
+```bash
+chmod +x ./kleptowriter-linux-x64
+export ANTHROPIC_API_KEY=sk-ant-...
+./kleptowriter-linux-x64
 ```
 
 ## Packages
@@ -18,12 +36,10 @@ cd examples/novel-session && ./run.sh
 | Package | Description |
 |---------|-------------|
 | `@kleptowriter/kleptowriter-core` | Core narrative pipeline engine — agents, pipeline, narrative models, context management, evaluation |
-| `@kleptowriter/adapter-pi` | Pi SDK novel writing harness — 9 custom tools, CLI, installed from npm |
-| `@kleptowriter/adapter-opencode` | OpenCode harness adapter (stub) |
-| `@kleptowriter/adapter-codex` | Codex CLI harness adapter (stub) |
-| `@kleptowriter/adapter-claude-code` | Claude Code harness adapter (stub) |
-| `@kleptowriter/adapter-standalone` | Standalone CLI harness adapter (stub) |
+| `@kleptowriter/adapter-pi` | Pi SDK novel writing harness — 9 custom tools, CLI, release binary entrypoint |
 
 ## Architecture
 
-Core engine + harness adapters (Pi SDK adapter is the first real implementation; the others are stubs). The pipeline orchestrates literary agents through material ingestion, interview, scene generation, and revision phases.
+Core engine + Pi SDK adapter. The Pi adapter exposes a single-LLM writing
+assistant with custom tools for material ingestion, interview, scene generation,
+evaluation, revision, and chapter deduction.
