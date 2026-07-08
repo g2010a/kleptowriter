@@ -7,7 +7,7 @@
  *  - A TypeScript interface for its result shape
  *
  * Schema contracts match `.omo/plans/kleptowriter-pi-harness.md` Task 3 exactly.
- * No business logic — pure type definitions consumed by the stub registry.
+ * No business logic — pure type definitions consumed by the tool registry.
  */
 
 import type { Static } from "@sinclair/typebox";
