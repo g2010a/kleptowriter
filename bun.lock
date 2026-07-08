@@ -22,6 +22,19 @@
         "typescript": "^5.9.2",
       },
     },
+    "packages/adapter-tui": {
+      "name": "@kleptowriter/adapter-tui",
+      "version": "0.1.0",
+      "dependencies": {
+        "@earendil-works/pi-coding-agent": "0.80.3",
+        "@kleptowriter/kleptowriter-core": "workspace:*",
+        "@sinclair/typebox": "0.34.49",
+      },
+      "devDependencies": {
+        "@types/bun": "1.3.14",
+        "typescript": "^5.9.2",
+      },
+    },
     "packages/kleptowriter-core": {
       "name": "@kleptowriter/kleptowriter-core",
       "version": "0.0.0",
@@ -94,6 +107,8 @@
     "@google/genai": ["@google/genai@1.52.0", "", { "dependencies": { "google-auth-library": "^10.3.0", "p-retry": "^4.6.2", "protobufjs": "^7.5.4", "ws": "^8.18.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.25.2" }, "optionalPeers": ["@modelcontextprotocol/sdk"] }, "sha512-gwSvbpiN/17O9TbsqSsE/OzZcpv5Fo4RQjdngGgogtuB9RsyJ8ZHhX5KjHj1bp5N9snN2eK8LDGXSaWW2hof8Q=="],
 
     "@kleptowriter/adapter-pi": ["@kleptowriter/adapter-pi@workspace:packages/adapter-pi"],
+
+    "@kleptowriter/adapter-tui": ["@kleptowriter/adapter-tui@workspace:packages/adapter-tui"],
 
     "@kleptowriter/kleptowriter-core": ["@kleptowriter/kleptowriter-core@workspace:packages/kleptowriter-core"],
 
