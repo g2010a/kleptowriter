@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { mkdirSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { BaseAgent } from "./agents/base.js";
@@ -294,7 +295,7 @@ test("scene evaluation end-to-end: extract → store → query → diff → repo
   expect(typeof diffResult.newCharacters).toBe("object");
 
   // Reports - save and load
-  const tmpDir = join(import.meta.dir, "../tmp", "integration-reports");
+  const tmpDir = join(tmpdir(), `kleptowriter-integration-reports-${Date.now()}`);
   rmSync(tmpDir, { recursive: true, force: true });
   mkdirSync(tmpDir, { recursive: true });
 

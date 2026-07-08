@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { InMemoryStoryBible } from "./data-model/bible/index.js";
 import { readScene, writeScene } from "./data-model/scene/index.js";
@@ -98,7 +99,7 @@ test("mailbox isolates sessions, consumes polls, broadcasts, and returns reply t
 });
 
 test("scene files roundtrip", async () => {
-  const directory = join(import.meta.dir, "../tmp");
+  const directory = join(tmpdir(), `kleptowriter-scene-${Date.now()}`);
   mkdirSync(directory, { recursive: true });
   const path = join(directory, "scene-roundtrip.md");
   const scene: SceneDocument = {
