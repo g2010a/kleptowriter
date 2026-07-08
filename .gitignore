@@ -4,3 +4,7 @@ dist/
 *.log
 .DS_Store
 .omo/evidence/
+.omo/boulder.json
+.omo/run-continuation/
+.venv/
+tmp/
