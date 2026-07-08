@@ -39,12 +39,24 @@ export ANTHROPIC_API_KEY=sk-ant-...
 Use the binary matching your platform: `darwin-arm64`, `darwin-x64`,
 `linux-arm64`, or `linux-x64`.
 
-macOS binaries are ad-hoc signed in CI but not Apple-notarized. If Gatekeeper
-blocks a browser-downloaded binary, remove the quarantine attribute once:
+#### macOS Gatekeeper
+
+macOS binaries are ad-hoc signed in CI but not Apple-notarized. If macOS says
+"Apple could not verify `kleptowriter-darwin-arm64` is free of malware," either
+approve it in System Settings or remove the browser quarantine flag.
+
+Terminal path:
 
 ```bash
+cd ~/Downloads
+chmod +x ./kleptowriter-darwin-arm64
 xattr -dr com.apple.quarantine ./kleptowriter-darwin-arm64
+export ANTHROPIC_API_KEY=sk-ant-...
+./kleptowriter-darwin-arm64
 ```
+
+GUI path: try opening it once, choose **Done**, then open **System Settings** →
+**Privacy & Security** → **Open Anyway** for `kleptowriter-darwin-arm64`.
 
 ### Option B: Run from a chosen project directory with Bun
 
