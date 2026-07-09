@@ -16,21 +16,21 @@ const commands: CommandDef[] = [
   },
   {
     name: "/ingest",
-    description: "Begin material ingestion — feed source material into the project bible",
+    description: "Begin material ingestion — feed source material into the project story-metadata",
     guidance:
-      "The user wants to ingest source material. Ask them to provide text, files, or notes to add to the project bible. Summarize what they provide and confirm what was captured before moving on.",
+      "The user wants to ingest source material. Ask them to provide text, files, or notes to add to the project story-metadata. Summarize what they provide and confirm what was captured before moving on.",
   },
   {
     name: "/write",
     description: "Enter scene writing mode to draft the next scene",
     guidance:
-      "The user wants to write a scene. Review the current project state — bible, scenes already written, and any outline — then draft the next scene. Follow established style, tone, and character voices.",
+      "The user wants to write a scene. Review the current project state — metadata, scenes already written, and any outline — then draft the next scene. Follow established style, tone, and character voices.",
   },
   {
-    name: "/bible",
-    description: "Query the project bible and present its current state",
+    name: "/metadata",
+    description: "Query the project story-metadata and present its current state",
     guidance:
-      "The user wants to see the current state of the project bible. Read the bible file and present a summary of what's stored — premise, characters, setting, genre, tone, and any other tracked elements.",
+      "The user wants to see the current state of the project story-metadata. Read the metadata file and present a summary of what's stored — premise, characters, setting, genre, tone, and any other tracked elements.",
   },
   {
     name: "/scenes",

@@ -1,5 +1,5 @@
 /**
- * Bible persistence — load/save InMemoryStoryBible as plain JSON.
+ * Metadata persistence — load/save InMemoryStoryBible as plain JSON.
  *
  * Serialization converts Maps → arrays, Sets → arrays, and extracts
  * closure-based KnowledgeGraph/ThematicProgression data via public APIs.
@@ -176,20 +176,20 @@ function deserializeBible(data: SerializableBible): InMemoryStoryBible {
 // ── Public API ──────────────────────────────────────────────────────────────
 
 /**
- * Load a bible from a JSON file. Returns an empty bible for missing,
+ * Load story metadata from a JSON file. Returns an empty bible for missing,
  * empty, or corrupt files (with a warning logged to console).
  */
-export async function loadBible(path: string): Promise<InMemoryStoryBible> {
+export async function loadMetadata(path: string): Promise<InMemoryStoryBible> {
   let raw: string;
   try {
     raw = await readFile(path, "utf-8");
   } catch {
-    console.warn(`[bible] file not found or unreadable: ${path} — returning empty bible`);
+    console.warn(`[metadata] file not found or unreadable: ${path} — returning empty bible`);
     return new InMemoryStoryBible();
   }
 
   if (!raw.trim()) {
-    console.warn(`[bible] empty file: ${path} — returning empty bible`);
+    console.warn(`[metadata] empty file: ${path} — returning empty bible`);
     return new InMemoryStoryBible();
   }
 
@@ -197,33 +197,44 @@ export async function loadBible(path: string): Promise<InMemoryStoryBible> {
   try {
     data = JSON.parse(raw) as SerializableBible;
   } catch {
-    console.warn(`[bible] corrupt JSON in ${path} — returning empty bible`);
+    console.warn(`[metadata] corrupt JSON in ${path} — returning empty bible`);
     return new InMemoryStoryBible();
   }
 
   try {
     return deserializeBible(data);
   } catch (err) {
-    console.warn(`[bible] failed to deserialize ${path}: ${err} — returning empty bible`);
+    console.warn(`[metadata] failed to deserialize ${path}: ${err} — returning empty bible`);
     return new InMemoryStoryBible();
   }
 }
 
+// ── Serialization lock ──────────────────────────────────────────────────────
+// ponytail: Promise chain serializes concurrent saves to prevent
+// .tmp→rename race. Add per-file locks if multiple files are saved.
+
+let saveQueue: Promise<void> = Promise.resolve();
+
 /**
- * Save a bible to a JSON file atomically (write to .tmp, then rename).
+ * Save story metadata to a JSON file atomically (write to .tmp, then rename).
+ * Concurrent calls are serialized via a Promise chain to prevent races.
  * Increments the version metadata before writing.
  */
-export async function saveBible(bible: InMemoryStoryBible, path: string): Promise<void> {
-  // Increment version on save
-  bible.applyStateUpdate({});
+export async function saveMetadata(bible: InMemoryStoryBible, path: string): Promise<void> {
+  const task = async () => {
+    bible.applyStateUpdate({});
 
-  const serializable = serializeBible(bible);
-  const json = JSON.stringify(serializable, null, 2);
+    const serializable = serializeBible(bible);
+    const json = JSON.stringify(serializable, null, 2);
 
-  const dir = dirname(path);
-  await mkdir(dir, { recursive: true });
+    const dir = dirname(path);
+    await mkdir(dir, { recursive: true });
 
-  const tmpPath = `${path}.tmp`;
-  await writeFile(tmpPath, json, "utf-8");
-  await rename(tmpPath, path);
+    const tmpPath = `${path}.tmp`;
+    await writeFile(tmpPath, json, "utf-8");
+    await rename(tmpPath, path);
+  };
+
+  saveQueue = saveQueue.then(task, task);
+  return saveQueue;
 }

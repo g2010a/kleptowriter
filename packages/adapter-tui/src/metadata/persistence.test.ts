@@ -1,7 +1,7 @@
 import { expect, test, afterEach } from "bun:test";
 import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
-import { loadBible, saveBible } from "./persistence.js";
-import { setBible, getBible, queryBibleTool, updateBibleTool } from "../tools/bible-tools.js";
+import { loadMetadata, saveMetadata } from "./persistence.js";
+import { setMetadata, getMetadata, queryMetadataTool, updateMetadataTool } from "../tools/metadata-tools.js";
 import { mkdtemp, rm, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -16,7 +16,7 @@ afterEach(async () => {
 });
 
 function tmpDir(): Promise<string> {
-  return mkdtemp(join(tmpdir(), "bible-test-")).then((d) => { CLEANUP_DIRS.push(d); return d; });
+  return mkdtemp(join(tmpdir(), "metadata-test-")).then((d) => { CLEANUP_DIRS.push(d); return d; });
 }
 
 // ── Roundtrip save/load ─────────────────────────────────────────────────────
@@ -47,8 +47,8 @@ test("roundtrip save/load preserves all bible state", async () => {
   original.applyStateUpdate({});
   const origVersion = original.version;
 
-  await saveBible(original, path);
-  const loaded = await loadBible(path);
+  await saveMetadata(original, path);
+  const loaded = await loadMetadata(path);
 
   expect(loaded.version).toBe(origVersion + 1);
   expect(loaded.characters.size).toBe(1);
@@ -68,7 +68,7 @@ test("roundtrip save/load preserves all bible state", async () => {
 // ── Missing file ────────────────────────────────────────────────────────────
 
 test("missing file returns empty bible", async () => {
-  const bible = await loadBible("/tmp/nonexistent-bible-12345.json");
+  const bible = await loadMetadata("/tmp/nonexistent-bible-12345.json");
   expect(bible.characters.size).toBe(0);
   expect(bible.version).toBe(0);
 });
@@ -80,7 +80,7 @@ test("empty file returns empty bible", async () => {
   const path = join(dir, "empty.json");
   await writeFile(path, "", "utf-8");
 
-  const bible = await loadBible(path);
+  const bible = await loadMetadata(path);
   expect(bible.characters.size).toBe(0);
   expect(bible.version).toBe(0);
 });
@@ -92,65 +92,65 @@ test("corrupt JSON returns empty bible", async () => {
   const path = join(dir, "corrupt.json");
   await writeFile(path, "{not valid json!!!", "utf-8");
 
-  const bible = await loadBible(path);
+  const bible = await loadMetadata(path);
   expect(bible.characters.size).toBe(0);
   expect(bible.version).toBe(0);
 });
 
-// ── query_bible tool ────────────────────────────────────────────────────────
+// ── query_metadata tool ─────────────────────────────────────────────────────
 
-test("query_bible returns all characters", async () => {
+test("query_metadata returns all characters", async () => {
   const dir = await tmpDir();
   const bible = new InMemoryStoryBible();
   bible.characters.set("alice", {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "story-metadata.json"));
+  setMetadata(bible, join(dir, "story-metadata.json"));
 
-  const result = await queryBibleTool.execute!("call-1", { type: "characters" }, undefined, undefined, undefined as any);
+  const result = await queryMetadataTool.execute!("call-1", { type: "characters" }, undefined, undefined, undefined as any);
   const details = result.details as { results: unknown[]; count: number };
   expect(details.count).toBe(1);
   expect(details.results[0]).toBeDefined();
 });
 
-test("query_bible filters by name", async () => {
+test("query_metadata filters by name", async () => {
   const dir = await tmpDir();
   const bible = new InMemoryStoryBible();
   bible.characters.set("alice", {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "story-metadata.json"));
+  setMetadata(bible, join(dir, "story-metadata.json"));
 
-  const result = await queryBibleTool.execute!("call-2", { type: "characters", filter: "ali" }, undefined, undefined, undefined as any);
+  const result = await queryMetadataTool.execute!("call-2", { type: "characters", filter: "ali" }, undefined, undefined, undefined as any);
   const details = result.details as { count: number };
   expect(details.count).toBe(1);
 });
 
-test("query_bible returns empty for no match", async () => {
+test("query_metadata returns empty for no match", async () => {
   const dir = await tmpDir();
   const bible = new InMemoryStoryBible();
   bible.characters.set("alice", {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "story-metadata.json"));
+  setMetadata(bible, join(dir, "story-metadata.json"));
 
-  const result = await queryBibleTool.execute!("call-3", { type: "characters", filter: "zzz" }, undefined, undefined, undefined as any);
+  const result = await queryMetadataTool.execute!("call-3", { type: "characters", filter: "zzz" }, undefined, undefined, undefined as any);
   const details = result.details as { count: number };
   expect(details.count).toBe(0);
 });
 
-// ── update_bible tool ───────────────────────────────────────────────────────
+// ── update_metadata tool ────────────────────────────────────────────────────
 
-test("update_bible stores entity and persists version", async () => {
+test("update_metadata stores entity and persists version", async () => {
   const dir = await tmpDir();
   const path = join(dir, "story-metadata.json");
   const bible = new InMemoryStoryBible();
-  setBible(bible, path);
+  setMetadata(bible, path);
 
-  const result = await updateBibleTool.execute!(
+  const result = await updateMetadataTool.execute!(
     "call-1",
     { type: "characters", id: "bob", data: { name: "Bob", tags: ["villain"] } },
     undefined, undefined, undefined as any,
@@ -158,7 +158,7 @@ test("update_bible stores entity and persists version", async () => {
   const details = result.details as { ok: boolean; version: number };
   expect(details.ok).toBe(true);
   expect(details.version).toBe(1);
-  expect(getBible().characters.get("bob")?.name).toBe("Bob");
+  expect(getMetadata().characters.get("bob")?.name).toBe("Bob");
 
   const raw = await readFile(path, "utf-8");
   const parsed = JSON.parse(raw);

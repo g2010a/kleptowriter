@@ -1000,17 +1000,17 @@ rtk git diff --stat # Expected: Only planned files changed
 ```
 
 ### Final Checklist
-- [ ] All "Must Have" implemented and verified
-- [ ] All "Must NOT Have" absent (no forbidden patterns)
-- [ ] `bun test` passes
-- [ ] `bun run build` passes
-- [ ] bible persistence: `update_bible` saves to `story-metadata.json` on disk
-- [ ] Pi built-in tools: `read`, `write`, `grep`, `find`, `ls` available to agent
-- [ ] Pi `bash` tool excluded from agent
-- [ ] `/export` command works for session export
-- [ ] `web_search` tool registered and functional
-- [ ] `list_narrative_templates` tool returns 12 narrative structures
-- [ ] System prompt includes "Intent Detection and Proactive Guidance" section
-- [ ] Both adapter-tui AND adapter-pi have identical fixes applied
-- [ ] `.omo/evidence/` contains evidence files for all QA scenarios
-- [ ] All commits pushed
+- [x] All "Must Have" implemented and verified
+- [x] All "Must NOT Have" absent (no forbidden patterns)
+- [x] `bun test` passes
+- [x] `bun run build` passes
+- [x] bible persistence: `update_bible` saves to `story-metadata.json` on disk
+- [x] Pi built-in tools: `read`, `write`, `grep`, `find`, `ls` available to agent
+- [x] Pi `bash` tool excluded from agent
+- [x] `/export` command works for session export
+- [x] `web_search` tool registered and functional
+- [x] `list_narrative_templates` tool returns 12 narrative structures
+- [x] System prompt includes "Intent Detection and Proactive Guidance" section
+- [x] Both adapter-tui AND adapter-pi have identical fixes applied
+- [x] `.omo/evidence/` contains evidence files for all QA scenarios
+- [x] All commits pushed

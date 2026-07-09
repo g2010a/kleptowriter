@@ -36,7 +36,7 @@ describe("createKleptowriterExtension", () => {
     "/interview",
     "/ingest",
     "/write",
-    "/bible",
+    "/metadata",
     "/scenes",
     "/project",
   ];

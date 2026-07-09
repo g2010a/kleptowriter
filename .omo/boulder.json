@@ -102,9 +102,9 @@
       "work_id": "kleptowriter-tui-improvements-13fca9d3",
       "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-tui-improvements.md",
       "plan_name": "kleptowriter-tui-improvements",
-      "status": "active",
+      "status": "completed",
       "started_at": "2026-07-09T15:28:26.894Z",
-      "updated_at": "2026-07-09T15:49:27.418Z",
+      "updated_at": "2026-07-09T15:50:09.281Z",
       "session_ids": [
         "opencode:ses_0b881672effe26VnfqkpIt1zj7",
         "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
@@ -235,13 +235,15 @@
           "ended_at": "2026-07-09T15:49:27.418Z",
           "status": "completed"
         }
-      }
+      },
+      "ended_at": "2026-07-09T15:50:09.281Z",
+      "elapsed_ms": 1302387
     }
   },
   "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-tui-improvements.md",
   "started_at": "2026-07-09T15:28:26.894Z",
-  "status": "active",
-  "updated_at": "2026-07-09T15:49:27.418Z",
+  "status": "completed",
+  "updated_at": "2026-07-09T15:50:09.281Z",
   "session_ids": [
     "opencode:ses_0b881672effe26VnfqkpIt1zj7",
     "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
@@ -373,5 +375,7 @@
       "status": "completed"
     }
   },
-  "agent": "atlas"
+  "agent": "atlas",
+  "ended_at": "2026-07-09T15:50:09.281Z",
+  "elapsed_ms": 1302387
 }

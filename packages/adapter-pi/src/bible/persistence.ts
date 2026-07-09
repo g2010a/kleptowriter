@@ -175,6 +175,10 @@ function deserializeBible(data: SerializableBible): InMemoryStoryBible {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
+// Module-level serialization lock for saveBible — serializes concurrent
+// calls so the .tmp → rename pattern doesn't race.
+let saveQueue: Promise<void> = Promise.resolve();
+
 /**
  * Load a bible from a JSON file. Returns an empty bible for missing,
  * empty, or corrupt files (with a warning logged to console).
@@ -212,18 +216,23 @@ export async function loadBible(path: string): Promise<InMemoryStoryBible> {
 /**
  * Save a bible to a JSON file atomically (write to .tmp, then rename).
  * Increments the version metadata before writing.
+ * Concurrent calls are serialized to prevent .tmp → rename races.
  */
 export async function saveBible(bible: InMemoryStoryBible, path: string): Promise<void> {
-  // Increment version on save
-  bible.applyStateUpdate({});
+  const task = async () => {
+    // Increment version on save
+    bible.applyStateUpdate({});
 
-  const serializable = serializeBible(bible);
-  const json = JSON.stringify(serializable, null, 2);
+    const serializable = serializeBible(bible);
+    const json = JSON.stringify(serializable, null, 2);
 
-  const dir = dirname(path);
-  await mkdir(dir, { recursive: true });
+    const dir = dirname(path);
+    await mkdir(dir, { recursive: true });
 
-  const tmpPath = `${path}.tmp`;
-  await writeFile(tmpPath, json, "utf-8");
-  await rename(tmpPath, path);
+    const tmpPath = `${path}.tmp`;
+    await writeFile(tmpPath, json, "utf-8");
+    await rename(tmpPath, path);
+  };
+  saveQueue = saveQueue.then(task, task);
+  return saveQueue;
 }

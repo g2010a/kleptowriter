@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { loadContextTool } from "./context-tools.js";
 import type { LoadContextParams } from "./types.js";
 import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
-import { saveBible } from "../bible/persistence.js";
+import { saveMetadata } from "../metadata/persistence.js";
 
 const CLEANUP_DIRS: string[] = [];
 const originalCwd = process.cwd();
@@ -51,9 +51,9 @@ function writeScene(dir: string, sceneId: string, title: string, prose: string) 
   writeFileSync(join(dir, `${sceneId}.md`), frontmatter + "\n" + prose, "utf-8");
 }
 
-async function writeBible(dir: string, bible: InMemoryStoryBible) {
+async function writeMetadata(dir: string, bible: InMemoryStoryBible) {
   mkdirSync(join(dir, "story"), { recursive: true });
-  await saveBible(bible, join(dir, "story", "story-metadata.json"));
+  await saveMetadata(bible, join(dir, "story", "story-metadata.json"));
 }
 
 // ── Empty workspace ─────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ test("load_context returns bible and recent scenes from workspace", async () => 
     id: "hero-journey", name: "Hero Journey", description: "Alice's arc",
     beatIds: ["beat-1", "beat-2"], completedBeatIds: ["beat-1"], progress: 0.5,
   });
-  await writeBible(dir, bible);
+  await writeMetadata(dir, bible);
 
   writeScene(join(dir, "story", "scenes"), "setup-01-start", "The Start", "Alice entered the room.");
   writeScene(join(dir, "story", "scenes"), "rising-02-fight", "The Fight", "Alice fought the dragon.");
@@ -182,7 +182,7 @@ test("load_context returns previously written bible and scenes (resume)", async 
     id: "redemption", name: "Redemption", description: "Bob's redemption",
     beatIds: ["beat-a"], completedBeatIds: [], progress: 0.2,
   });
-  await writeBible(dir, bible);
+  await writeMetadata(dir, bible);
 
   writeScene(join(dir, "story", "scenes"), "setup-01-intro", "Intro", "Once upon a time.");
   writeScene(join(dir, "story", "scenes"), "rising-02-conflict", "Conflict", "Bob appeared.");

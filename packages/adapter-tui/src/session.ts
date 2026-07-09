@@ -6,8 +6,8 @@ import {
   InteractiveMode,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSessionEventListener, ExtensionFactory } from "@earendil-works/pi-coding-agent";
-import { allKleptowriterTools, setBible } from "./tools/registry.js";
-import { loadBible } from "./bible/persistence.js";
+import { allKleptowriterTools, setMetadata } from "./tools/registry.js";
+import { loadMetadata } from "./metadata/persistence.js";
 import { join } from "node:path";
 import systemPrompt from "./prompt/system.md" with { type: "text" };
 
@@ -80,8 +80,8 @@ const { session, extensionsResult, modelFallbackMessage } =
     session.subscribe(options.onEvent);
   }
 
-  const bible = await loadBible(join(cwd, "story", "story-metadata.json"));
-  setBible(bible);
+  const metadata = await loadMetadata(join(cwd, "story", "story-metadata.json"));
+  setMetadata(metadata);
 
   return new InteractiveMode(runtime, {
     modelFallbackMessage,

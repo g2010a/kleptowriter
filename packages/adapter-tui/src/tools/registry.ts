@@ -6,7 +6,7 @@
  */
 
 import { writeSceneTool, readSceneTool, listScenesTool } from "./scene-tools.js";
-import { queryBibleTool, updateBibleTool } from "./bible-tools.js";
+import { queryMetadataTool, updateMetadataTool } from "./metadata-tools.js";
 import { evaluateProseTool } from "./eval-tools.js";
 import { loadContextTool } from "./context-tools.js";
 import { suggestNextBeatTool } from "./markov-tools.js";
@@ -18,8 +18,8 @@ export {
   writeSceneTool,
   readSceneTool,
   listScenesTool,
-  queryBibleTool,
-  updateBibleTool,
+  queryMetadataTool,
+  updateMetadataTool,
   evaluateProseTool,
   loadContextTool,
   suggestNextBeatTool,
@@ -28,7 +28,7 @@ export {
   webSearchTool,
 };
 
-export { setBible, getBible, getBiblePath } from "./bible-tools.js";
+export { setMetadata, getMetadata, getMetadataPath } from "./metadata-tools.js";
 export { getSceneStore } from "./scene-tools.js";
 
 /**
@@ -38,8 +38,8 @@ export const allKleptowriterTools = [
   writeSceneTool,
   readSceneTool,
   listScenesTool,
-  queryBibleTool,
-  updateBibleTool,
+  queryMetadataTool,
+  updateMetadataTool,
   evaluateProseTool,
   loadContextTool,
   suggestNextBeatTool,

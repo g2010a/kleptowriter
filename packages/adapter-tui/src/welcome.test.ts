@@ -61,7 +61,7 @@ describe("createWelcomeComponent", () => {
     expect(outputText).toContain("/interview");
     expect(outputText).toContain("/ingest");
     expect(outputText).toContain("/write");
-    expect(outputText).toContain("/bible");
+    expect(outputText).toContain("/metadata");
     expect(outputText).toContain("/scenes");
     expect(outputText).toContain("/project");
   });

@@ -1,40 +1,40 @@
 /**
- * Bible tools — real implementations of query_bible and update_bible.
+ * Metadata tools — real implementations of query_metadata and update_metadata.
  *
  * These use Task 3 schemas and return Pi-compatible { content, details }.
- * The bible instance is held module-level; call setBible() after loading.
+ * The metadata instance is held module-level; call setMetadata() after loading.
  *
- * ponytail: module-level singleton bible. Add when multiple concurrent
- * bible sessions are needed.
+ * ponytail: module-level singleton metadata. Add when multiple concurrent
+ * metadata sessions are needed.
  */
 
 import { defineTool } from "@earendil-works/pi-coding-agent";
 import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
-import { QueryBibleParamsSchema, UpdateBibleParamsSchema } from "./types.js";
-import type { QueryBibleParams, UpdateBibleParams } from "./types.js";
-import { saveBible } from "../bible/persistence.js";
+import { QueryMetadataParamsSchema, UpdateMetadataParamsSchema } from "./types.js";
+import type { QueryMetadataParams, UpdateMetadataParams } from "./types.js";
+import { saveMetadata } from "../metadata/persistence.js";
 
 const DEFAULT_SAVE_PATH = "./story/story-metadata.json";
 
-// ── Module-level bible holder ───────────────────────────────────────────────
+// ── Module-level metadata holder ────────────────────────────────────────────
 
-let _bible: InMemoryStoryBible = new InMemoryStoryBible();
-let _biblePath: string | undefined;
+let _metadata: InMemoryStoryBible = new InMemoryStoryBible();
+let _metadataPath: string | undefined;
 
-/** Set the active bible instance and optional save path. */
-export function setBible(bible: InMemoryStoryBible, savePath?: string): void {
-  _bible = bible;
-  _biblePath = savePath;
+/** Set the active metadata instance and optional save path. */
+export function setMetadata(bible: InMemoryStoryBible, savePath?: string): void {
+  _metadata = bible;
+  _metadataPath = savePath;
 }
 
-/** Get the active bible instance. */
-export function getBible(): InMemoryStoryBible {
-  return _bible;
+/** Get the active metadata instance. */
+export function getMetadata(): InMemoryStoryBible {
+  return _metadata;
 }
 
 /** Get the save path (if set). */
-export function getBiblePath(): string | undefined {
-  return _biblePath;
+export function getMetadataPath(): string | undefined {
+  return _metadataPath;
 }
 
 // ── helpers ─────────────────────────────────────────────────────────────────
@@ -49,25 +49,25 @@ function matchesFilter(value: string, filter?: string): boolean {
   return value.toLocaleLowerCase().includes(filter.toLocaleLowerCase());
 }
 
-// ── query_bible ─────────────────────────────────────────────────────────────
+// ── query_metadata ──────────────────────────────────────────────────────────
 
-export const queryBibleTool = defineTool({
-  name: "query_bible",
-  label: "Query Bible",
+export const queryMetadataTool = defineTool({
+  name: "query_metadata",
+  label: "Query Metadata",
   description:
-    "Queries the story bible for characters, locations, or plot " +
+    "Queries the story metadata for characters, locations, or plot " +
     "threads. An optional text filter narrows results by name or " +
     "field content.",
-  parameters: QueryBibleParamsSchema,
-  execute: async (_toolCallId, params: QueryBibleParams) => {
+  parameters: QueryMetadataParamsSchema,
+  execute: async (_toolCallId, params: QueryMetadataParams) => {
     const { type, filter } = params;
     let results: Record<string, unknown>[] = [];
 
     switch (type) {
       case "characters": {
         const chars = filter
-          ? _bible.queryCharacters({ name: filter })
-          : [..._bible.characters.values()];
+          ? _metadata.queryCharacters({ name: filter })
+          : [..._metadata.characters.values()];
         results = chars.map((c) => ({
           id: c.id,
           name: c.name,
@@ -81,7 +81,7 @@ export const queryBibleTool = defineTool({
         break;
       }
       case "locations": {
-        const locs = [..._bible.locations.values()];
+        const locs = [..._metadata.locations.values()];
         const filtered = filter
           ? locs.filter((l) => matchesFilter(l.name, filter) || l.aliases.some((a) => matchesFilter(a, filter)))
           : locs;
@@ -96,7 +96,7 @@ export const queryBibleTool = defineTool({
         break;
       }
       case "plotThreads": {
-        const threads = [..._bible.plotThreads.values()];
+        const threads = [..._metadata.plotThreads.values()];
         const filtered = filter
           ? threads.filter(
               (t) =>
@@ -122,23 +122,23 @@ export const queryBibleTool = defineTool({
   },
 });
 
-// ── update_bible ────────────────────────────────────────────────────────────
+// ── update_metadata ─────────────────────────────────────────────────────────
 
-export const updateBibleTool = defineTool({
-  name: "update_bible",
-  label: "Update Bible",
+export const updateMetadataTool = defineTool({
+  name: "update_metadata",
+  label: "Update Metadata",
   description:
-    "Adds or replaces an entity in the story bible. Specify the " +
+    "Adds or replaces an entity in the story metadata. Specify the " +
     "entity type, unique ID, and data object. Returns success status " +
-    "and the updated bible version.",
-  parameters: UpdateBibleParamsSchema,
-  execute: async (_toolCallId, params: UpdateBibleParams) => {
+    "and the updated metadata version.",
+  parameters: UpdateMetadataParamsSchema,
+  execute: async (_toolCallId, params: UpdateMetadataParams) => {
     const { type, id, data } = params;
 
     try {
       switch (type) {
         case "characters":
-          _bible.characters.set(id, {
+          _metadata.characters.set(id, {
             id,
             name: (data.name as string) ?? id,
             aliases: (data.aliases as string[]) ?? [],
@@ -153,7 +153,7 @@ export const updateBibleTool = defineTool({
           });
           break;
         case "locations":
-          _bible.locations.set(id, {
+          _metadata.locations.set(id, {
             id,
             name: (data.name as string) ?? id,
             aliases: (data.aliases as string[]) ?? [],
@@ -163,7 +163,7 @@ export const updateBibleTool = defineTool({
           });
           break;
         case "plotThreads":
-          _bible.plotThreads.set(id, {
+          _metadata.plotThreads.set(id, {
             id,
             name: (data.name as string) ?? id,
             description: (data.description as string) ?? "",
@@ -173,11 +173,11 @@ export const updateBibleTool = defineTool({
           break;
       }
 
-      // Auto-save to default if no path set (saveBible increments version)
-      const savePath = _biblePath ?? DEFAULT_SAVE_PATH;
-      await saveBible(_bible, savePath);
+      // Auto-save to default if no path set (saveMetadata increments version)
+      const savePath = _metadataPath ?? DEFAULT_SAVE_PATH;
+      await saveMetadata(_metadata, savePath);
 
-      const version = _bible.version;
+      const version = _metadata.version;
       const summary = `Updated ${type}/${id} — version ${version}`;
 
       return {
@@ -188,7 +188,7 @@ export const updateBibleTool = defineTool({
       const msg = `Failed to update ${type}/${id}: ${err}`;
       return {
         content: textContent(msg),
-        details: { ok: false, version: _bible.version, error: msg } as { ok: boolean; version: number; error?: string },
+        details: { ok: false, version: _metadata.version, error: msg } as { ok: boolean; version: number; error?: string },
       };
     }
   },

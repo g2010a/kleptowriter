@@ -1,8 +1,8 @@
 /**
  * Context tool — real implementation of load_context.
  *
- * Loads bible from ./story/story-metadata.json via loadBible() and the last N scenes
- * from ./story/scenes/ (default N=5). Returns bible + recentScenes for
+ * Loads metadata from ./story/story-metadata.json via loadMetadata() and the last N scenes
+ * from ./story/scenes/ (default N=5). Returns metadata + recentScenes for
  * LLM context injection.
  *
  * ponytail: module-level story dir. Add per-session override when needed.
@@ -10,8 +10,8 @@
 
 import { defineTool } from "@earendil-works/pi-coding-agent";
 import { InMemoryStoryBible, readScene, SceneStatus } from "@kleptowriter/kleptowriter-core";
-import { loadBible } from "../bible/persistence.js";
-import { setBible } from "./bible-tools.js";
+import { loadMetadata } from "../metadata/persistence.js";
+import { setMetadata } from "./metadata-tools.js";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { LoadContextParamsSchema } from "./types.js";
@@ -36,7 +36,7 @@ export const loadContextTool = defineTool({
   name: "load_context",
   label: "Load Context",
   description:
-    "Loads the current story state — bible contents and recent " +
+    "Loads the current story state — metadata contents and recent " +
     "scenes — for injection into the LLM context. The optional " +
     "sceneCount controls how many recent scenes are included " +
     "(default: 5).",
@@ -44,9 +44,9 @@ export const loadContextTool = defineTool({
   execute: async (_toolCallId, params: LoadContextParams) => {
     const sceneCount = params.sceneCount ?? DEFAULT_SCENE_COUNT;
 
-    const bible = await loadBible(DEFAULT_BIBLE_PATH);
-    setBible(bible, DEFAULT_BIBLE_PATH);
-    const bibleJson = serializeBibleForContext(bible);
+    const metadata = await loadMetadata(DEFAULT_BIBLE_PATH);
+    setMetadata(metadata, DEFAULT_BIBLE_PATH);
+    const metadataJson = serializeMetadataForContext(metadata);
 
     // Load recent scenes — sort by filename (lexicographic = deterministic)
     let recentScenes: LoadContextRecentScene[] = [];
@@ -89,17 +89,17 @@ export const loadContextTool = defineTool({
       // Directory doesn't exist — return empty scenes
     }
 
-    const result: LoadContextResult = { bible: bibleJson, recentScenes };
+    const result: LoadContextResult = { bible: metadataJson, recentScenes };
     return {
-      content: textContent(JSON.stringify({ bible: bibleJson, sceneCount: recentScenes.length }, null, 2)),
+      content: textContent(JSON.stringify({ bible: metadataJson, sceneCount: recentScenes.length }, null, 2)),
       details: result,
     };
   },
 });
 
-// ── Bible serialization ─────────────────────────────────────────────────────
+// ── Metadata serialization ──────────────────────────────────────────────────
 
-function serializeBibleForContext(bible: InMemoryStoryBible): Record<string, unknown> {
+function serializeMetadataForContext(bible: InMemoryStoryBible): Record<string, unknown> {
   const characters = [...bible.characters.entries()].map(([id, state]) => ({
     id,
     name: state.name,

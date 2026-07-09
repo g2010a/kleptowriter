@@ -91,7 +91,7 @@ export async function readProjectManifest(path: string): Promise<{ name: string 
  * Initialise a new project at `path`:
  *  - .kleptowriter.json  — manifest
  *  - story/scenes/       — scene directory
- *  - story/story-metadata.json    — empty bible with project marker
+  *  - story/story-metadata.json    — empty story-metadata with project marker
  *  - story/.pi-session/  — session persistence
  */
 export async function initProject(path: string, name: string): Promise<void> {

@@ -80,38 +80,38 @@ export interface ListScenesResult {
   scenes: ListScenesResultItem[];
 }
 
-// ── query_bible ─────────────────────────────────────────────────────────────
-// Queries the story bible by entity type with an optional text filter.
+// ── query_metadata ──────────────────────────────────────────────────────────
+// Queries the story metadata by entity type with an optional text filter.
 // Returns an array of matching entity objects.
 
-export const BibleEntityTypeSchema = Type.Union([
+export const MetadataEntityTypeSchema = Type.Union([
   Type.Literal("characters"),
   Type.Literal("locations"),
   Type.Literal("plotThreads"),
 ]);
 
-export const QueryBibleParamsSchema = Type.Object({
-  type: BibleEntityTypeSchema,
+export const QueryMetadataParamsSchema = Type.Object({
+  type: MetadataEntityTypeSchema,
   filter: Type.Optional(Type.String({ description: "Text filter applied to entity name or fields" })),
 });
-export type QueryBibleParams = Static<typeof QueryBibleParamsSchema>;
+export type QueryMetadataParams = Static<typeof QueryMetadataParamsSchema>;
 
-export interface QueryBibleResult {
+export interface QueryMetadataResult {
   results: Record<string, unknown>[];
 }
 
-// ── update_bible ────────────────────────────────────────────────────────────
-// Upserts an entity (character, location, or plot-thread) in the story bible.
+// ── update_metadata ─────────────────────────────────────────────────────────
+// Upserts an entity (character, location, or plot-thread) in the story metadata.
 // Replaces all data for the given id within the given type collection.
 
-export const UpdateBibleParamsSchema = Type.Object({
-  type: BibleEntityTypeSchema,
+export const UpdateMetadataParamsSchema = Type.Object({
+  type: MetadataEntityTypeSchema,
   id: Type.String({ description: "Entity identifier (unique within its type)" }),
   data: Type.Record(Type.String(), Type.Unknown(), { description: "Entity data fields to persist" }),
 });
-export type UpdateBibleParams = Static<typeof UpdateBibleParamsSchema>;
+export type UpdateMetadataParams = Static<typeof UpdateMetadataParamsSchema>;
 
-export interface UpdateBibleResult {
+export interface UpdateMetadataResult {
   ok: boolean;
   version: number;
 }
