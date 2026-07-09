@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "active_work_id": "theme-fix-and-cwd-init-ux-e40b65dd",
+  "active_work_id": "kleptowriter-tui-improvements-13fca9d3",
   "works": {
     "theme-fix-and-cwd-init-ux-e40b65dd": {
       "work_id": "theme-fix-and-cwd-init-ux-e40b65dd",
@@ -97,99 +97,145 @@
         }
       },
       "elapsed_ms": 1051377
+    },
+    "kleptowriter-tui-improvements-13fca9d3": {
+      "work_id": "kleptowriter-tui-improvements-13fca9d3",
+      "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-tui-improvements.md",
+      "plan_name": "kleptowriter-tui-improvements",
+      "status": "active",
+      "started_at": "2026-07-09T15:28:26.894Z",
+      "updated_at": "2026-07-09T15:41:49.275Z",
+      "session_ids": [
+        "opencode:ses_0b881672effe26VnfqkpIt1zj7",
+        "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
+        "opencode:ses_0b881353cffeSkm3qHW2wyoGt2",
+        "opencode:ses_0b880599bffeckZwMiO2uNkbiI",
+        "opencode:ses_0b8804d95ffem1aPiKnixq4I6T",
+        "opencode:ses_0b88041dcffe8Nx1DsKMl7eBQk",
+        "opencode:ses_0b880362cffecVYAXjC7hieHgV",
+        "opencode:ses_0b8802f09ffdPfp8tKAwK9vD8f",
+        "opencode:ses_0b88009c3ffejIeuCfpOgFgCiq",
+        "opencode:ses_0b87fff4cffelHQCf2PvEc8Dq1",
+        "opencode:ses_0b87fc6c3ffe0Rd5jWGWJtQind",
+        "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
+        "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj",
+        "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv",
+        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo"
+      ],
+      "session_origins": {
+        "opencode:ses_0b881672effe26VnfqkpIt1zj7": "direct",
+        "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0": "appended",
+        "opencode:ses_0b881353cffeSkm3qHW2wyoGt2": "appended",
+        "opencode:ses_0b880599bffeckZwMiO2uNkbiI": "appended",
+        "opencode:ses_0b8804d95ffem1aPiKnixq4I6T": "appended",
+        "opencode:ses_0b88041dcffe8Nx1DsKMl7eBQk": "appended",
+        "opencode:ses_0b880362cffecVYAXjC7hieHgV": "appended",
+        "opencode:ses_0b8802f09ffdPfp8tKAwK9vD8f": "appended",
+        "opencode:ses_0b88009c3ffejIeuCfpOgFgCiq": "appended",
+        "opencode:ses_0b87fff4cffelHQCf2PvEc8Dq1": "appended",
+        "opencode:ses_0b87fc6c3ffe0Rd5jWGWJtQind": "appended",
+        "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz": "appended",
+        "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj": "appended",
+        "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv": "appended",
+        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended"
+      },
+      "agent": "atlas",
+      "task_sessions": {
+        "todo:1": {
+          "task_key": "todo:1",
+          "task_label": "1",
+          "task_title": "Check `bible/persistence.ts` for bible.json references + update error messages in both adapters",
+          "session_id": "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "started_at": "2026-07-09T15:31:04.876Z",
+          "status": "completed",
+          "updated_at": "2026-07-09T15:31:35.707Z",
+          "ended_at": "2026-07-09T15:31:35.707Z",
+          "elapsed_ms": 30831
+        },
+        "todo:8": {
+          "task_key": "todo:8",
+          "task_label": "8",
+          "task_title": "session.ts — remove noTools:\"builtin\", add excludeTools for bash",
+          "session_id": "opencode:ses_0b87c1b18ffehtHv7T3UkGOtTI",
+          "agent": "Sisyphus-Junior",
+          "category": "quick",
+          "started_at": "2026-07-09T15:33:29.437Z",
+          "status": "completed",
+          "updated_at": "2026-07-09T15:41:49.275Z",
+          "ended_at": "2026-07-09T15:41:49.275Z",
+          "elapsed_ms": 499838
+        }
+      }
     }
   },
-  "active_plan": "/workspace/kleptowriter/.omo/plans/theme-fix-and-cwd-init-ux.md",
-  "started_at": "2026-07-09T08:06:25.276Z",
-  "status": "completed",
-  "ended_at": "2026-07-09T08:23:56.653Z",
-  "updated_at": "2026-07-09T08:23:56.653Z",
+  "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-tui-improvements.md",
+  "started_at": "2026-07-09T15:28:26.894Z",
+  "status": "active",
+  "updated_at": "2026-07-09T15:41:49.275Z",
   "session_ids": [
-    "opencode:ses_0ba161767ffen087Yrn461o3kh"
+    "opencode:ses_0b881672effe26VnfqkpIt1zj7",
+    "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
+    "opencode:ses_0b881353cffeSkm3qHW2wyoGt2",
+    "opencode:ses_0b880599bffeckZwMiO2uNkbiI",
+    "opencode:ses_0b8804d95ffem1aPiKnixq4I6T",
+    "opencode:ses_0b88041dcffe8Nx1DsKMl7eBQk",
+    "opencode:ses_0b880362cffecVYAXjC7hieHgV",
+    "opencode:ses_0b8802f09ffdPfp8tKAwK9vD8f",
+    "opencode:ses_0b88009c3ffejIeuCfpOgFgCiq",
+    "opencode:ses_0b87fff4cffelHQCf2PvEc8Dq1",
+    "opencode:ses_0b87fc6c3ffe0Rd5jWGWJtQind",
+    "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
+    "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj",
+    "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv",
+    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo"
   ],
   "session_origins": {
-    "opencode:ses_0ba161767ffen087Yrn461o3kh": "direct"
+    "opencode:ses_0b881672effe26VnfqkpIt1zj7": "direct",
+    "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0": "appended",
+    "opencode:ses_0b881353cffeSkm3qHW2wyoGt2": "appended",
+    "opencode:ses_0b880599bffeckZwMiO2uNkbiI": "appended",
+    "opencode:ses_0b8804d95ffem1aPiKnixq4I6T": "appended",
+    "opencode:ses_0b88041dcffe8Nx1DsKMl7eBQk": "appended",
+    "opencode:ses_0b880362cffecVYAXjC7hieHgV": "appended",
+    "opencode:ses_0b8802f09ffdPfp8tKAwK9vD8f": "appended",
+    "opencode:ses_0b88009c3ffejIeuCfpOgFgCiq": "appended",
+    "opencode:ses_0b87fff4cffelHQCf2PvEc8Dq1": "appended",
+    "opencode:ses_0b87fc6c3ffe0Rd5jWGWJtQind": "appended",
+    "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz": "appended",
+    "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj": "appended",
+    "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv": "appended",
+    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended"
   },
-  "plan_name": "theme-fix-and-cwd-init-ux",
+  "plan_name": "kleptowriter-tui-improvements",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "**Create `src/themes.ts` — embedded Pi SDK theme JSON data**",
-      "session_id": "opencode:ses_0ba1458d2ffexj3gKcvgb4uK3K",
+      "task_title": "Check `bible/persistence.ts` for bible.json references + update error messages in both adapters",
+      "session_id": "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
       "agent": "Sisyphus-Junior",
-      "category": "unspecified-low",
-      "started_at": "2026-07-09T08:07:28.389Z",
+      "category": "quick",
+      "started_at": "2026-07-09T15:31:04.876Z",
       "status": "completed",
-      "updated_at": "2026-07-09T08:09:11.655Z",
-      "ended_at": "2026-07-09T08:09:11.655Z",
-      "elapsed_ms": 103266
+      "updated_at": "2026-07-09T15:31:35.707Z",
+      "ended_at": "2026-07-09T15:31:35.707Z",
+      "elapsed_ms": 30831
     },
-    "todo:2": {
-      "task_key": "todo:2",
-      "task_label": "2",
-      "task_title": "**Create OS metadata filter + `.kleptowriter.json` helper module**",
-      "session_id": "opencode:ses_0ba134ba5ffegkcht0Q0ENMOBV",
+    "todo:8": {
+      "task_key": "todo:8",
+      "task_label": "8",
+      "task_title": "session.ts — remove noTools:\"builtin\", add excludeTools for bash",
+      "session_id": "opencode:ses_0b87c1b18ffehtHv7T3UkGOtTI",
       "agent": "Sisyphus-Junior",
-      "category": "unspecified-low",
-      "updated_at": "2026-07-09T08:12:09.622Z",
-      "started_at": "2026-07-09T08:11:09.381Z",
+      "category": "quick",
+      "started_at": "2026-07-09T15:33:29.437Z",
       "status": "completed",
-      "ended_at": "2026-07-09T08:12:09.622Z",
-      "elapsed_ms": 60241
-    },
-    "todo:5": {
-      "task_key": "todo:5",
-      "task_label": "5",
-      "task_title": "**Implement `detectOrInitProject()` — cwd-based startup flow**",
-      "session_id": "opencode:ses_0ba106ee5ffe36qBw2VshS2ePW",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-07-09T08:13:47.444Z",
-      "started_at": "2026-07-09T08:13:35.588Z",
-      "status": "completed",
-      "ended_at": "2026-07-09T08:13:47.444Z",
-      "elapsed_ms": 11856
-    },
-    "todo:6": {
-      "task_key": "todo:6",
-      "task_label": "6",
-      "task_title": "**Update `main()` — wire up new flow, remove registry dependencies**",
-      "session_id": "opencode:ses_0ba0f3156ffeQLjg86ITKDOqTa",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-07-09T08:16:30.757Z",
-      "started_at": "2026-07-09T08:16:16.131Z",
-      "status": "completed",
-      "ended_at": "2026-07-09T08:16:30.757Z",
-      "elapsed_ms": 14626
-    },
-    "todo:7": {
-      "task_key": "todo:7",
-      "task_label": "7",
-      "task_title": "**Simplify `/project` command in extension.ts**",
-      "session_id": "opencode:ses_0ba0ca6bcffeMrACAA3gSTf4Gy",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-low",
-      "updated_at": "2026-07-09T08:19:03.569Z",
-      "started_at": "2026-07-09T08:17:09.380Z",
-      "status": "completed",
-      "ended_at": "2026-07-09T08:19:03.569Z",
-      "elapsed_ms": 114189
-    },
-    "final-wave:f1": {
-      "task_key": "final-wave:f1",
-      "task_label": "F1",
-      "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "opencode:ses_0ba0a3bc2ffeMrCTKvQxFkET5n",
-      "agent": "oracle",
-      "updated_at": "2026-07-09T08:23:16.262Z",
-      "started_at": "2026-07-09T08:20:13.897Z",
-      "status": "completed",
-      "ended_at": "2026-07-09T08:23:16.262Z",
-      "elapsed_ms": 182365
+      "updated_at": "2026-07-09T15:41:49.275Z",
+      "ended_at": "2026-07-09T15:41:49.275Z",
+      "elapsed_ms": 499838
     }
   },
-  "agent": "atlas",
-  "elapsed_ms": 1051377
+  "agent": "atlas"
 }

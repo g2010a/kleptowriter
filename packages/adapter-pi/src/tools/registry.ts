@@ -11,6 +11,8 @@ import { evaluateProseTool } from "./eval-tools.js";
 import { loadContextTool } from "./context-tools.js";
 import { suggestNextBeatTool } from "./markov-tools.js";
 import { deduceChaptersTool } from "./chapter-tools.js";
+import { webSearchTool } from "./web-search-tools.js";
+import { listNarrativeTemplatesTool } from "./narrative-tools.js";
 
 export {
   writeSceneTool,
@@ -22,13 +24,15 @@ export {
   loadContextTool,
   suggestNextBeatTool,
   deduceChaptersTool,
+  listNarrativeTemplatesTool,
+  webSearchTool,
 };
 
 export { setBible, getBible, getBiblePath } from "./bible-tools.js";
 export { getSceneStore } from "./scene-tools.js";
 
 /**
- * All 9 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
+ * All 11 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
  */
 export const allKleptowriterTools = [
   writeSceneTool,
@@ -40,4 +44,6 @@ export const allKleptowriterTools = [
   loadContextTool,
   suggestNextBeatTool,
   deduceChaptersTool,
+  listNarrativeTemplatesTool,
+  webSearchTool,
 ];
