@@ -1,5 +1,5 @@
 /**
- * Tool registry — aggregates all 9 Kleptowriter custom tool definitions.
+ * Tool registry — aggregates all 11 Kleptowriter custom tool definitions.
  *
  * Re-exports real implementations from their respective modules.
  * Used by session.ts to pass the full tool set to createAgentSession().
@@ -32,7 +32,7 @@ export { setBible, getBible, getBiblePath } from "./bible-tools.js";
 export { getSceneStore } from "./scene-tools.js";
 
 /**
- * All 9 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
+ * All 11 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
  */
 export const allKleptowriterTools = [
   writeSceneTool,

@@ -173,10 +173,9 @@ export const updateBibleTool = defineTool({
           break;
       }
 
-      // Auto-save if path is set (saveBible increments version)
-      if (_biblePath) {
-        await saveBible(_bible, _biblePath);
-      }
+      // Auto-save to default if no path set (saveBible increments version)
+      const savePath = _biblePath ?? DEFAULT_SAVE_PATH;
+      await saveBible(_bible, savePath);
 
       const version = _bible.version;
       const summary = `Updated ${type}/${id} — version ${version}`;

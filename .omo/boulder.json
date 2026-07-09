@@ -104,7 +104,7 @@
       "plan_name": "kleptowriter-tui-improvements",
       "status": "active",
       "started_at": "2026-07-09T15:28:26.894Z",
-      "updated_at": "2026-07-09T15:41:49.275Z",
+      "updated_at": "2026-07-09T15:49:27.418Z",
       "session_ids": [
         "opencode:ses_0b881672effe26VnfqkpIt1zj7",
         "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
@@ -120,7 +120,12 @@
         "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
         "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj",
         "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv",
-        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo"
+        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo",
+        "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL",
+        "opencode:ses_0b87231aaffefM7XsLSsEttRMh",
+        "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI",
+        "opencode:ses_0b8720a19ffekpyTgBWqsrJt56",
+        "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b"
       ],
       "session_origins": {
         "opencode:ses_0b881672effe26VnfqkpIt1zj7": "direct",
@@ -137,7 +142,12 @@
         "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz": "appended",
         "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj": "appended",
         "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv": "appended",
-        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended"
+        "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended",
+        "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL": "appended",
+        "opencode:ses_0b87231aaffefM7XsLSsEttRMh": "appended",
+        "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI": "appended",
+        "opencode:ses_0b8720a19ffekpyTgBWqsrJt56": "appended",
+        "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b": "appended"
       },
       "agent": "atlas",
       "task_sessions": {
@@ -166,6 +176,64 @@
           "updated_at": "2026-07-09T15:41:49.275Z",
           "ended_at": "2026-07-09T15:41:49.275Z",
           "elapsed_ms": 499838
+        },
+        "todo:15": {
+          "task_key": "todo:15",
+          "task_label": "15",
+          "task_title": "Update system prompt for intent-detection agent routing",
+          "session_id": "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL",
+          "agent": "Sisyphus-Junior",
+          "category": "writing",
+          "updated_at": "2026-07-09T15:44:22.371Z",
+          "started_at": "2026-07-09T15:44:12.675Z",
+          "status": "completed",
+          "ended_at": "2026-07-09T15:44:22.371Z",
+          "elapsed_ms": 9696
+        },
+        "final-wave:f1": {
+          "task_key": "final-wave:f1",
+          "task_label": "F1",
+          "task_title": "**Plan Compliance Audit** — `oracle`",
+          "session_id": "opencode:ses_0b87231aaffefM7XsLSsEttRMh",
+          "agent": "oracle",
+          "started_at": "2026-07-09T15:46:10.432Z",
+          "status": "completed",
+          "updated_at": "2026-07-09T15:49:25.461Z",
+          "ended_at": "2026-07-09T15:49:25.461Z",
+          "elapsed_ms": 195029
+        },
+        "final-wave:f2": {
+          "task_key": "final-wave:f2",
+          "task_label": "F2",
+          "task_title": "Code Quality Review — Review all changed files for type safety, code quality, and AI slop.",
+          "session_id": "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-07-09T15:49:26.185Z",
+          "ended_at": "2026-07-09T15:49:26.185Z",
+          "status": "completed"
+        },
+        "final-wave:f3": {
+          "task_key": "final-wave:f3",
+          "task_label": "F3",
+          "task_title": "Real Manual QA — Verify the Kleptowriter TUI improvements actually work from a clean state.",
+          "session_id": "opencode:ses_0b8720a19ffekpyTgBWqsrJt56",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-07-09T15:49:26.767Z",
+          "ended_at": "2026-07-09T15:49:26.767Z",
+          "status": "completed"
+        },
+        "final-wave:f4": {
+          "task_key": "final-wave:f4",
+          "task_label": "F4",
+          "task_title": "Scope Fidelity Check — Verify every task in the plan was implemented exactly as specified, with no missing items and no scope creep.",
+          "session_id": "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b",
+          "agent": "Sisyphus-Junior",
+          "category": "deep",
+          "updated_at": "2026-07-09T15:49:27.418Z",
+          "ended_at": "2026-07-09T15:49:27.418Z",
+          "status": "completed"
         }
       }
     }
@@ -173,7 +241,7 @@
   "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-tui-improvements.md",
   "started_at": "2026-07-09T15:28:26.894Z",
   "status": "active",
-  "updated_at": "2026-07-09T15:41:49.275Z",
+  "updated_at": "2026-07-09T15:49:27.418Z",
   "session_ids": [
     "opencode:ses_0b881672effe26VnfqkpIt1zj7",
     "opencode:ses_0b8813b88ffeZt45KcrwbFSIl0",
@@ -189,7 +257,12 @@
     "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz",
     "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj",
     "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv",
-    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo"
+    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo",
+    "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL",
+    "opencode:ses_0b87231aaffefM7XsLSsEttRMh",
+    "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI",
+    "opencode:ses_0b8720a19ffekpyTgBWqsrJt56",
+    "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b"
   ],
   "session_origins": {
     "opencode:ses_0b881672effe26VnfqkpIt1zj7": "direct",
@@ -206,7 +279,12 @@
     "opencode:ses_0b87fb863ffeW05uxIrR4yn0Sz": "appended",
     "opencode:ses_0b87dd552ffeHvJuQcBjyXYoHj": "appended",
     "opencode:ses_0b87db2bbffeh93F8ECJjiRVwv": "appended",
-    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended"
+    "opencode:ses_0b87da188ffeoksj1lt3m4wlvo": "appended",
+    "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL": "appended",
+    "opencode:ses_0b87231aaffefM7XsLSsEttRMh": "appended",
+    "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI": "appended",
+    "opencode:ses_0b8720a19ffekpyTgBWqsrJt56": "appended",
+    "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b": "appended"
   },
   "plan_name": "kleptowriter-tui-improvements",
   "task_sessions": {
@@ -235,6 +313,64 @@
       "updated_at": "2026-07-09T15:41:49.275Z",
       "ended_at": "2026-07-09T15:41:49.275Z",
       "elapsed_ms": 499838
+    },
+    "todo:15": {
+      "task_key": "todo:15",
+      "task_label": "15",
+      "task_title": "Update system prompt for intent-detection agent routing",
+      "session_id": "opencode:ses_0b8738eaaffeZ1dwHgvI3ohYvL",
+      "agent": "Sisyphus-Junior",
+      "category": "writing",
+      "updated_at": "2026-07-09T15:44:22.371Z",
+      "started_at": "2026-07-09T15:44:12.675Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T15:44:22.371Z",
+      "elapsed_ms": 9696
+    },
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**Plan Compliance Audit** — `oracle`",
+      "session_id": "opencode:ses_0b87231aaffefM7XsLSsEttRMh",
+      "agent": "oracle",
+      "started_at": "2026-07-09T15:46:10.432Z",
+      "status": "completed",
+      "updated_at": "2026-07-09T15:49:25.461Z",
+      "ended_at": "2026-07-09T15:49:25.461Z",
+      "elapsed_ms": 195029
+    },
+    "final-wave:f2": {
+      "task_key": "final-wave:f2",
+      "task_label": "F2",
+      "task_title": "Code Quality Review — Review all changed files for type safety, code quality, and AI slop.",
+      "session_id": "opencode:ses_0b8721e57ffeKzT3CV3iYQ63zI",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-07-09T15:49:26.185Z",
+      "ended_at": "2026-07-09T15:49:26.185Z",
+      "status": "completed"
+    },
+    "final-wave:f3": {
+      "task_key": "final-wave:f3",
+      "task_label": "F3",
+      "task_title": "Real Manual QA — Verify the Kleptowriter TUI improvements actually work from a clean state.",
+      "session_id": "opencode:ses_0b8720a19ffekpyTgBWqsrJt56",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-07-09T15:49:26.767Z",
+      "ended_at": "2026-07-09T15:49:26.767Z",
+      "status": "completed"
+    },
+    "final-wave:f4": {
+      "task_key": "final-wave:f4",
+      "task_label": "F4",
+      "task_title": "Scope Fidelity Check — Verify every task in the plan was implemented exactly as specified, with no missing items and no scope creep.",
+      "session_id": "opencode:ses_0b871f2eaffeVPB2qYVWpydr2b",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-07-09T15:49:27.418Z",
+      "ended_at": "2026-07-09T15:49:27.418Z",
+      "status": "completed"
     }
   },
   "agent": "atlas"
