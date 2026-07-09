@@ -6,7 +6,9 @@ import {
   InteractiveMode,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSessionEventListener, ExtensionFactory } from "@earendil-works/pi-coding-agent";
-import { allKleptowriterTools } from "./tools/registry.js";
+import { allKleptowriterTools, setBible } from "./tools/registry.js";
+import { loadBible } from "./bible/persistence.js";
+import { join } from "node:path";
 import systemPrompt from "./prompt/system.md" with { type: "text" };
 
 export interface TuiSessionOptions {
@@ -36,13 +38,13 @@ export async function createTuiSession(
 
   const sessionManager = SessionManager.inMemory();
 
-  const { session, extensionsResult, modelFallbackMessage } =
-    await createAgentSessionFromServices({
-      services,
-      sessionManager,
-      noTools: "builtin",
-      customTools: allKleptowriterTools,
-    });
+const { session, extensionsResult, modelFallbackMessage } =
+      await createAgentSessionFromServices({
+        services,
+        sessionManager,
+        excludeTools: ["bash"],
+        customTools: allKleptowriterTools,
+      });
 
   const runtime = await createAgentSessionRuntime(
     async (opts) => {
@@ -63,7 +65,7 @@ export async function createTuiSession(
       return createAgentSessionFromServices({
         services: s,
         sessionManager: opts.sessionManager,
-        noTools: "builtin",
+        excludeTools: ["bash"],
         customTools: allKleptowriterTools,
       }).then((result) => ({
         ...result,
@@ -77,6 +79,9 @@ export async function createTuiSession(
   if (options.onEvent) {
     session.subscribe(options.onEvent);
   }
+
+  const bible = await loadBible(join(cwd, "story", "story-metadata.json"));
+  setBible(bible);
 
   return new InteractiveMode(runtime, {
     modelFallbackMessage,

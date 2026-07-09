@@ -85,11 +85,11 @@ describe("createTuiSession", () => {
     expect(args.customTools).toBe(allKleptowriterTools);
   });
 
-  it("sets noTools: builtin to disable Pi coding tools", async () => {
+  it("sets excludeTools: [bash] to disable bash while keeping other Pi coding tools", async () => {
     await createTuiSession();
 
     const args = firstCallArgs(mockCreateAgentSessionFromServices);
-    expect(args.noTools).toBe("builtin");
+    expect(args.excludeTools).toEqual(["bash"]);
   });
 
   it("applies systemPromptOverride when provided", async () => {

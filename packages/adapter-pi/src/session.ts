@@ -47,7 +47,7 @@ export async function createKleptowriterSession(
   const { session } = await createAgentSessionFromServices({
     services,
     sessionManager,
-    noTools: "builtin",
+    excludeTools: ["bash"],
     customTools: allKleptowriterTools,
   });
 
