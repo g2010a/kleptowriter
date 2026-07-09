@@ -1,7 +1,7 @@
 # @kleptowriter/adapter-tui
 
 Interactive TUI novel writing session for Kleptowriter. A terminal-based
-writing studio with project management, slash commands, and a conversational AI
+writing studio with cwd-based project detection, slash commands, and a conversational AI
 writing assistant.
 
 ## Prerequisites
@@ -21,20 +21,23 @@ export ANTHROPIC_API_KEY=sk-ant-...
 bun run --filter @kleptowriter/adapter-tui start
 ```
 
-Missing an API key? Run without one. The TUI starts, prompts you to create or
-select a project, then shows the welcome screen. Pi's built-in `/login` command
-lets you authenticate with your provider from inside the session.
+Missing an API key? Run without one. The TUI detects the current working
+directory — run from an empty directory to create a new project, or from a
+directory containing `.kleptowriter.json` to open an existing project. Pi's
+built-in `/login` command lets you authenticate with your provider from inside
+the session.
 
 ## What you see
 
-### 1. Project selection
+### 1. Project detection
 
-On your first launch, you are asked for a project name and path. The adapter
-scaffolds the workspace (`story/scenes/`, `story/bible.json`,
-`story/.pi-session/`) and registers the project in `~/.kleptowriter/projects.json`.
+The adapter detects the project based on the current working directory. Run
+Kleptowriter from an empty directory to create a new project — it scaffolds
+the workspace (`story/scenes/`, `story/bible.json`, `story/.pi-session/`) and
+creates a `.kleptowriter.json` manifest. Run from a directory that already has
+`.kleptowriter.json` to open that project directly.
 
-On subsequent launches, you see a numbered list of existing projects. Pick one
-or choose to create a new one.
+No global registry. Your project is wherever you put it.
 
 ### 2. Welcome screen
 
@@ -52,7 +55,7 @@ Welcome! Here's how to get started:
   /write       Enter scene writing mode
   /bible       View or edit the story bible
   /scenes      List all scenes with word counts
-  /project     Create, open, or switch projects
+  /project     Show current project info
 
 Type any message or command to begin.
 ```
@@ -70,7 +73,7 @@ Six built-in slash commands map to common writing phases:
 | `/write` | Enter scene writing mode to draft the next scene |
 | `/bible` | Query the project bible and present its current state |
 | `/scenes` | List all written scenes with their word counts |
-| `/project` | Show current project info; pass a name to switch projects |
+| `/project` | Show current project info |
 
 ### 4. AI conversation
 
@@ -170,11 +173,6 @@ update it with `update_bible`.
 Conversation state lives in `story/.pi-session/`. On restart, the AI
 automatically calls `load_context` to restore the bible and recent scenes. Pick
 up where you left off.
-
-### Project registry
-
-Projects are registered in `~/.kleptowriter/projects.json`. The TUI lists them
-on startup so you can switch between projects without leaving the terminal.
 
 ## Package scripts
 

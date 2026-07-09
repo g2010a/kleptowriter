@@ -15,8 +15,9 @@ bun test
 bun run --filter @kleptowriter/adapter-tui start
 ```
 
-On first run, you will be prompted to create a project. After that, the TUI
-opens with a welcome screen and 6 slash commands to guide your writing.
+On first run, you will be prompted to create a project in the current
+directory. After that, the TUI opens with a welcome screen and 6 slash commands
+to guide your writing.
 
 ## Release binaries
 
@@ -67,10 +68,13 @@ Press any key to dismiss and enter the conversation.
 
 ### Project selection
 
-On first launch, you are prompted to create a project (name + path). On
-subsequent launches, you see a numbered list of existing projects. Pick one or
-choose to create a new one. The project registry lives at
-`~/.kleptowriter/projects.json`.
+The adapter detects the project based on the current working directory. Run
+Kleptowriter from an empty directory to create a new project — it scaffolds
+the workspace (`story/scenes/`, `story/bible.json`, `story/.pi-session/`) and
+creates a `.kleptowriter.json` manifest. Run from a directory that already has
+`.kleptowriter.json` to open that project directly.
+
+No global registry. Your project is wherever you put it.
 
 ### Slash commands
 
@@ -83,7 +87,7 @@ Six built-in commands help you navigate the writing workflow:
 | `/write` | Enter scene writing mode and draft the next scene |
 | `/bible` | Query and display the current state of the story bible |
 | `/scenes` | List all written scenes with word counts |
-| `/project` | Show current project info or switch to another project |
+| `/project` | Show current project info |
 
 Type `/hotkeys` for all Pi keyboard shortcuts.
 
@@ -97,13 +101,13 @@ provider. Supported providers include Anthropic and OpenAI.
 | Package | Description |
 |---------|-------------|
 | `@kleptowriter/kleptowriter-core` | Core narrative pipeline engine -- agents, pipeline, narrative models, context management, evaluation |
-| `@kleptowriter/adapter-tui` | Interactive TUI novel writing session -- welcome screen, project manager, 6 slash commands, 9 writing tools |
+| `@kleptowriter/adapter-tui` | Interactive TUI novel writing session -- welcome screen, 6 slash commands, 9 writing tools |
 | `@kleptowriter/adapter-pi` | Pi SDK novel writing harness -- 9 custom tools, CLI, release binary entrypoint |
 
 ## Architecture
 
 Core engine + TUI wrapper + Pi SDK adapter. The TUI adapter adds an interactive
-terminal layer on top of the Pi SDK session, providing project management,
+terminal layer on top of the Pi SDK session, providing cwd-based project detection,
 a welcome screen, and slash commands to guide the writing workflow. The Pi
 adapter exposes a single-LLM writing assistant with custom tools for material
 ingestion, interview, scene generation, evaluation, revision, and chapter
