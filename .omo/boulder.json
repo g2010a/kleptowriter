@@ -1,264 +1,195 @@
 {
-  "active_plan": "/workspace/kleptowriter/.omo/plans/literary-writing-agent-system.md",
-  "started_at": "2026-07-07T14:24:19.793Z",
-  "session_ids": [
-    "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R"
-  ],
-  "plan_name": "literary-writing-agent-system",
-  "session_origins": {
-    "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R": "direct"
-  },
-  "task_sessions": {},
   "schema_version": 2,
+  "active_work_id": "theme-fix-and-cwd-init-ux-e40b65dd",
   "works": {
-    "kleptowriter-pi-harness": {
-      "work_id": "kleptowriter-pi-harness",
-      "active_plan": "/workspace/kleptowriter/.omo/plans/kleptowriter-pi-harness.md",
-      "plan_name": "kleptowriter-pi-harness",
-      "started_at": "2026-07-07T05:55:14.397Z",
-      "updated_at": "2026-07-07T14:10:17.614Z",
+    "theme-fix-and-cwd-init-ux-e40b65dd": {
+      "work_id": "theme-fix-and-cwd-init-ux-e40b65dd",
+      "active_plan": "/workspace/kleptowriter/.omo/plans/theme-fix-and-cwd-init-ux.md",
+      "plan_name": "theme-fix-and-cwd-init-ux",
+      "status": "completed",
+      "started_at": "2026-07-09T08:06:25.276Z",
+      "ended_at": "2026-07-09T08:23:56.653Z",
+      "updated_at": "2026-07-09T08:23:56.653Z",
       "session_ids": [
-        "opencode:ses_0c4dae90effeF8N5Qujf6yJ3Vu",
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R"
+        "opencode:ses_0ba161767ffen087Yrn461o3kh"
       ],
       "session_origins": {
-        "opencode:ses_0c4dae90effeF8N5Qujf6yJ3Vu": "direct",
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R": "direct"
+        "opencode:ses_0ba161767ffen087Yrn461o3kh": "direct"
       },
-      "worktree_path": null,
+      "agent": "atlas",
       "task_sessions": {
         "todo:1": {
           "task_key": "todo:1",
           "task_label": "1",
-          "task_title": "Pi SDK Smoke Test — Write a standalone script at `packages/adapter-pi/smoke-test.ts`",
-          "session_id": "opencode:ses_0c4d8f82affeG6g5HCqI2drwTR",
+          "task_title": "**Create `src/themes.ts` — embedded Pi SDK theme JSON data**",
+          "session_id": "opencode:ses_0ba1458d2ffexj3gKcvgb4uK3K",
           "agent": "Sisyphus-Junior",
-          "category": "unspecified-high",
-          "updated_at": "2026-07-07T08:20:41.403Z",
-          "started_at": "2026-07-07T06:00:35.813Z",
+          "category": "unspecified-low",
+          "started_at": "2026-07-09T08:07:28.389Z",
           "status": "completed",
-          "ended_at": "2026-07-07T08:20:41.403Z",
-          "elapsed_ms": 8405590
+          "updated_at": "2026-07-09T08:09:11.655Z",
+          "ended_at": "2026-07-09T08:09:11.655Z",
+          "elapsed_ms": 103266
         },
         "todo:2": {
           "task_key": "todo:2",
           "task_label": "2",
-          "task_title": "Scaffold adapter-pi Package — Create `packages/adapter-pi/` following monorepo conventions",
-          "session_id": "opencode:ses_0c4d8e0c6ffepkOxnRthOUACi6",
+          "task_title": "**Create OS metadata filter + `.kleptowriter.json` helper module**",
+          "session_id": "opencode:ses_0ba134ba5ffegkcht0Q0ENMOBV",
           "agent": "Sisyphus-Junior",
-          "category": "quick",
-          "updated_at": "2026-07-07T08:20:41.915Z",
-          "started_at": "2026-07-07T08:18:42.625Z",
+          "category": "unspecified-low",
+          "updated_at": "2026-07-09T08:12:09.622Z",
+          "started_at": "2026-07-09T08:11:09.381Z",
           "status": "completed",
-          "ended_at": "2026-07-07T08:20:41.915Z",
-          "elapsed_ms": 119290
-        },
-        "todo:3": {
-          "task_key": "todo:3",
-          "task_label": "3",
-          "task_title": "Design Custom Tool Signatures",
-          "session_id": "opencode:ses_0c3e692d9ffe6FIEdITLSLrA3Y",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T08:45:27.511Z",
-          "status": "completed",
-          "updated_at": "2026-07-07T10:36:00.000Z",
-          "ended_at": "2026-07-07T10:36:00.000Z",
-          "elapsed_ms": 6632489
-        },
-        "todo:4": {
-          "task_key": "todo:4",
-          "task_label": "4",
-          "task_title": "Write Literary System Prompt",
-          "session_id": "opencode:ses_0c3e692a6ffemShHZM53VLIEX6",
-          "agent": "Sisyphus-Junior",
-          "category": "writing",
-          "started_at": "2026-07-07T08:45:27.543Z",
-          "status": "completed",
-          "updated_at": "2026-07-07T10:36:00.000Z",
-          "ended_at": "2026-07-07T10:36:00.000Z",
-          "elapsed_ms": 6632457
+          "ended_at": "2026-07-09T08:12:09.622Z",
+          "elapsed_ms": 60241
         },
         "todo:5": {
           "task_key": "todo:5",
           "task_label": "5",
-          "task_title": "Implement Bible Persistence + Query Tools",
-          "session_id": "opencode:ses_0c3d7baddffeias4tfyYqGzQZ2",
+          "task_title": "**Implement `detectOrInitProject()` — cwd-based startup flow**",
+          "session_id": "opencode:ses_0ba106ee5ffe36qBw2VshS2ePW",
           "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T10:46:04.188Z",
+          "category": "unspecified-high",
+          "updated_at": "2026-07-09T08:13:47.444Z",
+          "started_at": "2026-07-09T08:13:35.588Z",
           "status": "completed",
-          "updated_at": "2026-07-07T10:58:00.000Z",
-          "ended_at": "2026-07-07T10:58:00.000Z",
-          "elapsed_ms": 715812
-        },
-        "todo:7": {
-          "task_key": "todo:7",
-          "task_label": "7",
-          "task_title": "Implement Evaluation Tool",
-          "session_id": "opencode:ses_0c3d7b9c5ffer5HQ7lenaWJiAN",
-          "agent": "Sisyphus-Junior",
-          "category": "deep",
-          "updated_at": "2026-07-07T10:58:00.000Z",
-          "started_at": "2026-07-07T10:46:53.811Z",
-          "status": "completed",
-          "ended_at": "2026-07-07T10:58:00.000Z",
-          "elapsed_ms": 666189
+          "ended_at": "2026-07-09T08:13:47.444Z",
+          "elapsed_ms": 11856
         },
         "todo:6": {
           "task_key": "todo:6",
           "task_label": "6",
-          "task_title": "Implement Scene Tools",
-          "session_id": "opencode:ses_0c3d7ba3dffeoE36I30vKvqPnQ",
+          "task_title": "**Update `main()` — wire up new flow, remove registry dependencies**",
+          "session_id": "opencode:ses_0ba0f3156ffeQLjg86ITKDOqTa",
           "agent": "Sisyphus-Junior",
-          "category": "deep",
-          "updated_at": "2026-07-07T10:58:00.000Z",
-          "started_at": "2026-07-07T10:47:20.034Z",
+          "category": "unspecified-high",
+          "updated_at": "2026-07-09T08:16:30.757Z",
+          "started_at": "2026-07-09T08:16:16.131Z",
           "status": "completed",
-          "ended_at": "2026-07-07T10:58:00.000Z",
-          "elapsed_ms": 639966
+          "ended_at": "2026-07-09T08:16:30.757Z",
+          "elapsed_ms": 14626
         },
-        "todo:8": {
-          "task_key": "todo:8",
-          "task_label": "8",
-          "task_title": "Implement load_context Tool",
-          "session_id": "opencode:ses_0c3c4b084ffed0s1cFwuzoKD9X",
+        "todo:7": {
+          "task_key": "todo:7",
+          "task_label": "7",
+          "task_title": "**Simplify `/project` command in extension.ts**",
+          "session_id": "opencode:ses_0ba0ca6bcffeMrACAA3gSTf4Gy",
           "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T11:03:02.303Z",
-          "status": "running",
-          "updated_at": "2026-07-07T11:38:23.387Z"
-        },
-        "todo:10": {
-          "task_key": "todo:10",
-          "task_label": "10",
-          "task_title": "Implement Chapter Deduction Tool",
-          "session_id": "opencode:ses_0c3c4afd6ffepW1LyvqaZLDKk0",
-          "agent": "Sisyphus-Junior",
-          "category": "deep",
-          "updated_at": "2026-07-07T11:03:25.773Z",
-          "started_at": "2026-07-07T11:03:25.773Z",
-          "status": "running"
-        },
-        "todo:9": {
-          "task_key": "todo:9",
-          "task_label": "9",
-          "task_title": "Implement Markov Beat Suggestion Tool",
-          "session_id": "opencode:ses_0c39e844affeBX8th0WMbpIc99",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T13:23:49.729Z",
-          "status": "running",
-          "updated_at": "2026-07-07T13:28:14.136Z"
-        },
-        "todo:11": {
-          "task_key": "todo:11",
-          "task_label": "11",
-          "task_title": "Build CLI Entry Point",
-          "session_id": "opencode:ses_0c33aacb8ffeYAsi7nD5Bylrai",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T13:36:56.506Z",
-          "status": "running",
-          "updated_at": "2026-07-07T13:44:04.018Z"
-        },
-        "todo:12": {
-          "task_key": "todo:12",
-          "task_label": "12",
-          "task_title": "CLI Runner Script",
-          "session_id": "opencode:ses_0c32c6b09ffeZ4JeYMM8mmzEDA",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T13:48:47.399Z",
-          "status": "running",
-          "updated_at": "2026-07-07T13:51:56.134Z"
-        },
-        "todo:13": {
-          "task_key": "todo:13",
-          "task_label": "13",
-          "task_title": "Example + Quickstart",
-          "session_id": "opencode:ses_0c325463bffeP59U4n27rKKsq8",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T13:55:16.276Z",
-          "status": "running",
-          "updated_at": "2026-07-07T14:00:04.228Z"
-        },
-        "final-wave:f2": {
-          "task_key": "final-wave:f2",
-          "task_label": "F2",
-          "task_title": "**Code Quality Review** — `unspecified-high`",
-          "session_id": "opencode:ses_0c31cf34affefVR7zRY60xO5Im",
-          "agent": "Sisyphus-Junior",
-          "started_at": "2026-07-07T14:04:05.786Z",
-          "status": "running",
-          "updated_at": "2026-07-07T14:09:07.975Z"
+          "category": "unspecified-low",
+          "updated_at": "2026-07-09T08:19:03.569Z",
+          "started_at": "2026-07-09T08:17:09.380Z",
+          "status": "completed",
+          "ended_at": "2026-07-09T08:19:03.569Z",
+          "elapsed_ms": 114189
         },
         "final-wave:f1": {
           "task_key": "final-wave:f1",
           "task_label": "F1",
           "task_title": "**Plan Compliance Audit** — `oracle`",
-          "session_id": "opencode:ses_0c31cf461ffeJydmeT1o9oNB6p",
+          "session_id": "opencode:ses_0ba0a3bc2ffeMrCTKvQxFkET5n",
           "agent": "oracle",
-          "updated_at": "2026-07-07T14:04:17.861Z",
-          "started_at": "2026-07-07T14:04:17.861Z",
-          "status": "running"
-        },
-        "final-wave:f4": {
-          "task_key": "final-wave:f4",
-          "task_label": "F4",
-          "task_title": "**Scope Fidelity Check** — `deep`",
-          "session_id": "opencode:ses_0c31cf1e8ffeDjUW1eOsPXR0eh",
-          "agent": "Sisyphus-Junior",
-          "category": "deep",
-          "updated_at": "2026-07-07T14:04:25.085Z",
-          "started_at": "2026-07-07T14:04:25.085Z",
-          "status": "running"
-        },
-        "final-wave:f3": {
-          "task_key": "final-wave:f3",
-          "task_label": "F3",
-          "task_title": "**Real Manual QA** — `unspecified-high`",
-          "session_id": "opencode:ses_0c31cf2d8ffeA9HUYrTi5aO9Gp",
-          "agent": "Sisyphus-Junior",
-          "category": "unspecified-high",
-          "updated_at": "2026-07-07T14:06:38.918Z",
-          "started_at": "2026-07-07T14:06:38.918Z",
-          "status": "running"
+          "updated_at": "2026-07-09T08:23:16.262Z",
+          "started_at": "2026-07-09T08:20:13.897Z",
+          "status": "completed",
+          "ended_at": "2026-07-09T08:23:16.262Z",
+          "elapsed_ms": 182365
         }
       },
-      "status": "completed",
-      "ended_at": "2026-07-07T14:10:17.614Z",
-      "elapsed_ms": 29703217
-    },
-    "literary-writing-agent-system-ea44dc0b": {
-      "work_id": "literary-writing-agent-system-ea44dc0b",
-      "active_plan": "/workspace/kleptowriter/.omo/plans/literary-writing-agent-system.md",
-      "plan_name": "literary-writing-agent-system",
-      "status": "active",
-      "started_at": "2026-07-07T14:24:19.762Z",
-      "updated_at": "2026-07-07T14:24:19.762Z",
-      "session_ids": [
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R"
-      ],
-      "session_origins": {
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R": "direct"
-      },
-      "agent": "atlas",
-      "task_sessions": {}
-    },
-    "literary-writing-agent-system-ed4c8d21": {
-      "work_id": "literary-writing-agent-system-ed4c8d21",
-      "active_plan": "/workspace/kleptowriter/.omo/plans/literary-writing-agent-system.md",
-      "plan_name": "literary-writing-agent-system",
-      "status": "active",
-      "started_at": "2026-07-07T14:24:19.793Z",
-      "updated_at": "2026-07-07T14:24:19.793Z",
-      "session_ids": [
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R"
-      ],
-      "session_origins": {
-        "opencode:ses_0c3f8c59affe5lXlj92GdL4i4R": "direct"
-      },
-      "agent": "atlas",
-      "task_sessions": {}
+      "elapsed_ms": 1051377
     }
   },
-  "active_work_id": "literary-writing-agent-system-ed4c8d21",
-  "status": "active",
-  "updated_at": "2026-07-07T14:24:19.793Z",
-  "agent": "atlas"
+  "active_plan": "/workspace/kleptowriter/.omo/plans/theme-fix-and-cwd-init-ux.md",
+  "started_at": "2026-07-09T08:06:25.276Z",
+  "status": "completed",
+  "ended_at": "2026-07-09T08:23:56.653Z",
+  "updated_at": "2026-07-09T08:23:56.653Z",
+  "session_ids": [
+    "opencode:ses_0ba161767ffen087Yrn461o3kh"
+  ],
+  "session_origins": {
+    "opencode:ses_0ba161767ffen087Yrn461o3kh": "direct"
+  },
+  "plan_name": "theme-fix-and-cwd-init-ux",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "**Create `src/themes.ts` — embedded Pi SDK theme JSON data**",
+      "session_id": "opencode:ses_0ba1458d2ffexj3gKcvgb4uK3K",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-low",
+      "started_at": "2026-07-09T08:07:28.389Z",
+      "status": "completed",
+      "updated_at": "2026-07-09T08:09:11.655Z",
+      "ended_at": "2026-07-09T08:09:11.655Z",
+      "elapsed_ms": 103266
+    },
+    "todo:2": {
+      "task_key": "todo:2",
+      "task_label": "2",
+      "task_title": "**Create OS metadata filter + `.kleptowriter.json` helper module**",
+      "session_id": "opencode:ses_0ba134ba5ffegkcht0Q0ENMOBV",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-low",
+      "updated_at": "2026-07-09T08:12:09.622Z",
+      "started_at": "2026-07-09T08:11:09.381Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T08:12:09.622Z",
+      "elapsed_ms": 60241
+    },
+    "todo:5": {
+      "task_key": "todo:5",
+      "task_label": "5",
+      "task_title": "**Implement `detectOrInitProject()` — cwd-based startup flow**",
+      "session_id": "opencode:ses_0ba106ee5ffe36qBw2VshS2ePW",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-07-09T08:13:47.444Z",
+      "started_at": "2026-07-09T08:13:35.588Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T08:13:47.444Z",
+      "elapsed_ms": 11856
+    },
+    "todo:6": {
+      "task_key": "todo:6",
+      "task_label": "6",
+      "task_title": "**Update `main()` — wire up new flow, remove registry dependencies**",
+      "session_id": "opencode:ses_0ba0f3156ffeQLjg86ITKDOqTa",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-07-09T08:16:30.757Z",
+      "started_at": "2026-07-09T08:16:16.131Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T08:16:30.757Z",
+      "elapsed_ms": 14626
+    },
+    "todo:7": {
+      "task_key": "todo:7",
+      "task_label": "7",
+      "task_title": "**Simplify `/project` command in extension.ts**",
+      "session_id": "opencode:ses_0ba0ca6bcffeMrACAA3gSTf4Gy",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-low",
+      "updated_at": "2026-07-09T08:19:03.569Z",
+      "started_at": "2026-07-09T08:17:09.380Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T08:19:03.569Z",
+      "elapsed_ms": 114189
+    },
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**Plan Compliance Audit** — `oracle`",
+      "session_id": "opencode:ses_0ba0a3bc2ffeMrCTKvQxFkET5n",
+      "agent": "oracle",
+      "updated_at": "2026-07-09T08:23:16.262Z",
+      "started_at": "2026-07-09T08:20:13.897Z",
+      "status": "completed",
+      "ended_at": "2026-07-09T08:23:16.262Z",
+      "elapsed_ms": 182365
+    }
+  },
+  "agent": "atlas",
+  "elapsed_ms": 1051377
 }
