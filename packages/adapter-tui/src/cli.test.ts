@@ -32,19 +32,16 @@ const mockExit = mock(() => {});
 
 // ── Mock module exports ──────────────────────────────────────────────────────
 
-const mockListProjects = mock(async () => [] as any[]);
-const mockCreateProject = mock(async (name: string, path: string) => ({
-  name,
-  path,
-  created: "2024-01-01T00:00:00Z",
-  lastOpened: "2024-01-01T00:00:00Z",
-}));
-const mockTouchProject = mock(async () => {});
+const mockIsValidProject = mock(async (path: string) => false);
+const mockIsEmptyDir = mock(async (path: string) => false);
+const mockInitProject = mock(async (path: string, name: string) => {});
+const mockReadProjectManifest = mock(async (path: string) => ({ name: "Test" }));
 
-mock.module("./project-manager.js", () => ({
-  listProjects: mockListProjects,
-  createProject: mockCreateProject,
-  touchProject: mockTouchProject,
+mock.module("./project-detect.js", () => ({
+  isValidProject: mockIsValidProject,
+  isEmptyDir: mockIsEmptyDir,
+  initProject: mockInitProject,
+  readProjectManifest: mockReadProjectManifest,
 }));
 
 const mockSession = {
@@ -110,9 +107,10 @@ beforeEach(() => {
     configurable: true,
   });
 
-  mockListProjects.mockClear();
-  mockCreateProject.mockClear();
-  mockTouchProject.mockClear();
+  mockIsValidProject.mockClear();
+  mockIsEmptyDir.mockClear();
+  mockInitProject.mockClear();
+  mockReadProjectManifest.mockClear();
   mockCreateTuiSession.mockClear();
   mockCreateKleptowriterExtension.mockClear();
   mockCreateWelcomeComponent.mockClear();
@@ -151,127 +149,68 @@ afterEach(() => {
 // ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("cli main", () => {
-  it("empty project list → prompts for name/path and creates project", async () => {
-    mockListProjects.mockResolvedValue([]);
+  it("empty cwd → shows init prompt, creates project on yes", async () => {
+    mockIsEmptyDir.mockResolvedValue(true);
+    mockIsValidProject.mockResolvedValue(false);
 
     const mainDone = main();
+    await Bun.sleep(10);
+
+    simulateInput("y");
     await Bun.sleep(10);
 
     simulateInput("My Novel");
     await Bun.sleep(10);
 
-    simulateInput("/tmp/my-novel");
-    await Bun.sleep(10);
-
     await mainDone;
 
-    expect(mockCreateProject).toHaveBeenCalledWith("My Novel", "/tmp/my-novel");
-    expect(mockTouchProject).toHaveBeenCalledWith("My Novel");
+    expect(mockInitProject).toHaveBeenCalledWith(process.cwd(), "My Novel");
   });
 
-  it("existing projects → shows list and user selects", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Project A",
-        path: "/a",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-      {
-        name: "Project B",
-        path: "/b",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
+  it("empty cwd → exits on no", async () => {
+    mockIsEmptyDir.mockResolvedValue(true);
+    mockIsValidProject.mockResolvedValue(false);
 
     const mainDone = main();
     await Bun.sleep(10);
 
-    simulateInput("1");
+    simulateInput("n");
     await Bun.sleep(10);
 
     await mainDone;
 
-    expect(mockTouchProject).toHaveBeenCalledWith("Project A");
+    expect(mockExit).toHaveBeenCalled();
+  });
+
+  it("non-empty non-project cwd → shows error and exits", async () => {
+    mockIsEmptyDir.mockResolvedValue(false);
+    mockIsValidProject.mockResolvedValue(false);
+
+    const mainDone = main();
+    await Bun.sleep(10);
+
+    await mainDone;
+
+    expect(mockExit).toHaveBeenCalledWith(1);
+  });
+
+  it("valid project cwd → opens TUI directly", async () => {
+    mockIsValidProject.mockResolvedValue(true);
+
+    const mainDone = main();
+    await Bun.sleep(10);
+
+    await mainDone;
+
     expect(mockCreateTuiSession).toHaveBeenCalledWith(
-      expect.objectContaining({ cwd: "/a" }),
-    );
-  });
-
-  it("existing projects → user selects create new", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Project A",
-        path: "/a",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
-
-    const mainDone = main();
-    await Bun.sleep(10);
-
-    simulateInput("2");
-    await Bun.sleep(10);
-
-    simulateInput("New Project");
-    await Bun.sleep(10);
-
-    simulateInput("/tmp/new-project");
-    await Bun.sleep(10);
-
-    await mainDone;
-
-    expect(mockCreateProject).toHaveBeenCalledWith(
-      "New Project",
-      "/tmp/new-project",
-    );
-    expect(mockTouchProject).toHaveBeenCalledWith("New Project");
-  });
-
-  it("creates session with correct cwd and extension", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Test",
-        path: "/test",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
-
-    const mainDone = main();
-    await Bun.sleep(10);
-
-    simulateInput("1");
-    await Bun.sleep(10);
-
-    await mainDone;
-
-    expect(mockCreateWelcomeComponent).toHaveBeenCalled();
-    expect(mockCreateKleptowriterExtension).toHaveBeenCalledWith(mockWelcome);
-    expect(mockCreateTuiSession).toHaveBeenCalledWith(
-      expect.objectContaining({
-        cwd: "/test",
-        extensionFactories: [mockExtensionFactory],
-      }),
+      expect.objectContaining({ cwd: process.cwd() }),
     );
   });
 
   it("sets up SIGINT handler", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Test",
-        path: "/test",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
+    mockIsValidProject.mockResolvedValue(true);
 
     const mainDone = main();
-    await Bun.sleep(10);
-
-    simulateInput("1");
     await Bun.sleep(10);
 
     await mainDone;
@@ -279,20 +218,10 @@ describe("cli main", () => {
     expect(sigintHandler).not.toBeNull();
   });
 
-  it("SIGINT calls session.stop() and exit()", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Test",
-        path: "/test",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
+  it("SIGINT cleans up and exits", async () => {
+    mockIsValidProject.mockResolvedValue(true);
 
     const mainDone = main();
-    await Bun.sleep(10);
-
-    simulateInput("1");
     await Bun.sleep(10);
 
     await mainDone;
@@ -301,26 +230,5 @@ describe("cli main", () => {
 
     expect(mockSession.stop).toHaveBeenCalled();
     expect(mockExit).toHaveBeenCalledWith(0);
-  });
-
-  it("calls session.run()", async () => {
-    mockListProjects.mockResolvedValue([
-      {
-        name: "Test",
-        path: "/test",
-        created: "2024-01-01",
-        lastOpened: "2024-01-01",
-      },
-    ]);
-
-    const mainDone = main();
-    await Bun.sleep(10);
-
-    simulateInput("1");
-    await Bun.sleep(10);
-
-    await mainDone;
-
-    expect(mockSession.run).toHaveBeenCalled();
   });
 });

@@ -1,8 +1,11 @@
-import { listProjects, createProject, touchProject } from "./project-manager.js";
+import { isValidProject, isEmptyDir, initProject, readProjectManifest } from "./project-detect.js";
 import { createTuiSession } from "./session.js";
 import { createKleptowriterExtension } from "./extension.js";
 import { createWelcomeComponent } from "./welcome.js";
-import type { ProjectInfo } from "./project-manager.js";
+import { darkTheme, lightTheme } from "./themes.js";
+import { mkdtempSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 
 // ── Pre-TUI prompts ─────────────────────────────────────────────────────────
 
@@ -24,41 +27,80 @@ function promptLine(question: string): Promise<string> {
   });
 }
 
-// ── Project selection ────────────────────────────────────────────────────────
+// ── CWD-based project detection ──────────────────────────────────────────────
 
-export async function selectProject(): Promise<ProjectInfo> {
-  const projects = await listProjects();
+export async function detectOrInitProject(): Promise<{ name: string; path: string }> {
+  const cwd = process.cwd();
+  const valid = await isValidProject(cwd);
 
-  if (projects.length === 0) {
-    console.log("\nNo projects found. Let's create one!\n");
-    const name = await promptLine("Project name:");
-    const path = await promptLine("Project path:");
-    return createProject(name, path);
+  if (valid) {
+    const manifest = await readProjectManifest(cwd);
+    return { name: manifest.name, path: cwd };
   }
 
-  console.log("\nYour projects:\n");
-  for (let i = 0; i < projects.length; i++) {
-    console.log(`  ${i + 1}. ${projects[i]!.name} (${projects[i]!.path})`);
+  const empty = await isEmptyDir(cwd);
+
+  if (empty) {
+    console.log(`\nThis directory is empty. Initialize '${cwd}' as a Kleptowriter project? (y/N)`);
+    const answer = await promptLine("");
+
+    if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
+      const dirName = cwd.split("/").filter(Boolean).pop() || "my-project";
+      const name = await promptLine(`Project name [${dirName}]:`);
+      const projectName = name.trim() || dirName;
+      await initProject(cwd, projectName);
+      console.log(`\nProject '${projectName}' initialized.\n`);
+      return { name: projectName, path: cwd };
+    }
+
+    console.log("Ok, exiting.");
+    process.exit(0);
   }
-  console.log(`  ${projects.length + 1}. Create new project\n`);
 
-  const choice = await promptLine("Select project:");
-  const idx = parseInt(choice, 10) - 1;
+  console.log(`\nDirectory '${cwd}' already contains files and is not a Kleptowriter project.`);
+  console.log("Please run kleptowriter in an empty directory or inside an existing story directory.");
+  process.exit(1);
+}
 
-  if (idx >= 0 && idx < projects.length) {
-    return projects[idx]!;
+// ── Theme directory setup for compiled binary ────────────────────────────────
+
+let _themeDir: string | null = null;
+
+export function ensureThemeDir(): string {
+  const dir = mkdtempSync(join(tmpdir(), "kleptowriter-themes-"));
+  const themeDir = join(dir, "theme");
+  mkdirSync(themeDir, { recursive: true });
+
+  writeFileSync(join(themeDir, "dark.json"), JSON.stringify(darkTheme, null, 2), "utf-8");
+  writeFileSync(join(themeDir, "light.json"), JSON.stringify(lightTheme, null, 2), "utf-8");
+
+  process.env.PI_PACKAGE_DIR = dir;
+  _themeDir = dir;
+  return dir;
+}
+
+export function cleanupThemeDir(): void {
+  if (_themeDir) {
+    rmSync(_themeDir, { recursive: true, force: true });
+    _themeDir = null;
   }
+}
 
-  const name = await promptLine("Project name:");
-  const path = await promptLine("Project path:");
-  return createProject(name, path);
+function registerCleanupHandlers(): void {
+  const cleanup = () => cleanupThemeDir();
+  process.on("SIGINT", cleanup);
+  process.on("SIGTERM", cleanup);
+  process.on("exit", cleanup);
 }
 
 // ── Main entry point ─────────────────────────────────────────────────────────
 
 export async function main() {
-  const project = await selectProject();
-  await touchProject(project.name);
+  const themeDir = ensureThemeDir();
+  registerCleanupHandlers();
+
+  const project = await detectOrInitProject();
+  if (!project) return;
 
   const welcome = createWelcomeComponent();
   const session = await createTuiSession({
@@ -67,6 +109,7 @@ export async function main() {
   });
 
   process.on("SIGINT", () => {
+    cleanupThemeDir();
     session.stop();
     process.exit(0);
   });

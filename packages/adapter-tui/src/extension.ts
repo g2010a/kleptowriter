@@ -40,9 +40,9 @@ const commands: CommandDef[] = [
   },
   {
     name: "/project",
-    description: "Show current project info; pass a name to attempt switching projects",
+    description: "Show current project info (name, path, word count)",
     guidance:
-      "The user wants to see the current project info. Display the project name, directory, word count totals, and status. If the user provided a project name as an argument, attempt to switch to that project.",
+      "The user wants to see the current project info. Display the project name, directory, word count totals, and scene count. Project switching is done by exiting and running kleptowriter from a different directory.",
   },
 ];
 
