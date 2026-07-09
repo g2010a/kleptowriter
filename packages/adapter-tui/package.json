@@ -8,7 +8,13 @@
   "scripts": {
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "start": "bun run src/cli.ts"
+    "start": "bun run src/cli.ts",
+    "prebuild:binary": "tsc --noEmit",
+    "build:binary": "bun build --compile --target=bun-linux-x64-baseline src/cli.ts --outfile dist/kleptowriter-linux-x64",
+    "build:binary:darwin-arm64": "bun build --compile --target=bun-darwin-arm64 src/cli.ts --outfile dist/kleptowriter-darwin-arm64",
+    "build:binary:darwin-x64": "bun build --compile --target=bun-darwin-x64 src/cli.ts --outfile dist/kleptowriter-darwin-x64",
+    "build:binary:linux-arm64": "bun build --compile --target=bun-linux-arm64 src/cli.ts --outfile dist/kleptowriter-linux-arm64",
+    "build:binary:all": "bun run build:binary && bun run build:binary:darwin-arm64 || true && bun run build:binary:darwin-x64 || true && bun run build:binary:linux-arm64 || true"
   },
   "dependencies": {
     "@kleptowriter/kleptowriter-core": "workspace:*",
