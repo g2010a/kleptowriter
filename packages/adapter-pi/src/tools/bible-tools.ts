@@ -14,6 +14,8 @@ import { QueryBibleParamsSchema, UpdateBibleParamsSchema } from "./types.js";
 import type { QueryBibleParams, UpdateBibleParams } from "./types.js";
 import { saveBible } from "../bible/persistence.js";
 
+const DEFAULT_SAVE_PATH = "./story/story-metadata.json";
+
 // ── Module-level bible holder ───────────────────────────────────────────────
 
 let _bible: InMemoryStoryBible = new InMemoryStoryBible();
@@ -172,9 +174,8 @@ export const updateBibleTool = defineTool({
       }
 
       // Auto-save if path is set (saveBible increments version)
-      if (_biblePath) {
-        await saveBible(_bible, _biblePath);
-      }
+      const savePath = _biblePath ?? DEFAULT_SAVE_PATH;
+      await saveBible(_bible, savePath);
 
       const version = _bible.version;
       const summary = `Updated ${type}/${id} — version ${version}`;

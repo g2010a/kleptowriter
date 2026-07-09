@@ -53,7 +53,7 @@ function writeScene(dir: string, sceneId: string, title: string, prose: string) 
 
 async function writeBible(dir: string, bible: InMemoryStoryBible) {
   mkdirSync(join(dir, "story"), { recursive: true });
-  await saveBible(bible, join(dir, "story", "bible.json"));
+  await saveBible(bible, join(dir, "story", "story-metadata.json"));
 }
 
 // ── Empty workspace ─────────────────────────────────────────────────────────

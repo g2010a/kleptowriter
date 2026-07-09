@@ -1,7 +1,7 @@
 /**
  * Context tool — real implementation of load_context.
  *
- * Loads bible from ./story/bible.json via loadBible() and the last N scenes
+ * Loads bible from ./story/story-metadata.json via loadBible() and the last N scenes
  * from ./story/scenes/ (default N=5). Returns bible + recentScenes for
  * LLM context injection.
  *
@@ -11,13 +11,14 @@
 import { defineTool } from "@earendil-works/pi-coding-agent";
 import { InMemoryStoryBible, readScene, SceneStatus } from "@kleptowriter/kleptowriter-core";
 import { loadBible } from "../bible/persistence.js";
+import { setBible } from "./bible-tools.js";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { LoadContextParamsSchema } from "./types.js";
 import type { LoadContextParams, LoadContextResult, LoadContextRecentScene } from "./types.js";
 
 const DEFAULT_STORY_DIR = "./story";
-const DEFAULT_BIBLE_PATH = "./story/bible.json";
+const DEFAULT_BIBLE_PATH = "./story/story-metadata.json";
 const DEFAULT_SCENES_DIR = "./story/scenes";
 const DEFAULT_SCENE_COUNT = 5;
 
@@ -44,6 +45,7 @@ export const loadContextTool = defineTool({
     const sceneCount = params.sceneCount ?? DEFAULT_SCENE_COUNT;
 
     const bible = await loadBible(DEFAULT_BIBLE_PATH);
+    setBible(bible, DEFAULT_BIBLE_PATH);
     const bibleJson = serializeBibleForContext(bible);
 
     // Load recent scenes — sort by filename (lexicographic = deterministic)

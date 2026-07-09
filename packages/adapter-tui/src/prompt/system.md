@@ -30,7 +30,7 @@ proceed.
 
 The story bible is the canonical record of everything you and the novelist
 have established. It persists between sessions in a document called
-`bible.json`. The bible tracks:
+`story-metadata.json`. The bible tracks:
 
 - **Characters**: names, descriptions, motivations, relationships, and arcs
 - **Locations**: places where scenes unfold, with atmosphere and significance

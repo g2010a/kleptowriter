@@ -23,7 +23,7 @@ function tmpDir(): Promise<string> {
 
 test("roundtrip save/load preserves all bible state", async () => {
   const dir = await tmpDir();
-  const path = join(dir, "bible.json");
+  const path = join(dir, "story-metadata.json");
 
   const original = new InMemoryStoryBible();
   original.characters.set("alice", {
@@ -106,7 +106,7 @@ test("query_bible returns all characters", async () => {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "bible.json"));
+  setBible(bible, join(dir, "story-metadata.json"));
 
   const result = await queryBibleTool.execute!("call-1", { type: "characters" }, undefined, undefined, undefined as any);
   const details = result.details as { results: unknown[]; count: number };
@@ -121,7 +121,7 @@ test("query_bible filters by name", async () => {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "bible.json"));
+  setBible(bible, join(dir, "story-metadata.json"));
 
   const result = await queryBibleTool.execute!("call-2", { type: "characters", filter: "ali" }, undefined, undefined, undefined as any);
   const details = result.details as { count: number };
@@ -135,7 +135,7 @@ test("query_bible returns empty for no match", async () => {
     id: "alice", name: "Alice", aliases: [], tags: [], traits: {},
     relationships: new Map(), knowledge: new Set(), arcBeatIds: [],
   });
-  setBible(bible, join(dir, "bible.json"));
+  setBible(bible, join(dir, "story-metadata.json"));
 
   const result = await queryBibleTool.execute!("call-3", { type: "characters", filter: "zzz" }, undefined, undefined, undefined as any);
   const details = result.details as { count: number };
@@ -146,7 +146,7 @@ test("query_bible returns empty for no match", async () => {
 
 test("update_bible stores entity and persists version", async () => {
   const dir = await tmpDir();
-  const path = join(dir, "bible.json");
+  const path = join(dir, "story-metadata.json");
   const bible = new InMemoryStoryBible();
   setBible(bible, path);
 

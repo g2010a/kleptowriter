@@ -91,7 +91,7 @@ export async function readProjectManifest(path: string): Promise<{ name: string 
  * Initialise a new project at `path`:
  *  - .kleptowriter.json  — manifest
  *  - story/scenes/       — scene directory
- *  - story/bible.json    — empty bible
+ *  - story/story-metadata.json    — empty bible with project marker
  *  - story/.pi-session/  — session persistence
  */
 export async function initProject(path: string, name: string): Promise<void> {
@@ -115,10 +115,9 @@ export async function initProject(path: string, name: string): Promise<void> {
   await mkdir(join(root, "story", "scenes"), { recursive: true });
   await mkdir(join(root, "story", ".pi-session"), { recursive: true });
 
-  // Write empty bible
   await writeFile(
-    join(root, "story", "bible.json"),
-    JSON.stringify({ characters: [], locations: [], plotThreads: [] }, null, 2),
+    join(root, "story", "story-metadata.json"),
+    JSON.stringify({ type: "kleptowriter-project", version: 1, characters: [], locations: [], plotThreads: [] }, null, 2),
     "utf-8",
   );
 }

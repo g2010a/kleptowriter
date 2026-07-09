@@ -14,6 +14,8 @@ import { QueryBibleParamsSchema, UpdateBibleParamsSchema } from "./types.js";
 import type { QueryBibleParams, UpdateBibleParams } from "./types.js";
 import { saveBible } from "../bible/persistence.js";
 
+const DEFAULT_SAVE_PATH = "./story/story-metadata.json";
+
 // ── Module-level bible holder ───────────────────────────────────────────────
 
 let _bible: InMemoryStoryBible = new InMemoryStoryBible();
