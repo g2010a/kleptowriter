@@ -40,7 +40,7 @@ mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionServices: mockCreateAgentSessionServices,
   createAgentSessionFromServices: mockCreateAgentSessionFromServices,
   createAgentSessionRuntime: mockCreateAgentSessionRuntime,
-  SessionManager: { inMemory: mockSessionManagerInMemory },
+  SessionManager: { inMemory: mockSessionManagerInMemory, create: mock(() => ({})), },
   InteractiveMode: mockInteractiveModeConstructor,
 }));
 

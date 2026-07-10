@@ -1,5 +1,5 @@
 /**
- * Tool registry — aggregates all 9 Kleptowriter custom tool definitions.
+ * Tool registry — aggregates all 11 Kleptowriter custom tool definitions.
  *
  * Re-exports real implementations from their respective modules.
  * Used by session.ts to pass the full tool set to createAgentSession().

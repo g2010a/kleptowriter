@@ -8,3 +8,6 @@ dist/
 .omo/run-continuation/
 .venv/
 tmp/
+
+# Pi SDK session files (conversation history)
+story/.pi-session/

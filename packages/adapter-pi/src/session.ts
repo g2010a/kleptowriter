@@ -2,7 +2,6 @@ import {
   createAgentSessionServices,
   createAgentSessionFromServices,
   SessionManager,
-  DefaultResourceLoader,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, AgentSessionEventListener } from "@earendil-works/pi-coding-agent";
 import { resolve } from "node:path";
@@ -28,6 +27,7 @@ export async function createKleptowriterSession(
   options: KleptowriterSessionOptions = {},
 ): Promise<KleptowriterSession> {
   const cwd = options.cwd ?? process.cwd();
+  const sessionDir = options.sessionDir ?? resolve(cwd, "story", ".pi-session");
 
   const services = await createAgentSessionServices({
     cwd,
@@ -42,7 +42,7 @@ export async function createKleptowriterSession(
     },
   });
 
-  const sessionManager = SessionManager.inMemory();
+  const sessionManager = SessionManager.create(cwd, sessionDir);
 
   const { session } = await createAgentSessionFromServices({
     services,

@@ -36,7 +36,8 @@ export async function createTuiSession(
     },
   });
 
-  const sessionManager = SessionManager.inMemory();
+  const sessionDir = join(cwd, "story", ".pi-session");
+  const sessionManager = SessionManager.create(cwd, sessionDir);
 
 const { session, extensionsResult, modelFallbackMessage } =
       await createAgentSessionFromServices({

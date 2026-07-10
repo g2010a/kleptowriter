@@ -64,8 +64,7 @@ const mockSessionManagerInMemory = mock(() => ({}));
 mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionServices: mockCreateAgentSessionServices,
   createAgentSessionFromServices: mockCreateAgentSessionFromServices,
-  SessionManager: { inMemory: mockSessionManagerInMemory },
-  DefaultResourceLoader: mock(() => ({})),
+  SessionManager: { inMemory: mockSessionManagerInMemory, create: mock(() => ({})) },
 }));
 // ── End Pi SDK mock ───────────────────────────────────────────────────────────
 
