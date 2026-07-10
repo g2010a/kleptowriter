@@ -16,6 +16,7 @@ export interface TuiSessionOptions {
   extensionFactories?: ExtensionFactory[];
   onEvent?: AgentSessionEventListener;
   systemPromptOverride?: () => string;
+  additionalThemePaths?: string[];
 }
 
 export async function createTuiSession(
@@ -31,6 +32,7 @@ export async function createTuiSession(
       noSkills: true,
       noPromptTemplates: true,
       noThemes: true,
+      additionalThemePaths: options.additionalThemePaths,
       noContextFiles: true,
       systemPromptOverride: options.systemPromptOverride ?? (() => systemPrompt),
     },
@@ -58,6 +60,7 @@ const { session, extensionsResult, modelFallbackMessage } =
           noSkills: true,
           noPromptTemplates: true,
           noThemes: true,
+          additionalThemePaths: options.additionalThemePaths,
           noContextFiles: true,
           systemPromptOverride: options.systemPromptOverride ?? (() => systemPrompt),
         },

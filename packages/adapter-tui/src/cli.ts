@@ -66,17 +66,18 @@ export async function detectOrInitProject(): Promise<{ name: string; path: strin
 
 let _themeDir: string | null = null;
 
-export function ensureThemeDir(): string {
+export function ensureThemeDir(): string[] {
   const dir = mkdtempSync(join(tmpdir(), "kleptowriter-themes-"));
   const themeDir = join(dir, "theme");
   mkdirSync(themeDir, { recursive: true });
 
-  writeFileSync(join(themeDir, "dark.json"), JSON.stringify(darkTheme, null, 2), "utf-8");
-  writeFileSync(join(themeDir, "light.json"), JSON.stringify(lightTheme, null, 2), "utf-8");
+  const darkPath = join(themeDir, "dark.json");
+  const lightPath = join(themeDir, "light.json");
+  writeFileSync(darkPath, JSON.stringify(darkTheme, null, 2), "utf-8");
+  writeFileSync(lightPath, JSON.stringify(lightTheme, null, 2), "utf-8");
 
-  process.env.PI_PACKAGE_DIR = dir;
   _themeDir = dir;
-  return dir;
+  return [darkPath, lightPath];
 }
 
 export function cleanupThemeDir(): void {
@@ -96,7 +97,7 @@ function registerCleanupHandlers(): void {
 // ── Main entry point ─────────────────────────────────────────────────────────
 
 export async function main() {
-  const themeDir = ensureThemeDir();
+  const themePaths = ensureThemeDir();
   registerCleanupHandlers();
 
   const project = await detectOrInitProject();
@@ -106,6 +107,7 @@ export async function main() {
   const session = await createTuiSession({
     cwd: project.path,
     extensionFactories: [createKleptowriterExtension(welcome)],
+    additionalThemePaths: themePaths,
   });
 
   process.on("SIGINT", () => {
