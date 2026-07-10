@@ -85,8 +85,8 @@ export const suggestNextBeatTool = defineTool({
   label: "Suggest Next Beat",
   description:
     "Suggests the next narrative beat based on existing scenes and a " +
-    "Markov model trained on a narrative template. Returns candidate " +
-    "beats with probabilities, the current beat, and the template name.",
+    "Markov model trained on a narrative template. Returns the sampled " +
+    "beat, the current beat, and the template name.",
   parameters: SuggestNextBeatParamsSchema,
   execute: async (_toolCallId, params: SuggestNextBeatParams) => {
     const templateName = params.template ?? DEFAULT_TEMPLATE;
@@ -122,15 +122,11 @@ export const suggestNextBeatTool = defineTool({
     } else {
       const { currentBeat: cb, history } = resolveCurrentBeat(scenes, beatOrder);
       currentBeat = cb;
-      const candidates = engine.predictNext({ currentBeat, history });
+      const sampled = engine.sample(currentBeat, history);
 
-      suggestions = candidates
-        .filter((c) => c.probability > 0)
-        .map((c) => ({
-          beat: c.beat,
-          probability: c.probability,
-          description: descriptions.get(c.beat) ?? "",
-        }));
+      suggestions = sampled
+        ? [{ beat: sampled, probability: 1, description: descriptions.get(sampled) ?? "" }]
+        : [];
     }
 
     const result: SuggestNextBeatResult = {

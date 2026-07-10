@@ -3,6 +3,7 @@ import { epistolary } from "./epistolary.js";
 import { fichteanCurve } from "./fichtean-curve.js";
 import { frameNarrative } from "./frame-narrative.js";
 import { freytagsPyramid } from "./freytags-pyramid.js";
+import { heroinesJourney } from "./heroines-journey.js";
 import { herosJourney } from "./heros-journey.js";
 import { inMediasRes } from "./in-medias-res.js";
 import { kishotenketsu } from "./kishotenketsu.js";
@@ -16,6 +17,7 @@ export type { NarrativeBeat, NarrativeBeatType, NarrativeStructure, TemplateCons
 
 export const builtInTemplates: Record<string, NarrativeStructure> = {
   [herosJourney.name]: herosJourney,
+  [heroinesJourney.name]: heroinesJourney,
   [freytagsPyramid.name]: freytagsPyramid,
   [threeActStructure.name]: threeActStructure,
   [kishotenketsu.name]: kishotenketsu,
@@ -48,6 +50,7 @@ export {
   fichteanCurve,
   frameNarrative,
   freytagsPyramid,
+  heroinesJourney,
   herosJourney,
   inMediasRes,
   kishotenketsu,

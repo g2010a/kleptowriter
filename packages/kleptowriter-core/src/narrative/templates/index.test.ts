@@ -4,8 +4,8 @@ import { builtInTemplates, templateRegistry } from "./index.js";
 test("built-in narrative templates are complete and internally linked", () => {
   const templates = Object.values(builtInTemplates);
 
-  expect(templates).toHaveLength(12);
-  expect(templateRegistry.listStructures()).toHaveLength(12);
+  expect(templates).toHaveLength(13);
+  expect(templateRegistry.listStructures()).toHaveLength(13);
   expect(templateRegistry.getStructure("Hero's Journey")?.beats).toHaveLength(17);
 
   for (const template of templates) {
