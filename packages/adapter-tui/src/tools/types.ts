@@ -206,6 +206,12 @@ export const SuggestNextBeatParamsSchema = Type.Object({
   template: Type.Optional(
     Type.String({ description: "Narrative template name (default: Three-Act Structure)" }),
   ),
+  maxBeats: Type.Optional(
+    Type.Integer({ description: "Max beats to generate in loop mode (default: 20)", minimum: 2, maximum: 200 }),
+  ),
+  maxSameBeatRepeats: Type.Optional(
+    Type.Integer({ description: "Stop after N consecutive same-beat types (default: 3)", minimum: 2, maximum: 20 }),
+  ),
 });
 export type SuggestNextBeatParams = Static<typeof SuggestNextBeatParamsSchema>;
 
@@ -215,8 +221,48 @@ export interface SuggestNextBeatSuggestion {
   description: string;
 }
 
+export type SuggestNextBeatStopReason = "max_beats_reached" | "max_repeats_reached" | "natural_completion";
+
 export interface SuggestNextBeatResult {
   suggestions: SuggestNextBeatSuggestion[];
   currentBeat: string;
   template: string;
+  stoppedReason?: SuggestNextBeatStopReason;
+}
+
+// ── stylometry ────────────────────────────────────────────────────────────────
+// Stylometry profile schema for story bible stylometric profiling.
+// All 12 fields are optional strings for flexibility.
+
+export const StylometryProfileSchema = Type.Object({
+  narrativeVoice: Type.Optional(Type.String({ description: "Narrative voice (e.g., 'omniscient', 'first-person', 'close third')" })),
+  povStyle: Type.Optional(Type.String({ description: "POV style (e.g., 'single viewpoint', 'multiple viewpoint', 'unreliable')" })),
+  tensePreference: Type.Optional(Type.String({ description: "Tense preference (e.g., 'past', 'present')" })),
+  vocabularyRegister: Type.Optional(Type.String({ description: "Vocabulary register (e.g., 'formal', 'colloquial', 'literary', 'vernacular')" })),
+  sentenceLengthTarget: Type.Optional(Type.String({ description: "Sentence length target (e.g., 'short', 'varied', 'long flowing')" })),
+  proseStyleNotes: Type.Optional(Type.String({ description: "Free-text prose style notes" })),
+  dialogueStyleNotes: Type.Optional(Type.String({ description: "Free-text dialogue style notes" })),
+  pacingPreference: Type.Optional(Type.String({ description: "Pacing preference (e.g., 'fast', 'measured', 'slow burn')" })),
+  paragraphStructure: Type.Optional(Type.String({ description: "Paragraph structure (e.g., 'short paragraphs', 'mixed', 'dense blocks')" })),
+  rhetoricalDevices: Type.Optional(Type.String({ description: "Rhetorical devices used (e.g., 'metaphor', 'imagery', 'minimalist')" })),
+  commaStyle: Type.Optional(Type.String({ description: "Comma style preference (e.g., 'oxford comma', 'minimal', 'abundant')" })),
+  dialogueTagPreference: Type.Optional(Type.String({ description: "Dialogue tag preference (e.g., 'said-only', 'varied tags', 'minimal tags')" })),
+});
+export type StylometryProfile = Static<typeof StylometryProfileSchema>;
+
+// ── web_fetch ────────────────────────────────────────────────────────────────
+// Fetches a URL, extracts article content via @mozilla/readability, and
+// converts to Markdown via turndown + linkedom.
+
+export const WebFetchParamsSchema = Type.Object({
+  url: Type.String({ description: "URL to fetch and convert to markdown" }),
+});
+export type WebFetchParams = Static<typeof WebFetchParamsSchema>;
+
+export interface WebFetchResult {
+  success: boolean;
+  url?: string;
+  title?: string;
+  content?: string;
+  error?: string;
 }

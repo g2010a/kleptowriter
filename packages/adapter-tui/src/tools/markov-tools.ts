@@ -6,7 +6,7 @@ import type { NarrativeStructure } from "@kleptowriter/kleptowriter-core/narrati
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { SuggestNextBeatParamsSchema } from "./types.js";
-import type { SuggestNextBeatParams, SuggestNextBeatResult, SuggestNextBeatSuggestion } from "./types.js";
+import type { SuggestNextBeatParams, SuggestNextBeatResult, SuggestNextBeatSuggestion, SuggestNextBeatStopReason } from "./types.js";
 
 const DEFAULT_SCENES_DIR = "./story/scenes";
 const DEFAULT_TEMPLATE = "Three-Act Structure";
@@ -108,32 +108,116 @@ export const suggestNextBeatTool = defineTool({
     const descriptions = getBeatDescriptions(structure);
     const beatOrder = new Map(structure.beats.map((b, i) => [b.id, i]));
 
+    const loopMode = params.maxBeats !== undefined || params.maxSameBeatRepeats !== undefined;
+    const maxBeats = params.maxBeats ?? 20;
+    const maxSameBeatRepeats = params.maxSameBeatRepeats ?? 3;
+
     let suggestions: SuggestNextBeatSuggestion[];
     let currentBeat: string;
+    let stoppedReason: SuggestNextBeatStopReason | undefined;
 
     if (scenes.length === 0) {
       const firstBeat = structure.beats[0]!;
       currentBeat = "";
-      suggestions = [{
-        beat: firstBeat.id,
-        probability: 1,
-        description: firstBeat.description,
-      }];
+
+      if (!loopMode) {
+        suggestions = [{
+          beat: firstBeat.id,
+          probability: 1,
+          description: firstBeat.description,
+        }];
+      } else {
+        suggestions = [];
+        let consecutiveCount = 0;
+        let lastBeatType = "";
+        let currentBeatId = firstBeat.id;
+
+        for (let i = 0; i < maxBeats; i++) {
+          const desc = descriptions.get(currentBeatId) ?? "";
+          suggestions.push({ beat: currentBeatId, probability: 1, description: desc });
+
+          if (currentBeatId === lastBeatType) {
+            consecutiveCount++;
+          } else {
+            consecutiveCount = 1;
+            lastBeatType = currentBeatId;
+          }
+
+          if (consecutiveCount >= maxSameBeatRepeats) {
+            stoppedReason = "max_repeats_reached";
+            break;
+          }
+
+          if (i < maxBeats - 1) {
+            const sampled = engine.sample(currentBeatId, []);
+            if (!sampled) {
+              stoppedReason = "natural_completion";
+              break;
+            }
+            currentBeatId = sampled;
+          }
+        }
+
+        if (!stoppedReason) {
+          stoppedReason = "max_beats_reached";
+        }
+      }
     } else {
       const { currentBeat: cb, history } = resolveCurrentBeat(scenes, beatOrder);
       currentBeat = cb;
-      const sampled = engine.sample(currentBeat, history);
 
-      suggestions = sampled
-        ? [{ beat: sampled, probability: 1, description: descriptions.get(sampled) ?? "" }]
-        : [];
+      if (!loopMode) {
+        const sampled = engine.sample(currentBeat, history);
+        suggestions = sampled
+          ? [{ beat: sampled, probability: 1, description: descriptions.get(sampled) ?? "" }]
+          : [];
+      } else {
+        suggestions = [];
+        let consecutiveCount = 0;
+        let lastBeatType = "";
+        let currentBeatId = currentBeat;
+        const hist = [...history];
+
+        for (let i = 0; i < maxBeats; i++) {
+          const sampled = engine.sample(currentBeatId, hist);
+          if (!sampled) {
+            stoppedReason = "natural_completion";
+            break;
+          }
+
+          const desc = descriptions.get(sampled) ?? "";
+          suggestions.push({ beat: sampled, probability: 1, description: desc });
+
+          if (sampled === lastBeatType) {
+            consecutiveCount++;
+          } else {
+            consecutiveCount = 1;
+            lastBeatType = sampled;
+          }
+
+          if (consecutiveCount >= maxSameBeatRepeats) {
+            stoppedReason = "max_repeats_reached";
+            break;
+          }
+
+          currentBeatId = sampled;
+          hist.push(sampled);
+        }
+
+        if (!stoppedReason) {
+          stoppedReason = "max_beats_reached";
+        }
+      }
     }
 
     const result: SuggestNextBeatResult = {
       suggestions,
-      currentBeat,
+      currentBeat: scenes.length === 0 ? "" : currentBeat!,
       template: templateName,
     };
+    if (stoppedReason !== undefined) {
+      result.stoppedReason = stoppedReason;
+    }
     return okResult(result);
   },
 });

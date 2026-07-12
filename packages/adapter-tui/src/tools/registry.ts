@@ -12,6 +12,7 @@ import { loadContextTool } from "./context-tools.js";
 import { suggestNextBeatTool } from "./markov-tools.js";
 import { deduceChaptersTool } from "./chapter-tools.js";
 import { webSearchTool } from "./web-search-tools.js";
+import { webFetchTool } from "./web-fetch-tools.js";
 import { listNarrativeTemplatesTool } from "./narrative-tools.js";
 
 export {
@@ -26,13 +27,14 @@ export {
   deduceChaptersTool,
   listNarrativeTemplatesTool,
   webSearchTool,
+  webFetchTool,
 };
 
 export { setMetadata, getMetadata, getMetadataPath } from "./metadata-tools.js";
 export { getSceneStore } from "./scene-tools.js";
 
 /**
- * All 11 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
+ * All 12 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
  */
 export const allKleptowriterTools = [
   writeSceneTool,
@@ -46,4 +48,5 @@ export const allKleptowriterTools = [
   deduceChaptersTool,
   listNarrativeTemplatesTool,
   webSearchTool,
+  webFetchTool,
 ];

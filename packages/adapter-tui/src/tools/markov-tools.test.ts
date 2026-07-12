@@ -7,8 +7,10 @@ import type { SuggestNextBeatParams } from "./types.js";
 
 const CLEANUP_DIRS: string[] = [];
 const originalCwd = process.cwd();
+const originalRandom = Math.random;
 
 afterEach(async () => {
+  Math.random = originalRandom;
   process.chdir(originalCwd);
   for (const dir of CLEANUP_DIRS) {
     try { await rm(dir, { recursive: true }); } catch { /* ignore */ }
@@ -180,4 +182,72 @@ test("suggest_next_beat handles missing scenes directory gracefully", async () =
 
   expect(details.suggestions).toHaveLength(1);
   expect(details.suggestions[0].beat).toBe("setup");
+});
+
+// ── Backwards compat: no loop params → single beat, no stoppedReason ────────
+
+test("no loop params returns single suggestion with no stoppedReason", async () => {
+  const dir = await tmpDir();
+  process.chdir(dir);
+
+  writeScene(dir, "setup-01-intro", "Once upon a time.");
+
+  const result = await callTool();
+  const details = result.details as any;
+
+  expect(details.suggestions).toHaveLength(1);
+  expect(details.stoppedReason).toBeUndefined();
+});
+
+// ── Loop: max_beats_reached ──────────────────────────────────────────────────
+
+test("loop stops at maxBeats with max_beats_reached", async () => {
+  const dir = await tmpDir();
+  process.chdir(dir);
+
+  const result = await callTool({ maxBeats: 5, maxSameBeatRepeats: 100 });
+  const details = result.details as any;
+
+  expect(details.suggestions).toHaveLength(5);
+  expect(details.stoppedReason).toBe("max_beats_reached");
+  for (const s of details.suggestions) {
+    expect(typeof s.beat).toBe("string");
+    expect(s.beat.length).toBeGreaterThan(0);
+  }
+});
+
+// ── Loop: max_repeats_reached (confrontation self-loop at roll > 0.7) ────────
+
+test("loop stops at maxSameBeatRepeats with max_repeats_reached", async () => {
+  const dir = await tmpDir();
+  process.chdir(dir);
+
+  Math.random = () => 0.8;
+
+  const result = await callTool({ maxBeats: 200, maxSameBeatRepeats: 3 });
+  const details = result.details as any;
+
+  expect(details.stoppedReason).toBe("max_repeats_reached");
+
+  const beats = details.suggestions.map((s: any) => s.beat);
+  const lastThree = beats.slice(-3);
+  expect(lastThree[0]).toBe(lastThree[1]);
+  expect(lastThree[1]).toBe(lastThree[2]);
+});
+
+// ── Loop: from existing scenes ───────────────────────────────────────────────
+
+test("loop from existing scenes generates chain starting after current beat", async () => {
+  const dir = await tmpDir();
+  process.chdir(dir);
+
+  writeScene(dir, "setup-01-intro", "Once upon a time.");
+
+  const result = await callTool({ maxBeats: 3, maxSameBeatRepeats: 100 });
+  const details = result.details as any;
+
+  expect(details.currentBeat).toBe("setup");
+  expect(details.suggestions).toHaveLength(3);
+  expect(details.stoppedReason).toBe("max_beats_reached");
+  expect(details.suggestions[0].beat).toBe("inciting-incident");
 });

@@ -17,12 +17,16 @@
     "build:binary:all": "bun run build:binary && bun run build:binary:darwin-arm64 || true && bun run build:binary:darwin-x64 || true && bun run build:binary:linux-arm64 || true"
   },
   "dependencies": {
-    "@kleptowriter/kleptowriter-core": "workspace:*",
     "@earendil-works/pi-coding-agent": "0.80.3",
-    "@sinclair/typebox": "0.34.49"
+    "@kleptowriter/kleptowriter-core": "workspace:*",
+    "@mozilla/readability": "0.6.0",
+    "@sinclair/typebox": "0.34.49",
+    "linkedom": "0.18.13",
+    "turndown": "7.2.4"
   },
   "devDependencies": {
     "@types/bun": "1.3.14",
+    "@types/turndown": "5.0.6",
     "typescript": "^5.9.2"
   }
 }
