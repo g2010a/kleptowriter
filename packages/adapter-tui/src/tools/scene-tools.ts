@@ -14,6 +14,8 @@ import type { SceneDocument } from "@kleptowriter/kleptowriter-core";
 import { SceneDatastore } from "@kleptowriter/kleptowriter-core/eval/datastore.js";
 import { writeFile, readFile, readdir, rename, mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import { loadMetadata } from "../metadata/persistence.js";
+import type { StylometryProfile } from "./types.js";
 import {
   WriteSceneParamsSchema,
   ReadSceneParamsSchema,
@@ -32,6 +34,37 @@ import type {
 // ── Constants ───────────────────────────────────────────────────────────────
 
 const DEFAULT_SCENES_DIR = "./story/scenes";
+const DEFAULT_BIBLE_PATH = "./story/story-metadata.json";
+
+// ── Stylometry check ────────────────────────────────────────────────────────
+
+const STYLOMETRY_FIELDS: (keyof StylometryProfile)[] = [
+  "narrativeVoice",
+  "povStyle",
+  "tensePreference",
+  "vocabularyRegister",
+  "sentenceLengthTarget",
+  "proseStyleNotes",
+  "dialogueStyleNotes",
+  "pacingPreference",
+  "paragraphStructure",
+  "rhetoricalDevices",
+  "commaStyle",
+  "dialogueTagPreference",
+];
+
+function isStylometryEmpty(stylometry: StylometryProfile | undefined): boolean {
+  if (!stylometry) return true;
+  return STYLOMETRY_FIELDS.every((field) => !stylometry[field]);
+}
+
+function stylometryErrorMessage(): string {
+  const fields = STYLOMETRY_FIELDS.join(", ");
+  return (
+    `Stylometry profile is empty. The story bible requires a stylometry section before writing scenes. ` +
+    `Please provide writing style preferences for: ${fields}`
+  );
+}
 
 // {beat-slug}-{sequence:02d}-{slug} — e.g. setup-01-opening, rising-action-03-first-attempt
 const SCENE_ID_RE = /^[a-z]+(-[a-z]+)*-\d{2}-[a-z]+(-[a-z]+)*$/;
@@ -95,6 +128,13 @@ export const writeSceneTool = defineTool({
     const validationError = validateSceneId(params.sceneId);
     if (validationError) {
       const result: WriteSceneResult = { ok: false, path: "", error: validationError };
+      return okResult(result);
+    }
+
+    // Check stylometry profile in story bible
+    const bible = await loadMetadata(DEFAULT_BIBLE_PATH);
+    if (isStylometryEmpty(bible.stylometry)) {
+      const result: WriteSceneResult = { ok: false, path: "", error: stylometryErrorMessage() };
       return okResult(result);
     }
 

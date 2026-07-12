@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { mkdirSync, rmSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { writeSceneTool, readSceneTool, listScenesTool, getSceneStore } from "./scene-tools.js";
 import { SceneStatus } from "@kleptowriter/kleptowriter-core";
@@ -37,11 +37,44 @@ function makeParams(id: string, title: string, prose: string): WriteSceneParams 
   };
 }
 
+function writeBible(stylometry?: Record<string, string>) {
+  const bibleDir = join(TMP, "story");
+  mkdirSync(bibleDir, { recursive: true });
+  const bible = {
+    version: 1,
+    characters: [],
+    locations: [],
+    items: [],
+    arcs: [],
+    plotThreads: [],
+    dramaticQuestions: [],
+    chronology: [],
+    knowledgeState: { factsByCharacter: [] },
+    thematicProgression: { themes: [] },
+    stylometry,
+  };
+  writeFileSync(join(bibleDir, "story-metadata.json"), JSON.stringify(bible, null, 2));
+}
+
 // ── Roundtrip ───────────────────────────────────────────────────────────────
 
 test("write_scene then read_scene roundtrips all fields", async () => {
   setup();
   try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
     const params: WriteSceneParams = {
       sceneId: "setup-01-opening",
       title: "The Opening",
@@ -86,6 +119,20 @@ test("write_scene then read_scene roundtrips all fields", async () => {
 test("write_scene preserves status on overwrite", async () => {
   setup();
   try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
     const base = makeParams("rising-action-02-discovery", "Discovery", "She found the key.");
     await writeSceneTool.execute("c1", base, undefined, undefined, {} as any);
 
@@ -106,6 +153,20 @@ test("write_scene preserves status on overwrite", async () => {
 test("list_scenes returns scenes sorted by ID", async () => {
   setup();
   try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
     await writeSceneTool.execute("a", makeParams("resolution-06-end", "The End", "Prose for The End."), undefined, undefined, {} as any);
     await writeSceneTool.execute("b", makeParams("setup-01-start", "The Start", "Prose for The Start."), undefined, undefined, {} as any);
     await writeSceneTool.execute("c", makeParams("climax-04-battle", "The Battle", "Prose for The Battle."), undefined, undefined, {} as any);
@@ -183,6 +244,20 @@ test("read_scene returns error for non-existent scene", async () => {
 test("write_scene updates SceneDatastore with written document", async () => {
   setup();
   try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
     const store = getSceneStore();
     const params = makeParams("setup-01-prologue", "Prologue", "Once upon a time.");
     await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
@@ -193,6 +268,65 @@ test("write_scene updates SceneDatastore with written document", async () => {
     expect(stored!.title).toBe("Prologue");
     expect(stored!.prose).toBe("Once upon a time.");
     expect(stored!.status).toBe(SceneStatus.Outline);
+  } finally {
+    teardown();
+  }
+});
+
+// ── Stylometry check ──────────────────────────────────────────────────────────
+
+test("write_scene returns error when bible has no stylometry", async () => {
+  setup();
+  try {
+    writeBible(); // empty bible, no stylometry
+    const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
+    const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(false);
+    expect(details.error).toContain("Stylometry profile is empty");
+    expect(details.error).toContain("narrativeVoice");
+    expect(details.error).toContain("dialogueTagPreference");
+  } finally {
+    teardown();
+  }
+});
+
+test("write_scene returns error when bible has empty stylometry fields", async () => {
+  setup();
+  try {
+    writeBible({ narrativeVoice: "", povStyle: "" }); // all fields empty
+    const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
+    const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(false);
+    expect(details.error).toContain("Stylometry profile is empty");
+  } finally {
+    teardown();
+  }
+});
+
+test("write_scene proceeds normally when stylometry is populated", async () => {
+  setup();
+  try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
+    const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
+    const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(true);
+    expect(details.path).toBe("story/scenes/setup-01-opening.md");
   } finally {
     teardown();
   }

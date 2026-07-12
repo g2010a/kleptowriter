@@ -14,6 +14,8 @@ import type { SceneDocument } from "@kleptowriter/kleptowriter-core";
 import { SceneDatastore } from "@kleptowriter/kleptowriter-core/eval/datastore.js";
 import { writeFile, readFile, readdir, rename, mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import { loadBible } from "../bible/persistence.js";
+import type { StylometryProfile } from "./types.js";
 import {
   WriteSceneParamsSchema,
   ReadSceneParamsSchema,
@@ -80,6 +82,28 @@ function okResult(result: object) {
   };
 }
 
+// ── Stylometry check ────────────────────────────────────────────────────────
+
+const STYLOMETRY_FIELDS: (keyof StylometryProfile)[] = [
+  "narrativeVoice",
+  "povStyle",
+  "tensePreference",
+  "vocabularyRegister",
+  "sentenceLengthTarget",
+  "proseStyleNotes",
+  "dialogueStyleNotes",
+  "pacingPreference",
+  "paragraphStructure",
+  "rhetoricalDevices",
+  "commaStyle",
+  "dialogueTagPreference",
+];
+
+function isStylometryEmpty(stylometry: StylometryProfile | undefined): boolean {
+  if (!stylometry) return true;
+  return STYLOMETRY_FIELDS.every((field) => !stylometry[field]);
+}
+
 // ── write_scene ─────────────────────────────────────────────────────────────
 
 export const writeSceneTool = defineTool({
@@ -95,6 +119,22 @@ export const writeSceneTool = defineTool({
     const validationError = validateSceneId(params.sceneId);
     if (validationError) {
       const result: WriteSceneResult = { ok: false, path: "", error: validationError };
+      return okResult(result);
+    }
+
+    // Check stylometry profile in bible
+    const bible = await loadBible("./story/story-metadata.json");
+    if (isStylometryEmpty(bible.stylometry)) {
+      const result: WriteSceneResult = {
+        ok: false,
+        path: "",
+        error:
+          "Stylometry profile is empty. The story bible requires a stylometry section before writing scenes. " +
+          "Please provide writing style preferences for: " +
+          "narrativeVoice, povStyle, tensePreference, vocabularyRegister, sentenceLengthTarget, " +
+          "proseStyleNotes, dialogueStyleNotes, pacingPreference, paragraphStructure, rhetoricalDevices, " +
+          "commaStyle, dialogueTagPreference",
+      };
       return okResult(result);
     }
 
