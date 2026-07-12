@@ -8,6 +8,7 @@ import type {
   LocationState,
   PlotThread,
   StoryBible,
+  StylometryProfile,
   ThematicProgression,
 } from "./interfaces.js";
 
@@ -32,6 +33,7 @@ export class InMemoryStoryBible implements StoryBible {
   dramaticQuestions = new Map<string, DramaticQuestion>();
   knowledgeState: KnowledgeGraph = createEmptyKnowledgeGraph();
   thematicProgression: ThematicProgression = createEmptyThematicProgression();
+  stylometry?: StylometryProfile;
 
   #version = 0;
 
@@ -50,6 +52,7 @@ export class InMemoryStoryBible implements StoryBible {
     if (updates.chronology) this.chronology = updates.chronology;
     if (updates.knowledgeState) this.knowledgeState = updates.knowledgeState;
     if (updates.thematicProgression) this.thematicProgression = updates.thematicProgression;
+    if (updates.stylometry !== undefined) this.stylometry = updates.stylometry;
 
     return ++this.#version;
   }
@@ -137,6 +140,7 @@ export class InMemoryStoryBible implements StoryBible {
       dramaticQuestions: new Map(this.dramaticQuestions),
       knowledgeState: this.knowledgeState,
       thematicProgression: this.thematicProgression,
+      stylometry: this.stylometry,
     };
   }
 }

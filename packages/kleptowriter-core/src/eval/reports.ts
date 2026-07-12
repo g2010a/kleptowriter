@@ -11,7 +11,12 @@ export type EvaluatorRole =
   | "worldbuilding"
   | "dialogist"
   | "stylesheet"
-  | "mood-tension-curator";
+  | "mood-tension-curator"
+  | "fact-checker"
+  | "localizer"
+  | "narrative-consistency"
+  | "critic"
+  | "editor";
 
 export interface EvaluationFinding {
   category: string;
@@ -85,6 +90,41 @@ export interface MoodTensionReport extends BaseEvaluationReport {
   desiredTension: number;
 }
 
+export interface FactCheckerReport extends BaseEvaluationReport {
+  role: "fact-checker";
+  claimsVerified: number;
+  claimsDisputed: number;
+  sourcesChecked: number;
+}
+
+export interface LocalizerReport extends BaseEvaluationReport {
+  role: "localizer";
+  locale: string;
+  culturalAdaptations: number;
+  idiomsLocalized: number;
+}
+
+export interface NarrativeConsistencyReport extends BaseEvaluationReport {
+  role: "narrative-consistency";
+  continuityScore: number;
+  timelineConsistency: number;
+  characterArcConsistency: number;
+}
+
+export interface CriticReport extends BaseEvaluationReport {
+  role: "critic";
+  critiqueScore: number;
+  majorIssues: string[];
+  minorIssues: string[];
+}
+
+export interface EditorReport extends BaseEvaluationReport {
+  role: "editor";
+  editPassesCompleted: number;
+  styleViolations: number;
+  readabilityScore: number;
+}
+
 export type TypedEvaluationReport =
   | NarratologistReport
   | PacingReport
@@ -93,7 +133,12 @@ export type TypedEvaluationReport =
   | WorldbuildingReport
   | DialogistReport
   | StylesheetReport
-  | MoodTensionReport;
+  | MoodTensionReport
+  | FactCheckerReport
+  | LocalizerReport
+  | NarrativeConsistencyReport
+  | CriticReport
+  | EditorReport;
 
 export async function saveReport(report: TypedEvaluationReport, directory: string): Promise<void> {
   const reportDirectory = join(directory, "evaluations", report.sceneId);

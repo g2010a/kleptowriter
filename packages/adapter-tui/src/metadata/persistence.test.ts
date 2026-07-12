@@ -1,5 +1,6 @@
 import { expect, test, afterEach } from "bun:test";
 import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
+import type { StylometryProfile } from "@kleptowriter/kleptowriter-core";
 import { loadMetadata, saveMetadata } from "./persistence.js";
 import { setMetadata, getMetadata, queryMetadataTool, updateMetadataTool } from "../tools/metadata-tools.js";
 import { mkdtemp, rm, writeFile, readFile } from "node:fs/promises";
@@ -164,4 +165,101 @@ test("update_metadata stores entity and persists version", async () => {
   const parsed = JSON.parse(raw);
   expect(parsed.characters.length).toBe(1);
   expect(parsed.version).toBe(details.version);
+});
+
+// ── Stylometry roundtrip ──────────────────────────────────────────────────────
+
+test("roundtrip save/load preserves stylometry with all 12 fields", async () => {
+  const dir = await tmpDir();
+  const path = join(dir, "story-metadata.json");
+
+  const original = new InMemoryStoryBible();
+  const stylometry: StylometryProfile = {
+    narrativeVoice: "first-person intimate",
+    povStyle: "limited",
+    tensePreference: "past",
+    vocabularyRegister: "literary",
+    sentenceLengthTarget: "medium-long",
+    proseStyleNotes: "lyrical, atmospheric",
+    dialogueStyleNotes: "sparse, subtext-heavy",
+    pacingPreference: "slow burn",
+    paragraphStructure: "varied, rhythmic",
+    rhetoricalDevices: "metaphor, repetition",
+    commaStyle: "oxford, breath-paced",
+    dialogueTagPreference: "said, beats",
+  };
+  original.stylometry = stylometry;
+
+  original.applyStateUpdate({});
+  const origVersion = original.version;
+
+  await saveMetadata(original, path);
+  const loaded = await loadMetadata(path);
+
+  expect(loaded.version).toBe(origVersion + 1);
+  expect(loaded.stylometry).toBeDefined();
+  expect(loaded.stylometry?.narrativeVoice).toBe("first-person intimate");
+  expect(loaded.stylometry?.povStyle).toBe("limited");
+  expect(loaded.stylometry?.tensePreference).toBe("past");
+  expect(loaded.stylometry?.vocabularyRegister).toBe("literary");
+  expect(loaded.stylometry?.sentenceLengthTarget).toBe("medium-long");
+  expect(loaded.stylometry?.proseStyleNotes).toBe("lyrical, atmospheric");
+  expect(loaded.stylometry?.dialogueStyleNotes).toBe("sparse, subtext-heavy");
+  expect(loaded.stylometry?.pacingPreference).toBe("slow burn");
+  expect(loaded.stylometry?.paragraphStructure).toBe("varied, rhythmic");
+  expect(loaded.stylometry?.rhetoricalDevices).toBe("metaphor, repetition");
+  expect(loaded.stylometry?.commaStyle).toBe("oxford, breath-paced");
+  expect(loaded.stylometry?.dialogueTagPreference).toBe("said, beats");
+});
+
+test("roundtrip save/load preserves partial stylometry (some fields undefined)", async () => {
+  const dir = await tmpDir();
+  const path = join(dir, "story-metadata.json");
+
+  const original = new InMemoryStoryBible();
+  const stylometry: StylometryProfile = {
+    narrativeVoice: "third-person omniscient",
+    tensePreference: "present",
+    // other fields intentionally undefined
+  };
+  original.stylometry = stylometry;
+
+  original.applyStateUpdate({});
+  const origVersion = original.version;
+
+  await saveMetadata(original, path);
+  const loaded = await loadMetadata(path);
+
+  expect(loaded.version).toBe(origVersion + 1);
+  expect(loaded.stylometry).toBeDefined();
+  expect(loaded.stylometry?.narrativeVoice).toBe("third-person omniscient");
+  expect(loaded.stylometry?.tensePreference).toBe("present");
+  expect(loaded.stylometry?.povStyle).toBeUndefined();
+  expect(loaded.stylometry?.vocabularyRegister).toBeUndefined();
+});
+
+test("load bible without stylometry field deserializes without error", async () => {
+  const dir = await tmpDir();
+  const path = join(dir, "story-metadata.json");
+
+  // Write JSON without stylometry field (simulating old file)
+  const oldFormat = {
+    version: 1,
+    characters: [],
+    locations: [],
+    items: [],
+    arcs: [],
+    plotThreads: [],
+    dramaticQuestions: [],
+    chronology: [],
+    knowledgeState: { factsByCharacter: [] },
+    thematicProgression: { themes: [] },
+  };
+  await writeFile(path, JSON.stringify(oldFormat), "utf-8");
+
+  const loaded = await loadMetadata(path);
+
+  expect(loaded.version).toBe(1);
+  expect(loaded.stylometry).toBeUndefined();
+  expect(loaded.characters.size).toBe(0);
 });

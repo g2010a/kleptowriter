@@ -10,6 +10,22 @@ export interface StoryBible {
   dramaticQuestions: Map<string, DramaticQuestion>;
   knowledgeState: KnowledgeGraph;
   thematicProgression: ThematicProgression;
+  stylometry?: StylometryProfile;
+}
+
+export interface StylometryProfile {
+  narrativeVoice?: string;
+  povStyle?: string;
+  tensePreference?: string;
+  vocabularyRegister?: string;
+  sentenceLengthTarget?: string;
+  proseStyleNotes?: string;
+  dialogueStyleNotes?: string;
+  pacingPreference?: string;
+  paragraphStructure?: string;
+  rhetoricalDevices?: string;
+  commaStyle?: string;
+  dialogueTagPreference?: string;
 }
 
 export interface CharacterState {
