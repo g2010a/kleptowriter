@@ -15,6 +15,7 @@ const EXPECTED_TOOLS = [
   "deduce_chapters",
   "list_narrative_templates",
   "web_search",
+  "web_fetch",
 ];
 
 const CODING_TOOLS = ["bash", "read", "write", "edit", "grep", "find", "ls"];
@@ -74,8 +75,8 @@ import { allKleptowriterTools } from "./tools/registry.js";
 // ── allKleptowriterTools (no mock needed — pure registry checks) ──────────────
 
 describe("allKleptowriterTools", () => {
-  test("exports exactly 11 tool definitions", () => {
-    expect(allKleptowriterTools).toHaveLength(11);
+test("exports exactly 12 tool definitions", () => {
+  expect(allKleptowriterTools).toHaveLength(12);
   });
 
   test("all tools have expected names", () => {

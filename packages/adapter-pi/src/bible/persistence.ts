@@ -18,6 +18,7 @@ import type {
   ItemState,
   LocationState,
   PlotThread,
+  StylometryProfile,
   StoryBible,
   TimelineEntry,
 } from "@kleptowriter/kleptowriter-core";
@@ -52,6 +53,7 @@ interface SerializableBible {
   thematicProgression: {
     themes: [string, { intensity: number; sceneIntensities: [string, number][] }][];
   };
+  stylometry?: StylometryProfile;
 }
 
 // ── Serialize ───────────────────────────────────────────────────────────────
@@ -82,7 +84,7 @@ function serializeBible(bible: InMemoryStoryBible): SerializableBible {
     },
   ]);
 
-  return {
+return {
     version: bible.version,
     characters,
     locations: [...bible.locations.entries()],
@@ -98,6 +100,7 @@ function serializeBible(bible: InMemoryStoryBible): SerializableBible {
     })),
     knowledgeState: { factsByCharacter },
     thematicProgression: { themes },
+    stylometry: bible.stylometry,
   };
 }
 
@@ -168,6 +171,10 @@ function deserializeBible(data: SerializableBible): InMemoryStoryBible {
   const targetVersion = data.version;
   for (let i = 0; i < targetVersion; i++) {
     bible.applyStateUpdate({});
+  }
+
+  if (data.stylometry) {
+    bible.stylometry = data.stylometry;
   }
 
   return bible;

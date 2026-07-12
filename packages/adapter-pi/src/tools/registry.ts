@@ -12,6 +12,7 @@ import { loadContextTool } from "./context-tools.js";
 import { suggestNextBeatTool } from "./markov-tools.js";
 import { deduceChaptersTool } from "./chapter-tools.js";
 import { webSearchTool } from "./web-search-tools.js";
+import { webFetchTool } from "./web-fetch-tools.js";
 import { listNarrativeTemplatesTool } from "./narrative-tools.js";
 
 export {
@@ -26,6 +27,7 @@ export {
   deduceChaptersTool,
   listNarrativeTemplatesTool,
   webSearchTool,
+  webFetchTool,
 };
 
 export { setBible, getBible, getBiblePath } from "./bible-tools.js";
@@ -46,4 +48,5 @@ export const allKleptowriterTools = [
   deduceChaptersTool,
   listNarrativeTemplatesTool,
   webSearchTool,
+  webFetchTool,
 ];

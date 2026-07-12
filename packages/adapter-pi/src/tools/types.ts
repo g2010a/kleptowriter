@@ -197,17 +197,67 @@ export interface LoadContextResult {
   recentScenes: LoadContextRecentScene[];
 }
 
-// ── suggest_next_beat ─────────────────────────────────────────────────────
-// Scans existing scene files to infer narrative state, trains a Markov
-// engine from the selected template's transitions, and predicts likely
-// next beats with probabilities.
+// ── web_fetch ─────────────────────────────────────────────────────────────────
+// Fetches a URL and extracts the main article content as Markdown.
+// Returns the page title and cleaned Markdown content.
+
+export const WebFetchParamsSchema = Type.Object({
+  url: Type.String({ description: "URL to fetch and extract content from" }),
+  maxLength: Type.Optional(
+    Type.Integer({
+      description: "Maximum content length in characters (default: 50000)",
+      minimum: 1000,
+      maximum: 200000,
+    }),
+  ),
+});
+export type WebFetchParams = Static<typeof WebFetchParamsSchema>;
+
+export interface WebFetchResult {
+  success: boolean;
+  url?: string;
+  title?: string;
+  content?: string;
+  error?: string;
+}
+
+// ── stylometry ────────────────────────────────────────────────────────────────
+// Stylometry profile schema for story bible stylometric profiling.
+// All 12 fields are optional strings for flexibility.
+
+export const StylometryProfileSchema = Type.Object({
+  narrativeVoice: Type.Optional(Type.String({ description: "Narrative voice (e.g., 'omniscient', 'first-person', 'close third')" })),
+  povStyle: Type.Optional(Type.String({ description: "POV style (e.g., 'single viewpoint', 'multiple viewpoint', 'unreliable')" })),
+  tensePreference: Type.Optional(Type.String({ description: "Tense preference (e.g., 'past', 'present')" })),
+  vocabularyRegister: Type.Optional(Type.String({ description: "Vocabulary register (e.g., 'formal', 'colloquial', 'literary', 'vernacular')" })),
+  sentenceLengthTarget: Type.Optional(Type.String({ description: "Sentence length target (e.g., 'short', 'varied', 'long flowing')" })),
+  proseStyleNotes: Type.Optional(Type.String({ description: "Free-text prose style notes" })),
+  dialogueStyleNotes: Type.Optional(Type.String({ description: "Free-text dialogue style notes" })),
+  pacingPreference: Type.Optional(Type.String({ description: "Pacing preference (e.g., 'fast', 'measured', 'slow burn')" })),
+  paragraphStructure: Type.Optional(Type.String({ description: "Paragraph structure (e.g., 'short paragraphs', 'mixed', 'dense blocks')" })),
+  rhetoricalDevices: Type.Optional(Type.String({ description: "Rhetorical devices used (e.g., 'metaphor', 'imagery', 'minimalist')" })),
+  commaStyle: Type.Optional(Type.String({ description: "Comma style preference (e.g., 'oxford comma', 'minimal', 'abundant')" })),
+  dialogueTagPreference: Type.Optional(Type.String({ description: "Dialogue tag preference (e.g., 'said-only', 'varied tags', 'minimal tags')" })),
+});
+export type StylometryProfile = Static<typeof StylometryProfileSchema>;
+
+// ── suggest_next_beat (extended) ──────────────────────────────────────────────
+// Extended params with maxBeats and maxSameBeatRepeats for loop control.
 
 export const SuggestNextBeatParamsSchema = Type.Object({
   template: Type.Optional(
     Type.String({ description: "Narrative template name (default: Three-Act Structure)" }),
   ),
+  maxBeats: Type.Optional(
+    Type.Integer({ description: "Max beats to generate in loop mode (default: 20)", minimum: 2, maximum: 200 }),
+  ),
+  maxSameBeatRepeats: Type.Optional(
+    Type.Integer({ description: "Stop after N consecutive same-beat types (default: 3)", minimum: 2, maximum: 20 }),
+  ),
 });
 export type SuggestNextBeatParams = Static<typeof SuggestNextBeatParamsSchema>;
+
+export type SuggestNextBeatStopReason = "max_beats_reached" | "max_repeats_reached" | "natural_completion";
 
 export interface SuggestNextBeatSuggestion {
   beat: string;
@@ -219,4 +269,5 @@ export interface SuggestNextBeatResult {
   suggestions: SuggestNextBeatSuggestion[];
   currentBeat: string;
   template: string;
+  stoppedReason?: SuggestNextBeatStopReason;
 }
