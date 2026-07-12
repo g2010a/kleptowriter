@@ -1,6 +1,11 @@
 import type { StoryBible } from "../../data-model/bible/index.js";
 import type { SceneDocument } from "../../data-model/scene/index.js";
 import { AgentRole, type EvaluationReport, type EvaluationVerdict, type GateResult } from "../../types/index.js";
+import { factChecker } from "../../agents/evaluators/evaluators/fact-checker.js";
+import { createLocalizerEvaluator } from "../../agents/evaluators/evaluators/localizer.js";
+import { narrativeConsistencyEvaluator } from "../../agents/evaluators/evaluators/narrative-consistency.js";
+import { criticEvaluator } from "../../agents/evaluators/evaluators/critic.js";
+import { editorStub } from "../../agents/evaluators/evaluators/editor.js";
 
 export interface ProseEvaluation {
   evaluatorId: string;
@@ -30,6 +35,11 @@ const roleMap: Record<string, AgentRole> = {
   dialogist: AgentRole.Dialogist,
   stylesheet: AgentRole.Stylesheet,
   "mood-tension-curator": AgentRole.MoodTensionCurator,
+  "fact-checker": AgentRole.FactChecker,
+  localizer: AgentRole.Localizer,
+  "narrative-consistency": AgentRole.NarrativeConsistency,
+  critic: AgentRole.Critic,
+  editor: AgentRole.Editor,
 };
 
 export class SceneProseGate {
@@ -43,6 +53,11 @@ export class SceneProseGate {
     "dialogist",
     "stylesheet",
     "mood-tension-curator",
+    "fact-checker",
+    "localizer",
+    "narrative-consistency",
+    "critic",
+    "editor",
   ];
 
   evaluate(scene: SceneDocument, bible: StoryBible, iterationCount = 0): GateResult {
@@ -132,6 +147,88 @@ export class SceneProseGate {
         [scene.metadata.mood ? context.lowerProse.includes(scene.metadata.mood.toLowerCase()) || hasAny(context.lowerProse, moodWords(scene.metadata.mood)) : true, "Prose supports the declared mood."],
         [scene.metadata.tension === undefined || scene.metadata.tension <= 3 || hasAny(context.lowerProse, ["threat", "fear", "risk", "danger", "urgent", "knife", "blood", "deadline", "trap"]), "High-tension scenes include pressure cues."],
       ]),
+
+    "fact-checker": (scene, bible, context) => {
+      const result = factChecker(scene, bible, {
+        claims: scene.metadata.characters.map((id) => bible.characters.get(id)?.name ?? id),
+        references: scene.metadata.locations.map((id) => bible.locations.get(id)?.name ?? id),
+        iterationCount: context.iterationCount,
+      });
+      return {
+        evaluatorId: `prose-${result.role}`,
+        role: result.role,
+        score: result.score,
+        verdict: result.verdict,
+        findings: result.findings.map((f) => `${f.severity.toUpperCase()}: ${f.message}`),
+        iterationCount: context.iterationCount,
+      };
+    },
+
+    localizer: (scene, bible, context) => {
+      const localizer = createLocalizerEvaluator();
+      const result = localizer(scene, bible, {
+        targetLocale: "en",
+        culturalMarkers: [],
+        idioms: [],
+        iterationCount: context.iterationCount,
+      });
+      return {
+        evaluatorId: `prose-${result.role}`,
+        role: result.role,
+        score: result.score,
+        verdict: result.verdict,
+        findings: result.findings,
+        iterationCount: context.iterationCount,
+      };
+    },
+
+    "narrative-consistency": (scene, bible, context) => {
+      const result = narrativeConsistencyEvaluator(scene, bible, {
+        previousScenes: [],
+        continuityChecks: [],
+        iterationCount: context.iterationCount,
+      });
+      return {
+        evaluatorId: `prose-${result.role}`,
+        role: result.role,
+        score: result.score,
+        verdict: result.verdict,
+        findings: result.findings,
+        iterationCount: context.iterationCount,
+      };
+    },
+
+    critic: (scene, bible, context) => {
+      const result = criticEvaluator(scene, bible, {
+        critiqueAreas: [],
+        severityThreshold: 0.5,
+        iterationCount: context.iterationCount,
+      });
+      return {
+        evaluatorId: `prose-${result.role}`,
+        role: result.role,
+        score: Math.round(result.score * 100),
+        verdict: result.verdict,
+        findings: result.findings.map((f) => `${f.severity.toUpperCase()}: ${f.message}`),
+        iterationCount: context.iterationCount,
+      };
+    },
+
+    editor: (scene, bible, context) => {
+      const result = editorStub(scene, bible, {
+        editPasses: [],
+        styleGuide: [],
+        iterationCount: context.iterationCount,
+      });
+      return {
+        evaluatorId: `prose-${result.role}`,
+        role: result.role,
+        score: result.score,
+        verdict: result.verdict,
+        findings: result.findings.map((f) => `${f.severity.toUpperCase()}: ${f.message}`),
+        iterationCount: context.iterationCount,
+      };
+    },
   };
 
   private evaluateChecks(role: string, iterationCount: number, checks: Array<[boolean, string]>): ProseEvaluation {

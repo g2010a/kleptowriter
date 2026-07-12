@@ -21,6 +21,11 @@ export class ScenePlanGate {
     thematic: 2,
     worldbuilding: 1,
     mood: 1,
+    "fact-checker": 2,
+    localizer: 1,
+    "narrative-consistency": 2,
+    critic: 2,
+    editor: 1,
   };
 
   evaluate(plan: ScenePlan, bible: StoryBible, structure?: NarrativeStructure): GateResult {
@@ -31,6 +36,11 @@ export class ScenePlanGate {
       this.rateThematicCoherence(plan, bible),
       this.rateWorldbuilding(plan, bible),
       this.rateMoodTension(plan),
+      this.rateFactChecker(plan, bible),
+      this.rateLocalizer(plan, bible),
+      this.rateNarrativeConsistency(plan, bible),
+      this.rateCritic(plan, structure),
+      this.rateEditor(plan),
     ];
 
     const totalWeight = votes.reduce((sum, vote) => sum + vote.weight, 0);
@@ -201,6 +211,135 @@ export class ScenePlanGate {
     return this.vote("mood", "Mood", score, comments);
   }
 
+  private rateFactChecker(plan: ScenePlan, bible: StoryBible): EvaluatorVote {
+    const comments: string[] = [];
+    let score = 10;
+
+    const unknownChars = plan.suggestedCharacters.filter((id) => !bible.characters.has(id));
+    if (unknownChars.length > 0) {
+      score -= Math.min(5, unknownChars.length * 2);
+      comments.push(`Characters not in bible: ${unknownChars.join(", ")}.`);
+    }
+
+    const unknownThreads = plan.plotThreads.filter((id) => !bible.plotThreads.has(id));
+    if (unknownThreads.length > 0) {
+      score -= Math.min(4, unknownThreads.length * 2);
+      comments.push(`Plot threads not in bible: ${unknownThreads.join(", ")}.`);
+    }
+
+    if (plan.suggestedCharacters.length === 0 && plan.plotThreads.length === 0) {
+      score -= 3;
+      comments.push("Plan references no characters or plot threads to fact-check.");
+    }
+
+    return this.vote("fact-checker", "FactChecker", score, comments);
+  }
+
+  private rateLocalizer(plan: ScenePlan, bible: StoryBible): EvaluatorVote {
+    const comments: string[] = [];
+
+    if (bible.locations.size === 0) {
+      return this.vote("localizer", "Localizer", 10, comments);
+    }
+
+    const purposeLower = plan.purpose.toLowerCase();
+    const mentionsKnownLocation = [...bible.locations.values()].some((loc) =>
+      [loc.name, ...loc.aliases].some((name) => purposeLower.includes(name.toLowerCase())),
+    );
+
+    if (mentionsKnownLocation) {
+      return this.vote("localizer", "Localizer", 10, comments);
+    }
+
+    // ponytail: no location mention in a bible with locations = mild concern, not blocking
+    comments.push("Plan purpose does not reference a known location.");
+    return this.vote("localizer", "Localizer", 7, comments);
+  }
+
+  private rateNarrativeConsistency(plan: ScenePlan, bible: StoryBible): EvaluatorVote {
+    const comments: string[] = [];
+    let score = 10;
+
+    const openThreads = [...bible.plotThreads.values()].filter(
+      (t) => t.status === "introduced" || t.status === "developed",
+    );
+    const continuedThreads = plan.plotThreads.filter((id) =>
+      openThreads.some((t) => t.id === id),
+    );
+
+    if (openThreads.length > 0 && continuedThreads.length === 0) {
+      score -= 4;
+      comments.push(`Plan does not continue any of ${openThreads.length} open plot thread(s).`);
+    }
+
+    const resolvedThreads = plan.plotThreads.filter((id) => {
+      const thread = bible.plotThreads.get(id);
+      return thread?.status === "resolved" || thread?.status === "dropped";
+    });
+    if (resolvedThreads.length > 0) {
+      score -= 3;
+      comments.push(`Plan references resolved/dropped threads: ${resolvedThreads.join(", ")}.`);
+    }
+
+    return this.vote("narrative-consistency", "NarrativeConsistency", score, comments);
+  }
+
+  private rateCritic(plan: ScenePlan, structure?: NarrativeStructure): EvaluatorVote {
+    const comments: string[] = [];
+    let score = 8;
+
+    if (plan.purpose.length < 20) {
+      score -= 3;
+      comments.push("Scene purpose is too brief to evaluate quality.");
+    }
+
+    if (plan.dramaticQuestions.length === 0) {
+      score -= 2;
+      comments.push("No dramatic question — reduces scene engagement.");
+    }
+
+    if (plan.alternatives && plan.alternatives.length === 0) {
+      score -= 1;
+      comments.push("No alternatives considered for this plan.");
+    }
+
+    const beat = structure?.beats.find((b) => b.id === plan.beatId);
+    if (beat && plan.targetTension !== undefined) {
+      const isHighTensionBeat = beat.type === "climax" || beat.type === "conflict";
+      if (isHighTensionBeat && plan.targetTension < 5) {
+        score -= 2;
+        comments.push(`Beat type "${beat.type}" expects higher tension.`);
+      }
+    }
+
+    return this.vote("critic", "Critic", score, comments);
+  }
+
+  private rateEditor(plan: ScenePlan): EvaluatorVote {
+    const comments: string[] = [];
+    let score = 8;
+
+    if (!plan.beatId.trim()) {
+      score -= 3;
+      comments.push("Missing beat id — plan cannot be editorially assessed.");
+    }
+
+    if (!plan.purpose.trim()) {
+      score -= 3;
+      comments.push("Missing purpose — no editorial direction.");
+    } else if (plan.purpose.trim().split(/\s+/).length < 5) {
+      score -= 1;
+      comments.push("Purpose is very short — consider expanding editorial direction.");
+    }
+
+    if (plan.suggestedPov === undefined) {
+      score -= 1;
+      comments.push("No POV suggested — editorial needs point of view.");
+    }
+
+    return this.vote("editor", "Editor", score, comments);
+  }
+
   private vote(evaluatorId: string, role: string, score: number, comments: string[]): EvaluatorVote {
     const boundedScore = clamp(score, 0, 10);
 
@@ -240,6 +379,16 @@ function roleFor(evaluatorId: string): AgentRole {
       return AgentRole.Worldbuilding;
     case "mood":
       return AgentRole.MoodTensionCurator;
+    case "fact-checker":
+      return AgentRole.FactChecker;
+    case "localizer":
+      return AgentRole.Localizer;
+    case "narrative-consistency":
+      return AgentRole.NarrativeConsistency;
+    case "critic":
+      return AgentRole.Critic;
+    case "editor":
+      return AgentRole.Editor;
     default:
       return AgentRole.Critic;
   }

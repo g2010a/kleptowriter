@@ -24,7 +24,7 @@ test("ScenePlanGate passes a coherent plan", () => {
 
   expect(result.verdict).toBe("pass");
   expect(result.score).toBeGreaterThanOrEqual(7);
-  expect(result.evaluatorReports).toHaveLength(6);
+  expect(result.evaluatorReports).toHaveLength(11);
 });
 
 test("ScenePlanGate returns conditional for minor plan gaps", () => {
@@ -79,6 +79,75 @@ test("ScenePlanGate rejects blocking plan failures", () => {
   expect(result.verdict).toBe("reject");
   expect(result.score).toBeLessThan(4);
   expect(result.alternatives).toEqual([alternative]);
+});
+
+test("all 11 evaluators are invoked during scene planning", () => {
+  const gate = new ScenePlanGate();
+  const result = gate.evaluate(
+    {
+      beatId: "confrontation",
+      purpose: "Ada confronts Byron in the archive about the stolen letter",
+      suggestedPov: "ada",
+      suggestedCharacters: ["ada", "byron"],
+      targetTension: 7,
+      plotThreads: ["stolen-letter"],
+      dramaticQuestions: ["will-ada-expose-byron"],
+      thematicMotifs: ["truth"],
+    },
+    makeBible(),
+    makeStructure(),
+  );
+
+  expect(result.evaluatorReports).toHaveLength(11);
+
+  const evaluatorIds = result.evaluatorReports.map((r) => r.agentId);
+  expect(evaluatorIds).toContain("narratologist");
+  expect(evaluatorIds).toContain("pacing");
+  expect(evaluatorIds).toContain("character");
+  expect(evaluatorIds).toContain("thematic");
+  expect(evaluatorIds).toContain("worldbuilding");
+  expect(evaluatorIds).toContain("mood");
+  expect(evaluatorIds).toContain("fact-checker");
+  expect(evaluatorIds).toContain("localizer");
+  expect(evaluatorIds).toContain("narrative-consistency");
+  expect(evaluatorIds).toContain("critic");
+  expect(evaluatorIds).toContain("editor");
+});
+
+test("well-planned beat receives high scores from all evaluators", () => {
+  const gate = new ScenePlanGate();
+  const result = gate.evaluate(
+    {
+      beatId: "confrontation",
+      purpose: "Ada confronts Byron in the dusty archive about the stolen letter that implicates them both",
+      suggestedPov: "ada",
+      suggestedCharacters: ["ada", "byron"],
+      targetTension: 7,
+      plotThreads: ["stolen-letter"],
+      dramaticQuestions: ["will-ada-expose-byron"],
+      thematicMotifs: ["truth"],
+      alternatives: [
+        {
+          beatId: "confrontation",
+          purpose: "Byron flees when Ada arrives",
+          suggestedCharacters: ["ada", "byron"],
+          targetTension: 6,
+          plotThreads: ["stolen-letter"],
+          dramaticQuestions: ["will-ada-expose-byron"],
+          thematicMotifs: ["truth"],
+        },
+      ],
+    },
+    makeBible(),
+    makeStructure(),
+  );
+
+  expect(result.verdict).toBe("pass");
+  expect(result.score).toBeGreaterThanOrEqual(7);
+
+  for (const report of result.evaluatorReports) {
+    expect(report.confidence).toBeGreaterThanOrEqual(0.6);
+  }
 });
 
 function makeBible(): InMemoryStoryBible {

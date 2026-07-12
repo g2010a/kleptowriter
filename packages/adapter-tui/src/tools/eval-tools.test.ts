@@ -69,7 +69,7 @@ However, the page named the mayor before it named the victim, therefore the secr
   expect(details.report.sceneId).toBe("eval-prose-01-good");
   expect(details.report.title).toBe("The Archive Warning");
   expect(details.report.proseGate).toBeDefined();
-  expect(details.report.proseGate.evaluatorReports).toHaveLength(8);
+  expect(details.report.proseGate.evaluatorReports).toHaveLength(13);
   expect(details.report.extractedMetadata).toBeDefined();
   expect(Array.isArray(details.report.notes)).toBe(true);
 });

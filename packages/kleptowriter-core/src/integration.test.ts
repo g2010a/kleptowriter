@@ -657,7 +657,7 @@ test("ScenePlanGate evaluates a scene plan against the bible", () => {
   const result = gate.evaluate(plan, bible);
   expect(result.verdict).toBe("pass");
   expect(result.score).toBeGreaterThanOrEqual(7);
-  expect(result.evaluatorReports.length).toBe(6);
+  expect(result.evaluatorReports.length).toBe(11);
 });
 
 // ---------------------------------------------------------------------------
@@ -746,8 +746,8 @@ test("HarnessAdapter interface contract is importable and structurally sound", (
 
 test("end-to-end narrative planning pipeline with bible state", () => {
   const bible = new InMemoryStoryBible();
-  bible.characters.set("hero", makeCharacter("hero", "Ada Lovelace", { role: "protagonist" }));
-  bible.characters.set("villain", makeCharacter("villain", "Byron", { role: "antagonist" }));
+  bible.characters.set("hero", makeCharacter("hero", "Ada"));
+  bible.characters.set("villain", makeCharacter("villain", "Byron"));
   bible.locations.set("estate", makeLocation("estate", "Byron Estate"));
   bible.plotThreads.set("revenge", makePlotThread("revenge", "Revenge plot"));
   bible.dramaticQuestions.set("dq-1", { id: "dq-1", question: "Will Ada forgive Byron?", status: "raised", raisedInScene: "s0" });
@@ -775,13 +775,13 @@ test("end-to-end narrative planning pipeline with bible state", () => {
   // Create a scene from the plan (simulating writing)
   const scene = makeScene("s1", {
     prose: [
-      "Ada Lovelace walked into the Byron Estate with her heart pounding from fear and rage. The betrayal burned in her chest like a hot knife. She found Byron standing by the tall window looking out at the dark sky. She asked him \"How could you do this to me?\" Her voice trembled with furious anger and pain.",
+      "Ada stepped into the Byron Estate and felt her heart pound with fear and rage. The betrayal burned in her chest like a hot knife. She found Byron standing by the tall window, looking out at the dark sky. She asked him \"How could you do this to me?\" Her voice trembled with furious anger.",
       "",
-      "Byron turned around slowly with his face completely unreadable and cold. He said \"It was necessary for the greater good.\" Ada felt her blood run cold at his words. The threat of violence hung in the air like a storm about to break at any moment.",
+      "Byron turned around slowly. \"It was necessary,\" he whispered. Ada felt her blood run cold at his words. The threat hung in the air like a storm about to break. However, she reached for the door handle because escape mattered more than pride.",
       "",
-      "She looked around the room for some way to escape but found nothing. The walls felt like they were closing in around her. She realized the trap had been set long before she ever arrived. This was the confrontation she had feared since the beginning of their dark journey together.",
+      "She looked around the room and realized the trap had been set long before she arrived. Then the walls seemed to close in around her. This was the confrontation she had feared since the beginning of their dark journey together, until both of them chose what came next.",
     ].join("\n"),
-    metadata: { pov: "hero", characters: ["hero", "villain"], locations: ["estate"], chronology: "2026-01-01T00:00:00.000Z", tension: 8, mood: "furious", plotThreads: ["revenge"], thematicMotifs: ["betrayal"], dramaticQuestions: ["dq-1"] },
+    metadata: { pov: "hero", characters: ["hero", "villain"], locations: ["estate"], chronology: "2026-01-01T00:00:00.000Z", tension:8, mood: "furious", plotThreads: ["revenge"], thematicMotifs: ["betrayal"], dramaticQuestions: ["dq-1"] },
   }, "hero");
 
   // Prose gate evaluates
