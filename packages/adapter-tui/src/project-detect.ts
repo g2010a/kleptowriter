@@ -6,7 +6,7 @@
 
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { CURRENT_VERSION, MANIFEST_SCHEMA_VERSION } from "@kleptowriter/kleptowriter-core";
+import { CURRENT_VERSION, MANIFEST_SCHEMA_VERSION, createManifest } from "@kleptowriter/kleptowriter-core";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -121,18 +121,7 @@ export async function initProject(path: string, name: string): Promise<void> {
 
   await mkdir(root, { recursive: true });
 
-  // Write manifest
-  const manifest: ProjectManifest = {
-    manifest_version: MANIFEST_SCHEMA_VERSION,
-    kleptowriter_version: CURRENT_VERSION,
-    name,
-    created: new Date().toISOString(),
-  };
-  await writeFile(
-    join(root, ".kleptowriter.json"),
-    JSON.stringify(manifest, null, 2),
-    "utf-8",
-  );
+  await createManifest(root, name);
 
   // Scaffold directories
   await mkdir(join(root, "story", "scenes"), { recursive: true });

@@ -12,6 +12,7 @@
 import { existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { startNovelSession } from "./session.js";
+import { createManifest } from "@kleptowriter/kleptowriter-core";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -77,6 +78,12 @@ async function main(): Promise<void> {
   // ── 1. Workspace setup ──────────────────────────────────────────────────
   ensureDir(SCENES_DIR);
   ensureDir(SESSION_DIR);
+
+  const manifestPath = resolve(WORKSPACE_ROOT, ".kleptowriter.json");
+  if (!existsSync(manifestPath)) {
+    const projectName = WORKSPACE_ROOT.split("/").pop() || "kleptowriter-project";
+    await createManifest(WORKSPACE_ROOT, projectName);
+  }
 
   console.log("╔═══════════════════════════════════════════╗");
   console.log("║     Kleptowriter — Novel Writing Harness  ║");

@@ -22,6 +22,7 @@ import type {
   StoryBible,
   TimelineEntry,
 } from "@kleptowriter/kleptowriter-core";
+import { STORY_SCHEMA_VERSION } from "@kleptowriter/kleptowriter-core";
 import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
@@ -42,6 +43,7 @@ interface SerializableTimelineEntry {
 
 interface SerializableBible {
   version: number;
+  schemaVersion: number;
   characters: [string, SerializableCharacterState][];
   locations: [string, LocationState][];
   items: [string, ItemState][];
@@ -86,6 +88,7 @@ function serializeBible(bible: InMemoryStoryBible): SerializableBible {
 
   return {
     version: bible.version,
+    schemaVersion: STORY_SCHEMA_VERSION,
     characters,
     locations: [...bible.locations.entries()],
     items: [...bible.items.entries()],
@@ -108,6 +111,8 @@ function serializeBible(bible: InMemoryStoryBible): SerializableBible {
 
 function deserializeBible(data: SerializableBible): InMemoryStoryBible {
   const bible = new InMemoryStoryBible();
+
+  const schemaVersion = data.schemaVersion ?? 0;
 
   // Populate characters
   for (const [id, state] of data.characters) {

@@ -245,6 +245,7 @@ test("load bible without stylometry field deserializes without error", async () 
   // Write JSON without stylometry field (simulating old file)
   const oldFormat = {
     version: 1,
+    schemaVersion: 0,
     characters: [],
     locations: [],
     items: [],
