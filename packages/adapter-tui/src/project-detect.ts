@@ -6,11 +6,13 @@
 
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { CURRENT_VERSION, MANIFEST_SCHEMA_VERSION } from "@kleptowriter/kleptowriter-core";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export interface ProjectManifest {
-  version: number;
+  manifest_version: number;
+  kleptowriter_version: string;
   name: string;
   created: string;
 }
@@ -77,21 +79,41 @@ export async function isValidProject(path: string): Promise<boolean> {
 }
 
 /**
- * Read the `name` field from a project's .kleptowriter.json.
- * Throws if the file is missing or invalid.
+ * Read the project manifest from a project's .kleptowriter.json.
+ * Handles both old format (version, name, created) and new format
+ * (manifest_version, kleptowriter_version, name, created) gracefully.
+ * Throws if the file is missing or invalid JSON.
  */
-export async function readProjectManifest(path: string): Promise<{ name: string }> {
+export async function readProjectManifest(path: string): Promise<ProjectManifest> {
   const manifestPath = join(path, ".kleptowriter.json");
   const raw = await readFile(manifestPath, "utf-8");
-  const manifest = JSON.parse(raw) as ProjectManifest;
-  return { name: manifest.name };
+  const parsed = JSON.parse(raw) as Partial<ProjectManifest> & { version?: number };
+
+  // Handle old format (version) and new format (manifest_version)
+  const manifestVersion = parsed.manifest_version ?? parsed.version ?? 1;
+  const kleptowriterVersion = parsed.kleptowriter_version ?? "0.0.0";
+
+  return {
+    manifest_version: manifestVersion,
+    kleptowriter_version: kleptowriterVersion,
+    name: parsed.name ?? "",
+    created: parsed.created ?? new Date().toISOString(),
+  };
+}
+
+/**
+ * Returns the absolute path to the project manifest file (.kleptowriter.json)
+ * for the given project path.
+ */
+export function getManifestPath(path: string): string {
+  return join(resolve(path), ".kleptowriter.json");
 }
 
 /**
  * Initialise a new project at `path`:
  *  - .kleptowriter.json  — manifest
  *  - story/scenes/       — scene directory
-  *  - story/story-metadata.json    — empty story-metadata with project marker
+ *  - story/story-metadata.json    — empty story-metadata with project marker
  *  - story/.pi-session/  — session persistence
  */
 export async function initProject(path: string, name: string): Promise<void> {
@@ -101,7 +123,8 @@ export async function initProject(path: string, name: string): Promise<void> {
 
   // Write manifest
   const manifest: ProjectManifest = {
-    version: 1,
+    manifest_version: MANIFEST_SCHEMA_VERSION,
+    kleptowriter_version: CURRENT_VERSION,
     name,
     created: new Date().toISOString(),
   };

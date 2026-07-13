@@ -8,7 +8,8 @@
   "scripts": {
     "build": "bun run --filter '@kleptowriter/*' build",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "bun test",
+    "version:check": "bun run packages/kleptowriter-core/src/versioning/cli.ts"
   },
   "devDependencies": {
     "@types/bun": "1.3.14",
