@@ -8,6 +8,7 @@ import {
 import type { AgentSessionEventListener, ExtensionFactory } from "@earendil-works/pi-coding-agent";
 import { allKleptowriterTools, setMetadata } from "./tools/registry.js";
 import { loadMetadata } from "./metadata/persistence.js";
+import { runStartupCheck } from "@kleptowriter/kleptowriter-core";
 import { join } from "node:path";
 import systemPrompt from "./prompt/system.md" with { type: "text" };
 
@@ -86,6 +87,15 @@ const { session, extensionsResult, modelFallbackMessage } =
 
   const metadata = await loadMetadata(join(cwd, "story", "story-metadata.json"));
   setMetadata(metadata);
+
+  // Non-blocking startup version check
+  runStartupCheck(cwd).then((result) => {
+    if (result.needsMigration) {
+      console.warn(`[kleptowriter] Project upgrade needed: ${result.pendingMigrations.join(", ")}`);
+    }
+  }).catch((err) => {
+    console.warn(`[kleptowriter] Startup version check failed: ${(err as Error).message}`);
+  });
 
   return new InteractiveMode(runtime, {
     modelFallbackMessage,

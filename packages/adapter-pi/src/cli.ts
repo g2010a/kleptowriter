@@ -12,7 +12,7 @@
 import { existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { startNovelSession } from "./session.js";
-import { createManifest } from "@kleptowriter/kleptowriter-core";
+import { createManifest, runStartupCheck } from "@kleptowriter/kleptowriter-core";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -94,7 +94,16 @@ async function main(): Promise<void> {
   console.log(`  Session   : ${SESSION_DIR}`);
   console.log("");
 
-  // ── 2. API key check ────────────────────────────────────────────────────
+  // ── 2. Startup version check ─────────────────────────────────────────────
+  runStartupCheck(WORKSPACE_ROOT).then((result) => {
+    if (result.needsMigration) {
+      console.warn(`[kleptowriter] Project upgrade needed: ${result.pendingMigrations.join(", ")}`);
+    }
+  }).catch((err) => {
+    console.warn(`[kleptowriter] Startup version check failed: ${(err as Error).message}`);
+  });
+
+  // ── 3. API key check ────────────────────────────────────────────────────
   if (!hasApiKey()) {
     console.log("  No API key found. Set one of:");
     console.log("    export ANTHROPIC_API_KEY=sk-ant-...");
@@ -105,7 +114,7 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
-  // ── 3. Start session ────────────────────────────────────────────────────
+  // ── 4. Start session ────────────────────────────────────────────────────
   console.log("  Initializing Pi session...");
   console.log("");
 
@@ -119,7 +128,7 @@ async function main(): Promise<void> {
   console.log("─────────────────────────────────────────────");
   console.log("");
 
-  // ── 4. SIGINT handler ───────────────────────────────────────────────────
+  // ── 5. SIGINT handler ───────────────────────────────────────────────────
   let shuttingDown = false;
 
   process.on("SIGINT", async () => {
@@ -136,7 +145,7 @@ async function main(): Promise<void> {
     process.exit(0);
   });
 
-  // ── 5. Wait for shutdown signal ─────────────────────────────────────────
+  // ── 6. Wait for shutdown signal ─────────────────────────────────────────
   // The session is now live. The user interacts via Pi's event stream.
   // We stay alive until SIGINT.
   await new Promise<void>((_resolve) => {

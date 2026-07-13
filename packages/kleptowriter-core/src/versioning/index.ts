@@ -4,3 +4,4 @@ export * from "./project-manifest.js";
 export * from "./migrate.js";
 export * from "./version-info.js";
 export * from "./migrations/registry-setup.js";
+export * from "./session-startup.js";
