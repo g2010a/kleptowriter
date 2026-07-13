@@ -40,3 +40,98 @@ rtk pip list            rtk pnpm install        rtk npm run <script>
 - For debugging, use raw command without rtk prefix
 - `rtk proxy <cmd>` runs command without filtering but tracks usage
 <!-- /headroom:rtk-instructions -->
+
+---
+
+## Coding Agent Version Tools
+
+Kleptowriter Core exports version utilities for coding agents to check project compatibility at session start.
+
+### Import
+
+```typescript
+import { getManifestVersionInfo, getStoryMetadataVersionInfo, getAllVersionInfo } from "@kleptowriter/kleptowriter-core";
+```
+
+### Usage at Session Start
+
+```typescript
+import { getAllVersionInfo } from "@kleptowriter/kleptowriter-core";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+
+async function checkProjectVersion(projectDir: string) {
+  const current = getAllVersionInfo();
+  
+  // Check .kleptowriter.json
+  let manifestVersion = 0;
+  try {
+    const manifest = JSON.parse(await readFile(join(projectDir, ".kleptowriter.json"), "utf-8"));
+    manifestVersion = manifest.manifest_version ?? 0;
+  } catch {
+    // File doesn't exist or is invalid
+  }
+  
+  // Check story/story-metadata.json
+  let storySchemaVersion = 0;
+  try {
+    const metadata = JSON.parse(await readFile(join(projectDir, "story", "story-metadata.json"), "utf-8"));
+    storySchemaVersion = metadata.schemaVersion ?? 0;
+  } catch {
+    // File doesn't exist or is invalid
+  }
+  
+  const needsManifestUpgrade = manifestVersion < current.manifest.manifest_version;
+  const needsStoryUpgrade = storySchemaVersion < current.storyMetadata.schemaVersion;
+  
+  if (needsManifestUpgrade || needsStoryUpgrade) {
+    console.log(`[kleptowriter] Project upgrade needed:`);
+    if (needsManifestUpgrade) {
+      console.log(`  - Manifest: v${manifestVersion} → v${current.manifest.manifest_version}`);
+    }
+    if (needsStoryUpgrade) {
+      console.log(`  - Story schema: v${storySchemaVersion} → v${current.storyMetadata.schemaVersion}`);
+    }
+    console.log(`  Run 'kleptowriter version:upgrade' to migrate.`);
+  }
+  
+  return { needsManifestUpgrade, needsStoryUpgrade };
+}
+
+// Call at session start
+await checkProjectVersion(process.cwd());
+```
+
+### Version Info Types
+
+```typescript
+// Project manifest (.kleptowriter.json)
+interface ManifestVersionInfo {
+  manifest_version: number;
+  kleptowriter_version: string;
+}
+
+// Story metadata (story/story-metadata.json)
+interface StoryMetadataVersionInfo {
+  schemaVersion: number;
+  kleptowriterVersion: string;
+}
+
+// Combined
+interface AllVersionInfo {
+  manifest: ManifestVersionInfo;
+  storyMetadata: StoryMetadataVersionInfo;
+}
+```
+
+### Current Versions (0.3.0)
+
+- `manifest_version`: 1
+- `schemaVersion` (story): 1
+- `kleptowriter_version`: "0.3.0"
+
+### Notes
+
+- These are **check-only** utilities — they do NOT run migrations
+- Migrations are handled separately via `kleptowriter version:upgrade` CLI
+- Core package has no dependencies on Pi SDK or TUI — only `node:fs/promises` and internal version constants

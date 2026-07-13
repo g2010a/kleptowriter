@@ -14,6 +14,7 @@ import { deduceChaptersTool } from "./chapter-tools.js";
 import { webSearchTool } from "./web-search-tools.js";
 import { webFetchTool } from "./web-fetch-tools.js";
 import { listNarrativeTemplatesTool } from "./narrative-tools.js";
+import { getProjectVersionTool } from "./project-version-tools.js";
 
 export {
   writeSceneTool,
@@ -26,6 +27,7 @@ export {
   suggestNextBeatTool,
   deduceChaptersTool,
   listNarrativeTemplatesTool,
+  getProjectVersionTool,
   webSearchTool,
   webFetchTool,
 };
@@ -34,7 +36,7 @@ export { setBible, getBible, getBiblePath } from "./bible-tools.js";
 export { getSceneStore } from "./scene-tools.js";
 
 /**
- * All 11 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
+ * All 12 Kleptowriter custom tool definitions, ready for `createAgentSession({ customTools })`.
  */
 export const allKleptowriterTools = [
   writeSceneTool,
@@ -47,6 +49,7 @@ export const allKleptowriterTools = [
   suggestNextBeatTool,
   deduceChaptersTool,
   listNarrativeTemplatesTool,
+  getProjectVersionTool,
   webSearchTool,
   webFetchTool,
 ];
