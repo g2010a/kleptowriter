@@ -3,11 +3,18 @@ dist/
 .tmp/
 *.log
 .DS_Store
-.omo/evidence/
-.omo/boulder.json
-.omo/run-continuation/
 .venv/
 tmp/
 
 # Pi SDK session files (conversation history)
 story/.pi-session/
+
+# OpenCode AI agent working files
+/.omo/
+
+# Test/QA project directories (tool-spawned, not source)
+story/
+My Novel/
+
+# Project manifest (auto-generated for user projects, not the source repo)
+.kleptowriter.json
