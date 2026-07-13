@@ -11,7 +11,10 @@ import { VersionRegistry } from "./registry.js";
  * code supports — indicates a downgrade (e.g. running old code on new data).
  */
 export class VersionDowngradeError extends Error {
-  constructor(dataVersion: number, maxVersion: number) {
+  constructor(
+    public readonly dataVersion: number,
+    public readonly maxVersion: number,
+  ) {
     super(
       `Data schema version ${dataVersion} exceeds max supported version ${maxVersion}. ` +
         "This appears to be a downgrade — run a newer version of the tool.",

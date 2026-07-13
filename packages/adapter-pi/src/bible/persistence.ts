@@ -22,7 +22,13 @@ import type {
   StoryBible,
   TimelineEntry,
 } from "@kleptowriter/kleptowriter-core";
-import { STORY_SCHEMA_VERSION } from "@kleptowriter/kleptowriter-core";
+import {
+  STORY_SCHEMA_VERSION,
+  loadAndMigrate,
+  setupMigrations,
+  VersionRegistry,
+  VersionDowngradeError,
+} from "@kleptowriter/kleptowriter-core";
 import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
@@ -187,6 +193,10 @@ function deserializeBible(data: SerializableBible): InMemoryStoryBible {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
+// Module-level migration registry singleton
+const migrationRegistry = new VersionRegistry();
+setupMigrations(migrationRegistry);
+
 // Module-level serialization lock for saveBible — serializes concurrent
 // calls so the .tmp → rename pattern doesn't race.
 let saveQueue: Promise<void> = Promise.resolve();
@@ -211,10 +221,23 @@ export async function loadBible(path: string): Promise<InMemoryStoryBible> {
 
   let data: SerializableBible;
   try {
-    data = JSON.parse(raw) as SerializableBible;
-  } catch {
-    console.warn(`[bible] corrupt JSON in ${path} — returning empty bible`);
-    return new InMemoryStoryBible();
+    const parsed = JSON.parse(raw) as SerializableBible;
+    const { data: migrated } = await loadAndMigrate(
+      path,
+      migrationRegistry,
+      STORY_SCHEMA_VERSION,
+    );
+    data = migrated as SerializableBible;
+  } catch (err) {
+    if (err instanceof VersionDowngradeError) {
+      console.warn(`[bible] ${err.message} — returning empty bible`);
+      return new InMemoryStoryBible();
+    }
+    if (err instanceof SyntaxError) {
+      console.warn(`[bible] corrupt JSON in ${path} — returning empty bible`);
+      return new InMemoryStoryBible();
+    }
+    throw err;
   }
 
   try {

@@ -6,7 +6,19 @@
 
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { CURRENT_VERSION, MANIFEST_SCHEMA_VERSION, createManifest } from "@kleptowriter/kleptowriter-core";
+import {
+  CURRENT_VERSION,
+  MANIFEST_SCHEMA_VERSION,
+  createManifest,
+  loadAndMigrate,
+  setupMigrations,
+  VersionRegistry,
+  VersionDowngradeError,
+} from "@kleptowriter/kleptowriter-core";
+
+// ── Module-level migration registry singleton ─────────────────────────────────
+const migrationRegistry = new VersionRegistry();
+setupMigrations(migrationRegistry);
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -86,18 +98,34 @@ export async function isValidProject(path: string): Promise<boolean> {
  */
 export async function readProjectManifest(path: string): Promise<ProjectManifest> {
   const manifestPath = join(path, ".kleptowriter.json");
-  const raw = await readFile(manifestPath, "utf-8");
-  const parsed = JSON.parse(raw) as Partial<ProjectManifest> & { version?: number };
+
+  // Migrate manifest to current schema version before processing
+  let migratedData: Partial<ProjectManifest> & { version?: number };
+  try {
+    const result = await loadAndMigrate(manifestPath, migrationRegistry, MANIFEST_SCHEMA_VERSION);
+    migratedData = result.data as Partial<ProjectManifest> & { version?: number };
+  } catch (err) {
+    if (err instanceof VersionDowngradeError) {
+      console.warn(`[project-detect] ${err.message} — returning default manifest`);
+      return {
+        manifest_version: MANIFEST_SCHEMA_VERSION,
+        kleptowriter_version: "0.0.0",
+        name: "",
+        created: new Date().toISOString(),
+      };
+    }
+    throw err;
+  }
 
   // Handle old format (version) and new format (manifest_version)
-  const manifestVersion = parsed.manifest_version ?? parsed.version ?? 1;
-  const kleptowriterVersion = parsed.kleptowriter_version ?? "0.0.0";
+  const manifestVersion = migratedData.manifest_version ?? migratedData.version ?? 1;
+  const kleptowriterVersion = migratedData.kleptowriter_version ?? "0.0.0";
 
   return {
     manifest_version: manifestVersion,
     kleptowriter_version: kleptowriterVersion,
-    name: parsed.name ?? "",
-    created: parsed.created ?? new Date().toISOString(),
+    name: migratedData.name ?? "",
+    created: migratedData.created ?? new Date().toISOString(),
   };
 }
 

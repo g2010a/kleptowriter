@@ -22,9 +22,19 @@ import type {
   StoryBible,
   TimelineEntry,
 } from "@kleptowriter/kleptowriter-core";
-import { STORY_SCHEMA_VERSION } from "@kleptowriter/kleptowriter-core";
+import {
+  STORY_SCHEMA_VERSION,
+  loadAndMigrate,
+  setupMigrations,
+  VersionRegistry,
+  VersionDowngradeError,
+} from "@kleptowriter/kleptowriter-core";
 import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
+
+// ── Module-level migration registry singleton ─────────────────────────────────
+const migrationRegistry = new VersionRegistry();
+setupMigrations(migrationRegistry);
 
 // ── Serializable format ─────────────────────────────────────────────────────
 // Plain JSON representation of InMemoryStoryBible state.
@@ -213,8 +223,20 @@ export async function loadMetadata(path: string): Promise<InMemoryStoryBible> {
     return new InMemoryStoryBible();
   }
 
+  let migratedData: SerializableBible;
   try {
-    return deserializeBible(data);
+    const result = await loadAndMigrate(path, migrationRegistry, STORY_SCHEMA_VERSION);
+    migratedData = result.data as SerializableBible;
+  } catch (err) {
+    if (err instanceof VersionDowngradeError) {
+      console.warn(`[metadata] ${err.message} — returning empty bible`);
+      return new InMemoryStoryBible();
+    }
+    throw err;
+  }
+
+  try {
+    return deserializeBible(migratedData);
   } catch (err) {
     console.warn(`[metadata] failed to deserialize ${path}: ${err} — returning empty bible`);
     return new InMemoryStoryBible();
