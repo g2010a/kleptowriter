@@ -1,0 +1,76 @@
+{
+  "version": 42,
+  "characters": [
+    [
+      "char-1",
+      {
+        "id": "char-1",
+        "name": "Amira",
+        "role": "protagonist",
+        "description": "A journalist in 1920s Cairo",
+        "traits": ["curious", "determined", "observant"],
+        "relationships": [["char-2", "contact"]],
+        "knowledge": ["smuggling-ring-exists", "contact-name-hassan"]
+      }
+    ]
+  ],
+  "locations": [
+    [
+      "loc-1",
+      {
+        "id": "loc-1",
+        "name": "Cairo Central Station",
+        "description": "Bustling train station in the heart of Cairo",
+        "type": "urban",
+        "tags": ["transport", "crowded", "historical"]
+      }
+    ]
+  ],
+  "items": [],
+  "arcs": [],
+  "plotThreads": [
+    [
+      "thread-1",
+      {
+        "id": "thread-1",
+        "name": "Smuggling Ring Investigation",
+        "status": "active",
+        "description": "Amira investigates a smuggling ring operating through Cairo Central Station",
+        "relatedCharacters": ["char-1"],
+        "relatedLocations": ["loc-1"],
+        "beats": []
+      }
+    ]
+  ],
+  "dramaticQuestions": [],
+  "chronology": [
+    {
+      "sceneId": "scene-1",
+      "timestamp": "1923-03-15T08:00:00.000Z",
+      "duration": "02:00",
+      "timeOfDay": "morning"
+    }
+  ],
+  "knowledgeState": {
+    "factsByCharacter": [
+      [
+        "char-1",
+        [
+          ["smuggling-ring-exists", "scene-1"],
+          ["contact-name-hassan", "scene-1"]
+        ]
+      ]
+    ]
+  },
+  "thematicProgression": {
+    "themes": [
+      [
+        "truth-vs-power",
+        {
+          "intensity": 0.3,
+          "sceneIntensities": [["scene-1", 0.3]]
+        }
+      ]
+    ]
+  }
+}
