@@ -13,3 +13,4 @@ export * from "./mailbox/index.js";
 export * from "./narrative/markov/index.js";
 export * from "./pipeline/index.js";
 export * from "./context/budget.js";
+export * from "./versioning/index.js";
