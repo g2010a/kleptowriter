@@ -5,7 +5,7 @@
  * Root package.json version must be manually kept in sync with CURRENT_VERSION.
  */
 
-export const CURRENT_VERSION = "0.4.1";
+export const CURRENT_VERSION = "0.4.2";
 export const MANIFEST_SCHEMA_VERSION = 1;
 export const STORY_SCHEMA_VERSION = 1;
 
