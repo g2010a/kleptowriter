@@ -1,6 +1,14 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
 import { createKleptowriterExtension } from "./extension.js";
 
+function mockCtx(): { model: Record<string, never>; ui: { notify: ReturnType<typeof mock> }; mode: string } {
+  return {
+    model: {},
+    ui: { notify: mock(() => {}) },
+    mode: "tui",
+  };
+}
+
 // Minimal mock of ExtensionAPI — captures registerCommand calls
 function createMockPi() {
   const registeredCommands = new Map<
@@ -39,19 +47,21 @@ describe("createKleptowriterExtension", () => {
     "/metadata",
     "/scenes",
     "/project",
+    "/version-upgrade",
   ];
 
-  it("registers all 6 command names", () => {
+  it("registers all 7 command names", () => {
     for (const name of expectedNames) {
       expect(pi.registeredCommands.has(name)).toBe(true);
     }
-    expect(pi.registeredCommands.size).toBe(6);
+    expect(pi.registeredCommands.size).toBe(7);
   });
 
-  it("each handler calls sendUserMessage", async () => {
+  it("each guidance command calls sendUserMessage", async () => {
     for (const [name, cmd] of pi.registeredCommands) {
+      if (name === "/version-upgrade") continue;
       pi.sendUserMessage.mockClear();
-      await cmd.handler("", {});
+      await cmd.handler("", mockCtx());
       expect(pi.sendUserMessage).toHaveBeenCalledTimes(1);
       expect(typeof pi.sendUserMessage.mock.calls[0]![0]).toBe("string");
     }
@@ -59,7 +69,7 @@ describe("createKleptowriterExtension", () => {
 
   it("includes custom arguments in the message", async () => {
     const cmd = pi.registeredCommands.get("/interview")!;
-    await cmd.handler("mystery novel set in 1920s Cairo", {});
+    await cmd.handler("mystery novel set in 1920s Cairo", mockCtx());
     const sent = pi.sendUserMessage.mock.calls[0]![0] as string;
     expect(sent).toContain("mystery novel set in 1920s Cairo");
     expect(sent).toContain("User context:");
@@ -67,8 +77,15 @@ describe("createKleptowriterExtension", () => {
 
   it("omits user context line when no args provided", async () => {
     const cmd = pi.registeredCommands.get("/write")!;
-    await cmd.handler("", {});
+    await cmd.handler("", mockCtx());
     const sent = pi.sendUserMessage.mock.calls[0]![0] as string;
     expect(sent).not.toContain("User context:");
+  });
+
+  it("/version-upgrade shows info when already up to date", async () => {
+    const cmd = pi.registeredCommands.get("/version-upgrade")!;
+    const ctx = mockCtx();
+    await cmd.handler("", ctx);
+    expect(ctx.ui.notify).toHaveBeenCalled();
   });
 });

@@ -43,7 +43,7 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(0);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 1, story schema: 1\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 1, story schema: 1\)$/);
   });
 
   it("outputs N/A for missing manifest and exits 1", async () => {
@@ -55,7 +55,7 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: N\/A, story schema: 1\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: N\/A, story schema: 1\)$/);
   });
 
   it("outputs N/A for missing story metadata and exits 1", async () => {
@@ -67,14 +67,14 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 1, story schema: N\/A\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 1, story schema: N\/A\)$/);
   });
 
   it("outputs N/A for both missing files and exits 1", async () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: N\/A, story schema: N\/A\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: N\/A, story schema: N\/A\)$/);
   });
 
   it("exits 1 when manifest version is old", async () => {
@@ -90,7 +90,7 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 0, story schema: 1\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 0, story schema: 1\)$/);
   });
 
   it("exits 1 when story schema version is old", async () => {
@@ -106,7 +106,7 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 1, story schema: 0\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 1, story schema: 0\)$/);
   });
 
   it("exits 1 when story schema version is future", async () => {
@@ -122,7 +122,7 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(1);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 1, story schema: 999\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 1, story schema: 999\)$/);
   });
 
   it("respects --project-dir argument", async () => {
@@ -143,7 +143,7 @@ describe("version:check CLI", () => {
       const result = await runCli(["--project-dir", otherDir], testDir);
 
       expect(result.code).toBe(0);
-      expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 1, story schema: 1\)$/);
+      expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 1, story schema: 1\)$/);
     } finally {
       await rm(otherDir, { recursive: true, force: true });
     }
@@ -152,7 +152,7 @@ describe("version:check CLI", () => {
   it("handles kleptowriter_version field in manifest", async () => {
     await writeFile(
       join(testDir, ".kleptowriter.json"),
-      JSON.stringify({ name: "test", created: "2024-01-01T00:00:00.000Z", kleptowriter_version: "0.3.0" })
+      JSON.stringify({ name: "test", created: "2024-01-01T00:00:00.000Z", kleptowriter_version: "0.4.0" })
     );
     await writeFile(
       join(testDir, "story", "story-metadata.json"),
@@ -162,6 +162,6 @@ describe("version:check CLI", () => {
     const result = await runCli([], testDir);
 
     expect(result.code).toBe(0);
-    expect(result.stdout).toMatch(/^kleptowriter v0\.3\.0 \(manifest schema: 0\.3\.0, story schema: 1\)$/);
+    expect(result.stdout).toMatch(/^kleptowriter v0\.4\.0 \(manifest schema: 0\.4\.0, story schema: 1\)$/);
   });
 });
