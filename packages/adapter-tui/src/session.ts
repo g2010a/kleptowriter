@@ -38,6 +38,25 @@ export async function createTuiSession(
     },
   });
 
+  // Patch Pi SDK compat for OpenCode DeepSeek V4 models
+  // Pi SDK 0.80.6 defaults thinkingFormat: "openai" for opencode.ai URL,
+  // but DeepSeek V4 requires "deepseek" format (thinking object, not reasoning_effort)
+  const DEEPSEEK_V4_OPENCODE_MODELS = [
+    "deepseek-v4-flash-free",
+    "deepseek-v4-flash",
+    "deepseek-v4-pro",
+  ] as const;
+  for (const modelId of DEEPSEEK_V4_OPENCODE_MODELS) {
+    const model = services.modelRegistry.find("opencode", modelId);
+    if (model) {
+      model.compat = {
+        ...model.compat,
+        thinkingFormat: "deepseek" as const,
+        supportsReasoningEffort: false,
+      };
+    }
+  }
+
   const sessionDir = join(cwd, "story", ".pi-session");
   const sessionManager = SessionManager.create(cwd, sessionDir);
 
@@ -65,6 +84,23 @@ const { session, extensionsResult, modelFallbackMessage } =
           systemPromptOverride: options.systemPromptOverride ?? (() => systemPrompt),
         },
       });
+
+      // Patch Pi SDK compat for OpenCode DeepSeek V4 models (runtime session)
+      const DEEPSEEK_V4_OPENCODE_MODELS = [
+        "deepseek-v4-flash-free",
+        "deepseek-v4-flash",
+        "deepseek-v4-pro",
+      ] as const;
+      for (const modelId of DEEPSEEK_V4_OPENCODE_MODELS) {
+        const model = s.modelRegistry.find("opencode", modelId);
+        if (model) {
+          model.compat = {
+            ...model.compat,
+            thinkingFormat: "deepseek" as const,
+            supportsReasoningEffort: false,
+          };
+        }
+      }
 
       return createAgentSessionFromServices({
         services: s,

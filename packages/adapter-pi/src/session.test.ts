@@ -41,7 +41,11 @@ const mockServices = {
   agentDir: "/test/agentDir",
   authStorage: {},
   settingsManager: {},
-  modelRegistry: {},
+  modelRegistry: {
+    find() {
+      return undefined;
+    },
+  },
   resourceLoader: {},
   diagnostics: [],
 };
@@ -207,5 +211,96 @@ describe("startNovelSession", () => {
       if (originalKey !== undefined) process.env.ANTHROPIC_API_KEY = originalKey;
       if (originalOpenAI !== undefined) process.env.OPENAI_API_KEY = originalOpenAI;
     }
+  });
+});
+
+// ── Model compat mutation tests ─────────────────────────────────────────
+
+describe("model compat mutation", () => {
+  test("mutates deepseek-v4-flash-free compat with thinkingFormat and supportsReasoningEffort", async () => {
+    const deepseekFlashFree = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const deepseekFlash = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        supportsLongCacheRetention: false,
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const deepseekPro = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        supportsLongCacheRetention: false,
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const claudeModel = {
+      compat: { supportsStore: true, thinkingFormat: "anthropic" },
+    };
+
+    const modelMap = new Map([
+      ["opencode:deepseek-v4-flash-free", deepseekFlashFree],
+      ["opencode:deepseek-v4-flash", deepseekFlash],
+      ["opencode:deepseek-v4-pro", deepseekPro],
+      ["anthropic:claude-sonnet-4-5", claudeModel],
+    ]);
+
+    const patchedServices = {
+      ...mockServices,
+      modelRegistry: {
+        find(provider: string, modelId: string) {
+          return modelMap.get(`${provider}:${modelId}`);
+        },
+      },
+    };
+
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices);
+
+    const agentDir = await tempAgentDir();
+    await createKleptowriterSession({ agentDir });
+
+    expect(deepseekFlashFree.compat.thinkingFormat).toBe("deepseek");
+    expect(deepseekFlashFree.compat.supportsReasoningEffort).toBe(false);
+    expect(deepseekFlashFree.compat.supportsStore).toBe(false);
+
+    expect(deepseekFlash.compat.thinkingFormat).toBe("deepseek");
+    expect(deepseekFlash.compat.supportsReasoningEffort).toBe(false);
+    expect(deepseekFlash.compat.supportsLongCacheRetention).toBe(false);
+
+    expect(deepseekPro.compat.thinkingFormat).toBe("deepseek");
+    expect(deepseekPro.compat.supportsReasoningEffort).toBe(false);
+    expect(deepseekPro.compat.supportsLongCacheRetention).toBe(false);
+
+    expect(claudeModel.compat.thinkingFormat).toBe("anthropic");
+    expect(claudeModel.compat).not.toHaveProperty("supportsReasoningEffort");
+
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices);
+  });
+
+  test("does not crash when model not found in registry", async () => {
+    const patchedServices = {
+      ...mockServices,
+      modelRegistry: {
+        find() {
+          return undefined;
+        },
+      },
+    };
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices);
+
+    const agentDir = await tempAgentDir();
+    await expect(createKleptowriterSession({ agentDir })).resolves.toBeDefined();
+
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices);
   });
 });
