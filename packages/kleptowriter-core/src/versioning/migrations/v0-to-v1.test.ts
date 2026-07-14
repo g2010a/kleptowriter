@@ -2,6 +2,7 @@ import { describe, it, expect } from "bun:test";
 import { manifestV0toV1, storySchemaV0toV1 } from "./v0-to-v1.js";
 import { setupMigrations } from "./registry-setup.js";
 import { VersionRegistry } from "../registry.js";
+import { CURRENT_VERSION } from "../version.js";
 
 import manifestV0 from "../__fixtures__/manifest-v0.json" with { type: "json" };
 import storyV0 from "../__fixtures__/story-v0.json" with { type: "json" };
@@ -12,7 +13,7 @@ describe("manifestV0toV1", () => {
     const result = manifestV0toV1(manifestV0) as Record<string, unknown>;
 
     expect(result).not.toBeNull();
-    expect(result.kleptowriter_version).toBe("0.3.0");
+    expect(result.kleptowriter_version).toBe(CURRENT_VERSION);
     expect(result.manifest_version).toBe(1);
   });
 
@@ -39,11 +40,11 @@ describe("manifestV0toV1", () => {
   });
 
   it("is idempotent for already-new manifest", () => {
-    const input = { name: "test", created: "now", manifest_version: 1, kleptowriter_version: "0.3.0" };
+    const input = { name: "test", created: "now", manifest_version: 1, kleptowriter_version: CURRENT_VERSION };
     const result = manifestV0toV1(input) as Record<string, unknown>;
 
     expect(result.manifest_version).toBe(1);
-    expect(result.kleptowriter_version).toBe("0.3.0");
+    expect(result.kleptowriter_version).toBe(CURRENT_VERSION);
     // no duplicate or changed values
     expect(Object.keys(result).sort()).toEqual(Object.keys(input).sort());
   });
@@ -135,7 +136,7 @@ describe("registry-setup", () => {
     const manifestMigration = path.find((m) => m.description.includes("Manifest"))!;
     const result = manifestMigration.migrate(manifestV0) as Record<string, unknown>;
 
-    expect(result.kleptowriter_version).toBe("0.3.0");
+    expect(result.kleptowriter_version).toBe(CURRENT_VERSION);
     expect(result.manifest_version).toBe(1);
   });
 

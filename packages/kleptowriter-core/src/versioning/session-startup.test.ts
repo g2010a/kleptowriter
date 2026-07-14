@@ -3,7 +3,7 @@ import { mkdtemp, writeFile, rm, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { runStartupCheck } from "./session-startup.js";
-import { MANIFEST_SCHEMA_VERSION, STORY_SCHEMA_VERSION } from "./version.js";
+import { CURRENT_VERSION, MANIFEST_SCHEMA_VERSION, STORY_SCHEMA_VERSION } from "./version.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -17,7 +17,7 @@ async function writeManifest(
 ): Promise<void> {
   const manifest = {
     manifest_version: manifestVersion,
-    kleptowriter_version: "0.3.0",
+    kleptowriter_version: CURRENT_VERSION,
     name: "test-project",
     created: "2024-01-01T00:00:00.000Z",
     ...overrides,
@@ -142,7 +142,7 @@ describe("runStartupCheck", () => {
 
     const result = await runStartupCheck(tmpDir);
 
-    expect(result.currentVersion).toBe("0.3.0");
+    expect(result.currentVersion).toBe(CURRENT_VERSION);
   });
 
   it("handles manifest with non-numeric manifest_version", async () => {
