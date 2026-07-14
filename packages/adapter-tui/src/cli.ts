@@ -2,6 +2,7 @@ import { isValidProject, isEmptyDir, initProject, readProjectManifest } from "./
 import { createTuiSession } from "./session.js";
 import { createKleptowriterExtension } from "./extension.js";
 import { createWelcomeComponent } from "./welcome.js";
+import { runStartupCheck } from "@kleptowriter/kleptowriter-core";
 import { darkTheme, lightTheme } from "./themes.js";
 import { mkdtempSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -97,11 +98,24 @@ function registerCleanupHandlers(): void {
 // ── Main entry point ─────────────────────────────────────────────────────────
 
 export async function main() {
+  // Suppress Pi SDK's automatic version check to avoid update warnings
+  process.env.PI_SKIP_VERSION_CHECK = "1";
+
   const themePaths = ensureThemeDir();
   registerCleanupHandlers();
 
   const project = await detectOrInitProject();
   if (!project) return;
+
+  // Run startup version check before TUI starts so output is visible
+  const startupResult = await runStartupCheck(project.path).catch(() => null);
+  if (startupResult?.needsMigration) {
+    console.warn(`\n[kleptowriter] Project upgrade needed:`);
+    for (const msg of startupResult.pendingMigrations) {
+      console.warn(`  ${msg}`);
+    }
+    console.warn(`  Run 'kleptowriter version:upgrade' to migrate.\n`);
+  }
 
   const welcome = createWelcomeComponent();
   const session = await createTuiSession({

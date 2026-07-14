@@ -54,7 +54,14 @@ export function createKleptowriterExtension(
     for (const cmd of commands) {
       pi.registerCommand(cmd.name, {
         description: cmd.description,
-        handler: async (args, _ctx) => {
+        handler: async (args, ctx) => {
+          if (!ctx.model) {
+            ctx.ui.notify(
+              `Run /login to configure an AI provider, then use ${cmd.name}`,
+              "warning",
+            );
+            return;
+          }
           const message =
             cmd.guidance + (args ? `\n\nUser context: ${args}` : "");
           pi.sendUserMessage(message);
