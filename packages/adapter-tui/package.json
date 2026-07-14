@@ -17,7 +17,7 @@
     "build:binary:all": "bun run build:binary && bun run build:binary:darwin-arm64 || true && bun run build:binary:darwin-x64 || true && bun run build:binary:linux-arm64 || true"
   },
   "dependencies": {
-    "@earendil-works/pi-coding-agent": "0.80.3",
+    "@earendil-works/pi-coding-agent": "0.80.6",
     "@kleptowriter/kleptowriter-core": "workspace:*",
     "@mozilla/readability": "0.6.0",
     "@sinclair/typebox": "0.34.49",
