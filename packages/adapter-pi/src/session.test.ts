@@ -244,11 +244,11 @@ describe("model compat mutation", () => {
         requiresReasoningContentOnAssistantMessages: true,
       },
     };
-    const claudeModel = {
+    const claudeModel: { compat: Record<string, unknown> } = {
       compat: { supportsStore: true, thinkingFormat: "anthropic" },
     };
 
-    const modelMap = new Map([
+    const modelMap = new Map<string, { compat: Record<string, unknown> }>([
       ["opencode:deepseek-v4-flash-free", deepseekFlashFree],
       ["opencode:deepseek-v4-flash", deepseekFlash],
       ["opencode:deepseek-v4-pro", deepseekPro],
@@ -264,27 +264,32 @@ describe("model compat mutation", () => {
       },
     };
 
-    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices as any);
 
     const agentDir = await tempAgentDir();
     await createKleptowriterSession({ agentDir });
 
-    expect(deepseekFlashFree.compat.thinkingFormat).toBe("deepseek");
-    expect(deepseekFlashFree.compat.supportsReasoningEffort).toBe(false);
-    expect(deepseekFlashFree.compat.supportsStore).toBe(false);
+    const flashFreeCompat = deepseekFlashFree.compat as Record<string, unknown>;
+    expect(flashFreeCompat.thinkingFormat).toBe("deepseek");
+    expect(flashFreeCompat.supportsReasoningEffort).toBe(false);
+    expect(flashFreeCompat.supportsStore).toBe(false);
 
-    expect(deepseekFlash.compat.thinkingFormat).toBe("deepseek");
-    expect(deepseekFlash.compat.supportsReasoningEffort).toBe(false);
-    expect(deepseekFlash.compat.supportsLongCacheRetention).toBe(false);
+    const flashCompat = deepseekFlash.compat as Record<string, unknown>;
+    expect(flashCompat.thinkingFormat).toBe("deepseek");
+    expect(flashCompat.supportsReasoningEffort).toBe(false);
+    expect(flashCompat.supportsLongCacheRetention).toBe(false);
 
-    expect(deepseekPro.compat.thinkingFormat).toBe("deepseek");
-    expect(deepseekPro.compat.supportsReasoningEffort).toBe(false);
-    expect(deepseekPro.compat.supportsLongCacheRetention).toBe(false);
+    const proCompat = deepseekPro.compat as Record<string, unknown>;
+    expect(proCompat.thinkingFormat).toBe("deepseek");
+    expect(proCompat.supportsReasoningEffort).toBe(false);
+    expect(proCompat.supportsLongCacheRetention).toBe(false);
 
     expect(claudeModel.compat.thinkingFormat).toBe("anthropic");
     expect(claudeModel.compat).not.toHaveProperty("supportsReasoningEffort");
 
-    mockCreateAgentSessionServices.mockImplementation(async () => mockServices);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices as any);
   });
 
   test("does not crash when model not found in registry", async () => {
@@ -296,11 +301,13 @@ describe("model compat mutation", () => {
         },
       },
     };
-    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices as any);
 
     const agentDir = await tempAgentDir();
     await expect(createKleptowriterSession({ agentDir })).resolves.toBeDefined();
 
-    mockCreateAgentSessionServices.mockImplementation(async () => mockServices);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices as any);
   });
 });
