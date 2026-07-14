@@ -1,5 +1,16 @@
 import type { ExtensionFactory } from "@earendil-works/pi-coding-agent";
 import type { WelcomeComponent } from "./welcome.js";
+import type { StartupCheckResult } from "@kleptowriter/kleptowriter-core";
+import {
+  VersionRegistry,
+  setupMigrations,
+  loadAndMigrate,
+  runStartupCheck,
+  MANIFEST_SCHEMA_VERSION,
+  STORY_SCHEMA_VERSION,
+} from "@kleptowriter/kleptowriter-core";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 interface CommandDef {
   name: string;
@@ -49,6 +60,7 @@ const commands: CommandDef[] = [
 // ponytail: command list is static data, no need for a registry
 export function createKleptowriterExtension(
   welcome?: WelcomeComponent,
+  startupResult?: StartupCheckResult | null,
 ): ExtensionFactory {
   return (pi) => {
     for (const cmd of commands) {
@@ -73,6 +85,16 @@ export function createKleptowriterExtension(
       let dismissed = false;
 
       pi.on("session_start", async (_event, ctx) => {
+        if (startupResult?.needsMigration && ctx.mode === "tui" && ctx.hasUI) {
+          const lines = startupResult.pendingMigrations
+            .map((m: string) => `  • ${m}`)
+            .join("\n");
+          ctx.ui.notify(
+            `Project upgrade needed:\n${lines}\nType /version-upgrade to migrate.`,
+            "warning",
+          );
+        }
+
         if (ctx.mode === "tui" && ctx.hasUI) {
           ctx.ui.setHeader((_tui, _theme) => ({
             render: (width: number) => welcome.render(width),
@@ -95,5 +117,52 @@ export function createKleptowriterExtension(
         }
       });
     }
+
+    // ponytail: /version-upgrade is a standalone utility — no AI provider needed
+    pi.registerCommand("/version-upgrade", {
+      description: "Run schema migrations to upgrade project data format",
+      handler: async (_args, ctx) => {
+        const projectDir = process.cwd();
+
+        const check = await runStartupCheck(projectDir);
+        if (!check.needsMigration) {
+          ctx.ui.notify("Project is already up to date.", "info");
+          return;
+        }
+
+        const registry = new VersionRegistry();
+        setupMigrations(registry);
+
+        const manifestPath = join(projectDir, ".kleptowriter.json");
+        const storyPath = join(projectDir, "story", "story-metadata.json");
+
+        let migrated = 0;
+
+        try {
+          const manifestResult = await loadAndMigrate<Record<string, unknown>>(
+            manifestPath, registry, MANIFEST_SCHEMA_VERSION,
+          );
+          if (manifestResult.migrated) {
+            await writeFile(manifestPath, JSON.stringify(manifestResult.data, null, 2) + "\n");
+            migrated++;
+          }
+
+          const storyResult = await loadAndMigrate<Record<string, unknown>>(
+            storyPath, registry, STORY_SCHEMA_VERSION,
+          );
+          if (storyResult.migrated) {
+            await writeFile(storyPath, JSON.stringify(storyResult.data, null, 2) + "\n");
+            migrated++;
+          }
+
+          ctx.ui.notify(
+            `${migrated} file(s) migrated. Restart session for changes to take full effect.`,
+            "info",
+          );
+        } catch (err) {
+          ctx.ui.notify(`Upgrade failed: ${(err as Error).message}`, "error");
+        }
+      },
+    });
   };
 }

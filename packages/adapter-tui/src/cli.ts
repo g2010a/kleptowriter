@@ -109,18 +109,11 @@ export async function main() {
 
   // Run startup version check before TUI starts so output is visible
   const startupResult = await runStartupCheck(project.path).catch(() => null);
-  if (startupResult?.needsMigration) {
-    console.warn(`\n[kleptowriter] Project upgrade needed:`);
-    for (const msg of startupResult.pendingMigrations) {
-      console.warn(`  ${msg}`);
-    }
-    console.warn(`  Run 'kleptowriter version:upgrade' to migrate.\n`);
-  }
 
   const welcome = createWelcomeComponent();
   const session = await createTuiSession({
     cwd: project.path,
-    extensionFactories: [createKleptowriterExtension(welcome)],
+    extensionFactories: [createKleptowriterExtension(welcome, startupResult)],
     additionalThemePaths: themePaths,
   });
 
