@@ -67,14 +67,17 @@ const mockCreateAgentSessionFromServices = mock(async () => ({
 }));
 const mockSessionManagerInMemory = mock(() => ({}));
 
+// Mock defineTool for tools/registry.ts which imports it
+const mockDefineTool = mock((def: unknown) => def);
+
 mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionServices: mockCreateAgentSessionServices,
   createAgentSessionFromServices: mockCreateAgentSessionFromServices,
   SessionManager: { inMemory: mockSessionManagerInMemory, create: mock(() => ({})) },
+  defineTool: mockDefineTool,
 }));
 // ── End Pi SDK mock ───────────────────────────────────────────────────────────
 
-import { createKleptowriterSession, startNovelSession } from "./session.js";
 import { allKleptowriterTools } from "./tools/registry.js";
 
 // ── allKleptowriterTools (no mock needed — pure registry checks) ──────────────
@@ -94,6 +97,7 @@ describe("allKleptowriterTools", () => {
 
 describe("createKleptowriterSession", () => {
   test("session registers exactly 9 Kleptowriter tools in active set", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { session } = await createKleptowriterSession({ agentDir });
     try {
@@ -109,6 +113,7 @@ describe("createKleptowriterSession", () => {
   });
 
   test("session has zero built-in coding tools in active set", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { session } = await createKleptowriterSession({ agentDir });
     try {
@@ -123,6 +128,7 @@ describe("createKleptowriterSession", () => {
   });
 
   test("system prompt is loaded from system.md", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { session } = await createKleptowriterSession({ agentDir });
     try {
@@ -138,6 +144,7 @@ describe("createKleptowriterSession", () => {
   });
 
   test("startup context is returned from load_context auto-call", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { startupContext } = await createKleptowriterSession({ agentDir });
     expect(startupContext).toBeDefined();
@@ -148,6 +155,7 @@ describe("createKleptowriterSession", () => {
   });
 
   test("onEvent callback does not break session creation", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const events: unknown[] = [];
     const { session, unsubscribe } = await createKleptowriterSession({
@@ -168,6 +176,7 @@ describe("createKleptowriterSession", () => {
   });
 
   test("unsubscribe is a no-op when no onEvent provided", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { session, unsubscribe } = await createKleptowriterSession({ agentDir });
     try {
@@ -185,6 +194,7 @@ describe("createKleptowriterSession", () => {
 
 describe("startNovelSession", () => {
   test("returns a valid session offline (no API key required)", async () => {
+    const { startNovelSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const { session } = await startNovelSession({ agentDir });
     try {
@@ -198,6 +208,7 @@ describe("startNovelSession", () => {
   });
 
   test("does not send greeting when no API key is present", async () => {
+    const { startNovelSession } = await import("./session.js");
     const agentDir = await tempAgentDir();
     const originalKey = process.env.ANTHROPIC_API_KEY;
     const originalOpenAI = process.env.OPENAI_API_KEY;
@@ -218,6 +229,7 @@ describe("startNovelSession", () => {
 
 describe("model compat mutation", () => {
   test("mutates deepseek-v4-flash-free compat with thinkingFormat and supportsReasoningEffort", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const deepseekFlashFree = {
       compat: {
         supportsStore: false,
@@ -293,6 +305,7 @@ describe("model compat mutation", () => {
   });
 
   test("does not crash when model not found in registry", async () => {
+    const { createKleptowriterSession } = await import("./session.js");
     const patchedServices = {
       ...mockServices,
       modelRegistry: {

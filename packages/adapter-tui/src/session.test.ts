@@ -1,5 +1,4 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
-import { allKleptowriterTools } from "./tools/registry.js";
 
 // Mock Pi SDK modules before importing session
 const mockServices = {
@@ -39,6 +38,9 @@ const mockInteractiveModeConstructor = mock(
   },
 );
 
+// Mock defineTool for tools/registry.ts which imports it
+const mockDefineTool = mock((def: unknown) => def);
+
 // Patch the module mock before importing session.ts
 mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionServices: mockCreateAgentSessionServices,
@@ -46,9 +48,10 @@ mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionRuntime: mockCreateAgentSessionRuntime,
   SessionManager: { inMemory: mockSessionManagerInMemory, create: mock(() => ({})), },
   InteractiveMode: mockInteractiveModeConstructor,
+  defineTool: mockDefineTool,
 }));
 
-import { createTuiSession } from "./session.js";
+import { allKleptowriterTools } from "./tools/registry.js";
 
 // Helper: safely extract first call args from mock
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,6 +71,7 @@ beforeEach(() => {
 
 describe("createTuiSession", () => {
   it("calls createAgentSessionServices with resource loader options", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     await createTuiSession({ cwd: "/test/cwd" });
 
     expect(mockCreateAgentSessionServices).toHaveBeenCalledTimes(1);
@@ -82,6 +86,7 @@ describe("createTuiSession", () => {
   });
 
   it("passes customTools: allKleptowriterTools to createAgentSessionFromServices", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     await createTuiSession();
 
     expect(mockCreateAgentSessionFromServices).toHaveBeenCalledTimes(1);
@@ -90,6 +95,7 @@ describe("createTuiSession", () => {
   });
 
   it("sets excludeTools: [bash] to disable bash while keeping other Pi coding tools", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     await createTuiSession();
 
     const args = firstCallArgs(mockCreateAgentSessionFromServices);
@@ -97,6 +103,7 @@ describe("createTuiSession", () => {
   });
 
   it("applies systemPromptOverride when provided", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     const customPrompt = "You are a custom writing assistant.";
     await createTuiSession({
       systemPromptOverride: () => customPrompt,
@@ -108,6 +115,7 @@ describe("createTuiSession", () => {
   });
 
   it("uses default system prompt when no override is provided", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     await createTuiSession();
 
     const args = firstCallArgs(mockCreateAgentSessionServices);
@@ -118,6 +126,7 @@ describe("createTuiSession", () => {
   });
 
   it("returns an InteractiveMode instance", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     const result = await createTuiSession();
     expect(result).toBeDefined();
     expect(mockInteractiveModeConstructor).toHaveBeenCalledTimes(1);
@@ -128,6 +137,7 @@ describe("createTuiSession", () => {
 
 describe("model compat mutation", () => {
   it("mutates deepseek-v4-flash-free compat with thinkingFormat and supportsReasoningEffort", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     const deepseekFlashFree = {
       compat: {
         supportsStore: false,
@@ -202,6 +212,7 @@ describe("model compat mutation", () => {
   });
 
   it("does not crash when model not found in registry", async () => {
+    const { createTuiSession } = await import("./session.js?v=1");
     const patchedServices = {
       ...mockServices,
       modelRegistry: {
