@@ -50,18 +50,10 @@ const mockSession = {
 };
 const mockCreateTuiSession = mock(async () => mockSession);
 
-mock.module("./session.js", () => ({
-  createTuiSession: mockCreateTuiSession,
-}));
-
-const mockExtensionFactory = mock(() => (pi: any) => {});
+const mockExtensionFactory: any = mock(() => (pi: unknown) => {});
 const mockCreateKleptowriterExtension = mock(
-  (welcome?: any) => mockExtensionFactory,
+  (welcome?: unknown) => mockExtensionFactory,
 );
-
-mock.module("./extension.js", () => ({
-  createKleptowriterExtension: mockCreateKleptowriterExtension,
-}));
 
 const mockWelcome = {
   render: mock(() => ["Welcome!"]),
@@ -69,10 +61,6 @@ const mockWelcome = {
   dismissed: false,
 };
 const mockCreateWelcomeComponent = mock(() => mockWelcome);
-
-mock.module("./welcome.js", () => ({
-  createWelcomeComponent: mockCreateWelcomeComponent,
-}));
 
 import { main } from "./cli.js";
 
@@ -149,11 +137,17 @@ afterEach(() => {
 // ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("cli main", () => {
+  const mainOpts: import("./cli.js").MainOptions = {
+    createTuiSession: mockCreateTuiSession as never,
+    createKleptowriterExtension: mockCreateKleptowriterExtension as never,
+    createWelcomeComponent: mockCreateWelcomeComponent as never,
+  };
+
   it("empty cwd → shows init prompt, creates project on yes", async () => {
     mockIsEmptyDir.mockResolvedValue(true);
     mockIsValidProject.mockResolvedValue(false);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     simulateInput("y");
@@ -171,7 +165,7 @@ describe("cli main", () => {
     mockIsEmptyDir.mockResolvedValue(true);
     mockIsValidProject.mockResolvedValue(false);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     simulateInput("n");
@@ -186,7 +180,7 @@ describe("cli main", () => {
     mockIsEmptyDir.mockResolvedValue(false);
     mockIsValidProject.mockResolvedValue(false);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     await mainDone;
@@ -197,7 +191,7 @@ describe("cli main", () => {
   it("valid project cwd → opens TUI directly", async () => {
     mockIsValidProject.mockResolvedValue(true);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     await mainDone;
@@ -210,7 +204,7 @@ describe("cli main", () => {
   it("sets up SIGINT handler", async () => {
     mockIsValidProject.mockResolvedValue(true);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     await mainDone;
@@ -221,7 +215,7 @@ describe("cli main", () => {
   it("SIGINT cleans up and exits", async () => {
     mockIsValidProject.mockResolvedValue(true);
 
-    const mainDone = main();
+    const mainDone = main(mainOpts);
     await Bun.sleep(10);
 
     await mainDone;
