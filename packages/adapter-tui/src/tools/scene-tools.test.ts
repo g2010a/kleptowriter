@@ -216,6 +216,65 @@ test("read_scene rejects invalid scene IDs", async () => {
   }
 });
 
+// ── .md suffix handling ──────────────────────────────────────────────────────
+
+test("write_scene accepts scene ID with .md suffix", async () => {
+  setup();
+  try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
+    const params = makeParams("setup-01-opening.md", "Opening", "It was a dark night.");
+    const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(true);
+    expect(details.path).toBe("story/scenes/setup-01-opening.md");
+  } finally {
+    teardown();
+  }
+});
+
+test("read_scene accepts scene ID with .md suffix", async () => {
+  setup();
+  try {
+    writeBible({
+      narrativeVoice: "omniscient",
+      povStyle: "third-person",
+      tensePreference: "past",
+      vocabularyRegister: "literary",
+      sentenceLengthTarget: "varied",
+      proseStyleNotes: "elegant",
+      dialogueStyleNotes: "naturalistic",
+      pacingPreference: "measured",
+      paragraphStructure: "mixed",
+      rhetoricalDevices: "metaphor",
+      commaStyle: "oxford",
+      dialogueTagPreference: "said-only",
+    });
+    const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
+    await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+
+    const result = await readSceneTool.execute("c2", { sceneId: "setup-01-opening.md" } as ReadSceneParams, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(true);
+    expect(details.scene.title).toBe("Opening");
+    expect(details.scene.prose).toBe("It was a dark night.");
+  } finally {
+    teardown();
+  }
+});
+
 // ── Edge cases ──────────────────────────────────────────────────────────────
 
 test("list_scenes returns empty when no scenes exist", async () => {

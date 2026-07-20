@@ -167,6 +167,61 @@ test("update_metadata stores entity and persists version", async () => {
   expect(parsed.version).toBe(details.version);
 });
 
+// ── update_metadata with stylometry ──────────────────────────────────────────
+
+test("update_metadata with type stylometry populates metadata stylometry", async () => {
+  const dir = await tmpDir();
+  const path = join(dir, "story-metadata.json");
+  const bible = new InMemoryStoryBible();
+  setMetadata(bible, path);
+
+  const stylometryData = {
+    narrativeVoice: "first-person",
+    povStyle: "single",
+    tensePreference: "past",
+    vocabularyRegister: "literary",
+    sentenceLengthTarget: "varied",
+    proseStyleNotes: "elegant",
+    dialogueStyleNotes: "naturalistic",
+    pacingPreference: "measured",
+    paragraphStructure: "mixed",
+    rhetoricalDevices: "metaphor",
+    commaStyle: "oxford",
+    dialogueTagPreference: "said-only",
+  };
+
+  const result = await updateMetadataTool.execute!(
+    "call-1",
+    { type: "stylometry", id: "default", data: stylometryData },
+    undefined, undefined, undefined as any,
+  );
+  const details = result.details as { ok: boolean; version: number };
+  expect(details.ok).toBe(true);
+  expect(details.version).toBe(1);
+
+  const updatedMetadata = getMetadata();
+  expect(updatedMetadata.stylometry).toBeDefined();
+  expect(updatedMetadata.stylometry?.narrativeVoice).toBe("first-person");
+  expect(updatedMetadata.stylometry?.povStyle).toBe("single");
+  expect(updatedMetadata.stylometry?.tensePreference).toBe("past");
+  expect(updatedMetadata.stylometry?.vocabularyRegister).toBe("literary");
+  expect(updatedMetadata.stylometry?.sentenceLengthTarget).toBe("varied");
+  expect(updatedMetadata.stylometry?.proseStyleNotes).toBe("elegant");
+  expect(updatedMetadata.stylometry?.dialogueStyleNotes).toBe("naturalistic");
+  expect(updatedMetadata.stylometry?.pacingPreference).toBe("measured");
+  expect(updatedMetadata.stylometry?.paragraphStructure).toBe("mixed");
+  expect(updatedMetadata.stylometry?.rhetoricalDevices).toBe("metaphor");
+  expect(updatedMetadata.stylometry?.commaStyle).toBe("oxford");
+  expect(updatedMetadata.stylometry?.dialogueTagPreference).toBe("said-only");
+
+  // Verify persistence
+  const raw = await readFile(path, "utf-8");
+  const parsed = JSON.parse(raw);
+  expect(parsed.stylometry).toBeDefined();
+  expect(parsed.stylometry.narrativeVoice).toBe("first-person");
+  expect(parsed.version).toBe(details.version);
+});
+
 // ── Stylometry roundtrip ──────────────────────────────────────────────────────
 
 test("roundtrip save/load preserves stylometry with all 12 fields", async () => {
