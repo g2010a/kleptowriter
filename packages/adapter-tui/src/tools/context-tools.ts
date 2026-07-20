@@ -137,5 +137,6 @@ function serializeMetadataForContext(bible: InMemoryStoryBible): Record<string, 
     locations,
     plotThreads,
     arcs,
+    stylometry: bible.stylometry,
   };
 }

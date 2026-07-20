@@ -9,7 +9,7 @@
  */
 
 import { defineTool } from "@earendil-works/pi-coding-agent";
-import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
+import { InMemoryStoryBible, type StylometryProfile } from "@kleptowriter/kleptowriter-core";
 import { QueryMetadataParamsSchema, UpdateMetadataParamsSchema } from "./types.js";
 import type { QueryMetadataParams, UpdateMetadataParams } from "./types.js";
 import { saveMetadata } from "../metadata/persistence.js";
@@ -113,6 +113,11 @@ export const queryMetadataTool = defineTool({
         }));
         break;
       }
+      case "stylometry": {
+        const stylometry = _metadata.stylometry;
+        results = stylometry ? [stylometry as Record<string, unknown>] : [];
+        break;
+      }
     }
 
     return {
@@ -170,6 +175,9 @@ export const updateMetadataTool = defineTool({
             status: (data.status as "introduced" | "developed" | "resolved" | "dropped") ?? "introduced",
             relatedSceneIds: (data.relatedSceneIds as string[]) ?? [],
           });
+          break;
+        case "stylometry":
+          _metadata.stylometry = data as StylometryProfile;
           break;
       }
 
