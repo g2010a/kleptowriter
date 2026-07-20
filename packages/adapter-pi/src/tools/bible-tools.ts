@@ -9,7 +9,7 @@
  */
 
 import { defineTool } from "@earendil-works/pi-coding-agent";
-import { InMemoryStoryBible } from "@kleptowriter/kleptowriter-core";
+import { InMemoryStoryBible, type StylometryProfile } from "@kleptowriter/kleptowriter-core";
 import { QueryBibleParamsSchema, UpdateBibleParamsSchema } from "./types.js";
 import type { QueryBibleParams, UpdateBibleParams } from "./types.js";
 import { saveBible } from "../bible/persistence.js";
@@ -170,6 +170,9 @@ export const updateBibleTool = defineTool({
             status: (data.status as "introduced" | "developed" | "resolved" | "dropped") ?? "introduced",
             relatedSceneIds: (data.relatedSceneIds as string[]) ?? [],
           });
+          break;
+        case "stylometry":
+          _bible.stylometry = data as StylometryProfile;
           break;
       }
 
