@@ -72,6 +72,8 @@ jobs:
           mkdir -p dist/release
           bun build --compile --target=bun-linux-arm64 packages/adapter-tui/src/cli.ts --outfile dist/release/kleptowriter-linux-arm64
           bun build --compile --target=bun-linux-x64-baseline packages/adapter-tui/src/cli.ts --outfile dist/release/kleptowriter-linux-x64
+          # Bundle Pi SDK's package.json so the binary can read its own version
+          cp packages/adapter-tui/node_modules/@earendil-works/pi-coding-agent/package.json dist/release/
 
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v5
@@ -101,6 +103,8 @@ jobs:
           mkdir -p dist/release
           bun build --compile --target=bun-darwin-arm64 packages/adapter-tui/src/cli.ts --outfile dist/release/kleptowriter-darwin-arm64
           bun build --compile --target=bun-darwin-x64 packages/adapter-tui/src/cli.ts --outfile dist/release/kleptowriter-darwin-x64
+          # Bundle Pi SDK's package.json so the binary can read its own version
+          cp packages/adapter-tui/node_modules/@earendil-works/pi-coding-agent/package.json dist/release/
           codesign --force --sign - dist/release/kleptowriter-darwin-arm64
           codesign --force --sign - dist/release/kleptowriter-darwin-x64
           codesign -dv dist/release/kleptowriter-darwin-arm64
