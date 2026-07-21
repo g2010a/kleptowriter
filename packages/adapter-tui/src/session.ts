@@ -52,7 +52,6 @@ export async function createTuiSession(
       model.compat = {
         ...model.compat,
         thinkingFormat: "deepseek" as const,
-        supportsReasoningEffort: false,
       };
     }
   }
@@ -97,7 +96,6 @@ const { session, extensionsResult, modelFallbackMessage } =
           model.compat = {
             ...model.compat,
             thinkingFormat: "deepseek" as const,
-            supportsReasoningEffort: false,
           };
         }
       }
