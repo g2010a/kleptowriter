@@ -191,17 +191,17 @@ describe("model compat mutation", () => {
 
     const flashFreeCompat = deepseekFlashFree.compat as Record<string, unknown>;
     expect(flashFreeCompat.thinkingFormat).toBe("deepseek");
-    expect(flashFreeCompat.supportsReasoningEffort).toBe(false);
+    expect(flashFreeCompat.supportsReasoningEffort).toBeUndefined();
     expect(flashFreeCompat.supportsStore).toBe(false);
 
     const flashCompat = deepseekFlash.compat as Record<string, unknown>;
     expect(flashCompat.thinkingFormat).toBe("deepseek");
-    expect(flashCompat.supportsReasoningEffort).toBe(false);
+    expect(flashCompat.supportsReasoningEffort).toBeUndefined();
     expect(flashCompat.supportsLongCacheRetention).toBe(false);
 
     const proCompat = deepseekPro.compat as Record<string, unknown>;
     expect(proCompat.thinkingFormat).toBe("deepseek");
-    expect(proCompat.supportsReasoningEffort).toBe(false);
+    expect(proCompat.supportsReasoningEffort).toBeUndefined();
     expect(proCompat.supportsLongCacheRetention).toBe(false);
 
     expect(claudeModel.compat.thinkingFormat).toBe("anthropic");
