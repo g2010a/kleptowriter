@@ -165,3 +165,58 @@ test("update_bible stores entity and persists version", async () => {
   expect(parsed.characters.length).toBe(1);
   expect(parsed.version).toBe(details.version);
 });
+
+// ── update_bible with stylometry ────────────────────────────────────────────
+
+test("update_bible with type stylometry populates bible stylometry", async () => {
+  const dir = await tmpDir();
+  const path = join(dir, "story-metadata.json");
+  const bible = new InMemoryStoryBible();
+  setBible(bible, path);
+
+  const stylometryData = {
+    narrativeVoice: "first-person",
+    povStyle: "single",
+    tensePreference: "past",
+    vocabularyRegister: "literary",
+    sentenceLengthTarget: "varied",
+    proseStyleNotes: "elegant",
+    dialogueStyleNotes: "naturalistic",
+    pacingPreference: "measured",
+    paragraphStructure: "mixed",
+    rhetoricalDevices: "metaphor",
+    commaStyle: "oxford",
+    dialogueTagPreference: "said-only",
+  };
+
+  const result = await updateBibleTool.execute!(
+    "call-1",
+    { type: "stylometry", id: "default", data: stylometryData },
+    undefined, undefined, undefined as any,
+  );
+  const details = result.details as { ok: boolean; version: number };
+  expect(details.ok).toBe(true);
+  expect(details.version).toBe(1);
+
+  const updatedBible = getBible();
+  expect(updatedBible.stylometry).toBeDefined();
+  expect(updatedBible.stylometry?.narrativeVoice).toBe("first-person");
+  expect(updatedBible.stylometry?.povStyle).toBe("single");
+  expect(updatedBible.stylometry?.tensePreference).toBe("past");
+  expect(updatedBible.stylometry?.vocabularyRegister).toBe("literary");
+  expect(updatedBible.stylometry?.sentenceLengthTarget).toBe("varied");
+  expect(updatedBible.stylometry?.proseStyleNotes).toBe("elegant");
+  expect(updatedBible.stylometry?.dialogueStyleNotes).toBe("naturalistic");
+  expect(updatedBible.stylometry?.pacingPreference).toBe("measured");
+  expect(updatedBible.stylometry?.paragraphStructure).toBe("mixed");
+  expect(updatedBible.stylometry?.rhetoricalDevices).toBe("metaphor");
+  expect(updatedBible.stylometry?.commaStyle).toBe("oxford");
+  expect(updatedBible.stylometry?.dialogueTagPreference).toBe("said-only");
+
+  // Verify persistence
+  const raw = await readFile(path, "utf-8");
+  const parsed = JSON.parse(raw);
+  expect(parsed.stylometry).toBeDefined();
+  expect(parsed.stylometry.narrativeVoice).toBe("first-person");
+  expect(parsed.version).toBe(details.version);
+});

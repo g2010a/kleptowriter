@@ -37,6 +37,21 @@ function makeParams(id: string, title: string, prose: string): WriteSceneParams 
   };
 }
 
+const DEFAULT_STYLOMETRY = {
+  narrativeVoice: "omniscient",
+  povStyle: "third-person",
+  tensePreference: "past",
+  vocabularyRegister: "literary",
+  sentenceLengthTarget: "varied",
+  proseStyleNotes: "elegant",
+  dialogueStyleNotes: "naturalistic",
+  pacingPreference: "measured",
+  paragraphStructure: "mixed",
+  rhetoricalDevices: "metaphor",
+  commaStyle: "oxford",
+  dialogueTagPreference: "said-only",
+};
+
 function writeBible(stylometry?: Record<string, string>) {
   const bibleDir = join(TMP, "story");
   mkdirSync(bibleDir, { recursive: true });
@@ -61,20 +76,7 @@ function writeBible(stylometry?: Record<string, string>) {
 test("write_scene then read_scene roundtrips all fields", async () => {
   setup();
   try {
-    writeBible({
-      narrativeVoice: "omniscient",
-      povStyle: "third-person",
-      tensePreference: "past",
-      vocabularyRegister: "literary",
-      sentenceLengthTarget: "varied",
-      proseStyleNotes: "elegant",
-      dialogueStyleNotes: "naturalistic",
-      pacingPreference: "measured",
-      paragraphStructure: "mixed",
-      rhetoricalDevices: "metaphor",
-      commaStyle: "oxford",
-      dialogueTagPreference: "said-only",
-    });
+    writeBible(DEFAULT_STYLOMETRY);
     const params: WriteSceneParams = {
       sceneId: "setup-01-opening",
       title: "The Opening",
@@ -119,20 +121,7 @@ test("write_scene then read_scene roundtrips all fields", async () => {
 test("write_scene preserves status on overwrite", async () => {
   setup();
   try {
-    writeBible({
-      narrativeVoice: "omniscient",
-      povStyle: "third-person",
-      tensePreference: "past",
-      vocabularyRegister: "literary",
-      sentenceLengthTarget: "varied",
-      proseStyleNotes: "elegant",
-      dialogueStyleNotes: "naturalistic",
-      pacingPreference: "measured",
-      paragraphStructure: "mixed",
-      rhetoricalDevices: "metaphor",
-      commaStyle: "oxford",
-      dialogueTagPreference: "said-only",
-    });
+    writeBible(DEFAULT_STYLOMETRY);
     const base = makeParams("rising-action-02-discovery", "Discovery", "She found the key.");
     await writeSceneTool.execute("c1", base, undefined, undefined, {} as any);
 
@@ -153,20 +142,7 @@ test("write_scene preserves status on overwrite", async () => {
 test("list_scenes returns scenes sorted by ID", async () => {
   setup();
   try {
-    writeBible({
-      narrativeVoice: "omniscient",
-      povStyle: "third-person",
-      tensePreference: "past",
-      vocabularyRegister: "literary",
-      sentenceLengthTarget: "varied",
-      proseStyleNotes: "elegant",
-      dialogueStyleNotes: "naturalistic",
-      pacingPreference: "measured",
-      paragraphStructure: "mixed",
-      rhetoricalDevices: "metaphor",
-      commaStyle: "oxford",
-      dialogueTagPreference: "said-only",
-    });
+    writeBible(DEFAULT_STYLOMETRY);
     await writeSceneTool.execute("a", makeParams("resolution-06-end", "The End", "Prose for The End."), undefined, undefined, {} as any);
     await writeSceneTool.execute("b", makeParams("setup-01-start", "The Start", "Prose for The Start."), undefined, undefined, {} as any);
     await writeSceneTool.execute("c", makeParams("climax-04-battle", "The Battle", "Prose for The Battle."), undefined, undefined, {} as any);
@@ -216,6 +192,39 @@ test("read_scene rejects invalid scene IDs", async () => {
   }
 });
 
+// ── .md suffix handling ──────────────────────────────────────────────────────
+
+test("write_scene accepts scene ID with .md suffix", async () => {
+  setup();
+  try {
+    writeBible(DEFAULT_STYLOMETRY);
+    const params = makeParams("setup-01-opening.md", "Opening", "It was a dark night.");
+    const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(true);
+    expect(details.path).toBe("story/scenes/setup-01-opening.md");
+  } finally {
+    teardown();
+  }
+});
+
+test("read_scene accepts scene ID with .md suffix", async () => {
+  setup();
+  try {
+    writeBible(DEFAULT_STYLOMETRY);
+    const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
+    await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
+
+    const result = await readSceneTool.execute("c2", { sceneId: "setup-01-opening.md" } as ReadSceneParams, undefined, undefined, {} as any);
+    const details = result.details as any;
+    expect(details.ok).toBe(true);
+    expect(details.scene.title).toBe("Opening");
+    expect(details.scene.prose).toBe("It was a dark night.");
+  } finally {
+    teardown();
+  }
+});
+
 // ── Edge cases ──────────────────────────────────────────────────────────────
 
 test("list_scenes returns empty when no scenes exist", async () => {
@@ -244,20 +253,7 @@ test("read_scene returns error for non-existent scene", async () => {
 test("write_scene updates SceneDatastore with written document", async () => {
   setup();
   try {
-    writeBible({
-      narrativeVoice: "omniscient",
-      povStyle: "third-person",
-      tensePreference: "past",
-      vocabularyRegister: "literary",
-      sentenceLengthTarget: "varied",
-      proseStyleNotes: "elegant",
-      dialogueStyleNotes: "naturalistic",
-      pacingPreference: "measured",
-      paragraphStructure: "mixed",
-      rhetoricalDevices: "metaphor",
-      commaStyle: "oxford",
-      dialogueTagPreference: "said-only",
-    });
+    writeBible(DEFAULT_STYLOMETRY);
     const store = getSceneStore();
     const params = makeParams("setup-01-prologue", "Prologue", "Once upon a time.");
     await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
@@ -308,20 +304,7 @@ test("write_scene returns error when bible has empty stylometry fields", async (
 test("write_scene proceeds normally when stylometry is populated", async () => {
   setup();
   try {
-    writeBible({
-      narrativeVoice: "omniscient",
-      povStyle: "third-person",
-      tensePreference: "past",
-      vocabularyRegister: "literary",
-      sentenceLengthTarget: "varied",
-      proseStyleNotes: "elegant",
-      dialogueStyleNotes: "naturalistic",
-      pacingPreference: "measured",
-      paragraphStructure: "mixed",
-      rhetoricalDevices: "metaphor",
-      commaStyle: "oxford",
-      dialogueTagPreference: "said-only",
-    });
+    writeBible(DEFAULT_STYLOMETRY);
     const params = makeParams("setup-01-opening", "Opening", "It was a dark night.");
     const result = await writeSceneTool.execute("c1", params, undefined, undefined, {} as any);
     const details = result.details as any;

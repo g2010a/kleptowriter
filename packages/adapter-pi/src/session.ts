@@ -42,6 +42,25 @@ export async function createKleptowriterSession(
     },
   });
 
+  // DeepSeek V4 OpenCode models: Pi SDK detectCompat() wrongly sets thinkingFormat: "openai"
+  // for OpenCode provider because baseUrl check (deepseek.com) doesn't match opencode.ai.
+  // Mutate live model registry entries to use deepseek thinkingFormat + disable reasoning_effort.
+  const DEEPSEEK_V4_OPENCODE_MODELS = [
+    "deepseek-v4-flash-free",
+    "deepseek-v4-flash",
+    "deepseek-v4-pro",
+  ] as const;
+  for (const modelId of DEEPSEEK_V4_OPENCODE_MODELS) {
+    const model = services.modelRegistry.find("opencode", modelId);
+    if (model) {
+      model.compat = {
+        ...model.compat,
+        thinkingFormat: "deepseek" as const,
+        supportsReasoningEffort: false,
+      };
+    }
+  }
+
   const sessionManager = SessionManager.create(cwd, sessionDir);
 
   const { session } = await createAgentSessionFromServices({

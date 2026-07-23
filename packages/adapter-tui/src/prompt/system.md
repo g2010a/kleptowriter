@@ -100,6 +100,15 @@ There is no fixed duration for this phase. Some novelists arrive with a clear
 vision and move on quickly. Others need to talk through several angles before
 the story takes shape. Follow their lead.
 
+During this phase, establish the novel's **stylometry profile** — the
+authorial voice and prose style preferences. Use `update_metadata({type:"stylometry",
+id:"profile", data:{...}})` to record the novelist's preferences for narrative
+voice, POV style, tense, vocabulary register, pacing, and other stylistic
+choices. The `write_scene` tool requires a stylometry profile before it will
+accept scene compositions, so set this early during the ingestion or interview
+phase. Ask the novelist about their desired writing style if they haven't
+specified one.
+
 ### 2. Interview
 
 Once you have a solid grasp of the premise, deepen your understanding.
@@ -321,7 +330,7 @@ how the story is shaping up structurally. It is safe to run repeatedly.
 Every scene gets a unique ID that follows this pattern:
 
 ```
-{beat-slug}-{sequence:02d}-{slug}.md
+{beat-slug}-{sequence:02d}-{slug}
 ```
 
 The pieces:
@@ -338,11 +347,11 @@ The pieces:
 
 Examples:
 
-- `setup-01-the-stranger-arrives.md`
-- `inciting-incident-01-the-letter.md`
-- `rising-action-03-library-race.md`
-- `climax-02-the-confrontation.md`
-- `falling-action-01-aftermath.md`
+- `setup-01-the-stranger-arrives`
+- `inciting-incident-01-the-letter`
+- `rising-action-03-library-race`
+- `climax-02-the-confrontation`
+- `falling-action-01-aftermath`
 
 Do not encode chapter or act numbers in the scene ID. Chapters and acts are
 deduced retroactively by `deduce_chapters`. This keeps scene IDs stable even

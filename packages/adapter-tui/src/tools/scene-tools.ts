@@ -58,14 +58,6 @@ function isStylometryEmpty(stylometry: StylometryProfile | undefined): boolean {
   return STYLOMETRY_FIELDS.every((field) => !stylometry[field]);
 }
 
-function stylometryErrorMessage(): string {
-  const fields = STYLOMETRY_FIELDS.join(", ");
-  return (
-    `Stylometry profile is empty. The story bible requires a stylometry section before writing scenes. ` +
-    `Please provide writing style preferences for: ${fields}`
-  );
-}
-
 // {beat-slug}-{sequence:02d}-{slug} — e.g. setup-01-opening, rising-action-03-first-attempt
 const SCENE_ID_RE = /^[a-z]+(-[a-z]+)*-\d{2}-[a-z]+(-[a-z]+)*$/;
 
@@ -79,13 +71,8 @@ export function getSceneStore(): SceneDatastore {
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 function validateSceneId(sceneId: string): string | null {
-  if (!SCENE_ID_RE.test(sceneId)) {
-    return (
-      `Invalid scene ID "${sceneId}". ` +
-      `Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`
-    );
-  }
-  return null;
+  const sanitized = sceneId.replace(/\.md$/i, "");
+  return SCENE_ID_RE.test(sanitized) ? sanitized : null;
 }
 
 function sceneFilePath(sceneId: string, dir = DEFAULT_SCENES_DIR): string {
@@ -125,20 +112,31 @@ export const writeSceneTool = defineTool({
     "motifs. Returns the file path and success status.",
   parameters: WriteSceneParamsSchema,
   execute: async (_toolCallId, params: WriteSceneParams) => {
-    const validationError = validateSceneId(params.sceneId);
-    if (validationError) {
-      const result: WriteSceneResult = { ok: false, path: "", error: validationError };
+    const sanitizedSceneId = validateSceneId(params.sceneId);
+    if (!sanitizedSceneId) {
+      const result: WriteSceneResult = {
+        ok: false, path: "",
+        error: `Invalid scene ID "${params.sceneId}". Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`,
+      };
       return okResult(result);
     }
 
     // Check stylometry profile in story bible
     const bible = await loadMetadata(DEFAULT_BIBLE_PATH);
     if (isStylometryEmpty(bible.stylometry)) {
-      const result: WriteSceneResult = { ok: false, path: "", error: stylometryErrorMessage() };
+      const result: WriteSceneResult = {
+        ok: false, path: "",
+        error:
+          "Stylometry profile is empty. The story bible requires a stylometry section before writing scenes. " +
+          "Please provide writing style preferences for: " +
+          "narrativeVoice, povStyle, tensePreference, vocabularyRegister, sentenceLengthTarget, " +
+          "proseStyleNotes, dialogueStyleNotes, pacingPreference, paragraphStructure, rhetoricalDevices, " +
+          "commaStyle, dialogueTagPreference",
+      };
       return okResult(result);
     }
 
-    const path = sceneFilePath(params.sceneId);
+    const path = sceneFilePath(sanitizedSceneId);
 
     // Preserve status on update; default to Outline for new scenes
     let status = SceneStatus.Outline;
@@ -186,13 +184,16 @@ export const readSceneTool = defineTool({
     "on success, or an error message when the scene does not exist.",
   parameters: ReadSceneParamsSchema,
   execute: async (_toolCallId, params: ReadSceneParams) => {
-    const validationError = validateSceneId(params.sceneId);
-    if (validationError) {
-      const result: ReadSceneResult = { ok: false, error: validationError };
+    const sanitizedSceneId = validateSceneId(params.sceneId);
+    if (!sanitizedSceneId) {
+      const result: ReadSceneResult = {
+        ok: false,
+        error: `Invalid scene ID "${params.sceneId}". Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`,
+      };
       return okResult(result);
     }
 
-    const path = sceneFilePath(params.sceneId);
+    const path = sceneFilePath(sanitizedSceneId);
     const coreResult = await readScene(path);
 
     if (!coreResult.ok) {

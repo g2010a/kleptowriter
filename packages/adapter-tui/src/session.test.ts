@@ -1,5 +1,4 @@
 import { describe, it, expect, mock, beforeEach } from "bun:test";
-import { allKleptowriterTools } from "./tools/registry.js";
 
 // Mock Pi SDK modules before importing session
 const mockServices = {
@@ -7,7 +6,11 @@ const mockServices = {
   agentDir: "/test/agentDir",
   authStorage: {},
   settingsManager: {},
-  modelRegistry: {},
+  modelRegistry: {
+    find() {
+      return undefined;
+    },
+  },
   resourceLoader: {},
   diagnostics: [],
 };
@@ -35,6 +38,9 @@ const mockInteractiveModeConstructor = mock(
   },
 );
 
+// Mock defineTool for tools/registry.ts which imports it
+const mockDefineTool = mock((def: unknown) => def);
+
 // Patch the module mock before importing session.ts
 mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionServices: mockCreateAgentSessionServices,
@@ -42,9 +48,10 @@ mock.module("@earendil-works/pi-coding-agent", () => ({
   createAgentSessionRuntime: mockCreateAgentSessionRuntime,
   SessionManager: { inMemory: mockSessionManagerInMemory, create: mock(() => ({})), },
   InteractiveMode: mockInteractiveModeConstructor,
+  defineTool: mockDefineTool,
 }));
 
-import { createTuiSession } from "./session.js";
+import { allKleptowriterTools } from "./tools/registry.js";
 
 // Helper: safely extract first call args from mock
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +71,7 @@ beforeEach(() => {
 
 describe("createTuiSession", () => {
   it("calls createAgentSessionServices with resource loader options", async () => {
+    const { createTuiSession } = await import("./session.js");
     await createTuiSession({ cwd: "/test/cwd" });
 
     expect(mockCreateAgentSessionServices).toHaveBeenCalledTimes(1);
@@ -78,6 +86,7 @@ describe("createTuiSession", () => {
   });
 
   it("passes customTools: allKleptowriterTools to createAgentSessionFromServices", async () => {
+    const { createTuiSession } = await import("./session.js");
     await createTuiSession();
 
     expect(mockCreateAgentSessionFromServices).toHaveBeenCalledTimes(1);
@@ -86,6 +95,7 @@ describe("createTuiSession", () => {
   });
 
   it("sets excludeTools: [bash] to disable bash while keeping other Pi coding tools", async () => {
+    const { createTuiSession } = await import("./session.js");
     await createTuiSession();
 
     const args = firstCallArgs(mockCreateAgentSessionFromServices);
@@ -93,6 +103,7 @@ describe("createTuiSession", () => {
   });
 
   it("applies systemPromptOverride when provided", async () => {
+    const { createTuiSession } = await import("./session.js");
     const customPrompt = "You are a custom writing assistant.";
     await createTuiSession({
       systemPromptOverride: () => customPrompt,
@@ -104,6 +115,7 @@ describe("createTuiSession", () => {
   });
 
   it("uses default system prompt when no override is provided", async () => {
+    const { createTuiSession } = await import("./session.js");
     await createTuiSession();
 
     const args = firstCallArgs(mockCreateAgentSessionServices);
@@ -114,8 +126,107 @@ describe("createTuiSession", () => {
   });
 
   it("returns an InteractiveMode instance", async () => {
+    const { createTuiSession } = await import("./session.js");
     const result = await createTuiSession();
     expect(result).toBeDefined();
     expect(mockInteractiveModeConstructor).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ── Model compat mutation tests ─────────────────────────────────────────
+
+describe("model compat mutation", () => {
+  it("mutates deepseek-v4-flash-free compat with thinkingFormat and supportsReasoningEffort", async () => {
+    const { createTuiSession } = await import("./session.js");
+    const deepseekFlashFree = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const deepseekFlash = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        supportsLongCacheRetention: false,
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const deepseekPro = {
+      compat: {
+        supportsStore: false,
+        supportsDeveloperRole: false,
+        maxTokensField: "max_tokens",
+        supportsLongCacheRetention: false,
+        requiresReasoningContentOnAssistantMessages: true,
+      },
+    };
+    const claudeModel: { compat: Record<string, unknown> } = {
+      compat: { supportsStore: true, thinkingFormat: "anthropic" },
+    };
+
+    const modelMap = new Map<string, { compat: Record<string, unknown> }>([
+      ["opencode:deepseek-v4-flash-free", deepseekFlashFree],
+      ["opencode:deepseek-v4-flash", deepseekFlash],
+      ["opencode:deepseek-v4-pro", deepseekPro],
+      ["anthropic:claude-sonnet-4-5", claudeModel],
+    ]);
+
+    const patchedServices = {
+      ...mockServices,
+      modelRegistry: {
+        find(provider: string, modelId: string) {
+          return modelMap.get(`${provider}:${modelId}`);
+        },
+      },
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices as any);
+
+    await createTuiSession({ cwd: "/test/cwd" });
+
+    const flashFreeCompat = deepseekFlashFree.compat as Record<string, unknown>;
+    expect(flashFreeCompat.thinkingFormat).toBe("deepseek");
+    expect(flashFreeCompat.supportsReasoningEffort).toBe(false);
+    expect(flashFreeCompat.supportsStore).toBe(false);
+
+    const flashCompat = deepseekFlash.compat as Record<string, unknown>;
+    expect(flashCompat.thinkingFormat).toBe("deepseek");
+    expect(flashCompat.supportsReasoningEffort).toBe(false);
+    expect(flashCompat.supportsLongCacheRetention).toBe(false);
+
+    const proCompat = deepseekPro.compat as Record<string, unknown>;
+    expect(proCompat.thinkingFormat).toBe("deepseek");
+    expect(proCompat.supportsReasoningEffort).toBe(false);
+    expect(proCompat.supportsLongCacheRetention).toBe(false);
+
+    expect(claudeModel.compat.thinkingFormat).toBe("anthropic");
+    expect(claudeModel.compat).not.toHaveProperty("supportsReasoningEffort");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices as any);
+  });
+
+  it("does not crash when model not found in registry", async () => {
+    const { createTuiSession } = await import("./session.js");
+    const patchedServices = {
+      ...mockServices,
+      modelRegistry: {
+        find() {
+          return undefined;
+        },
+      },
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => patchedServices as any);
+
+    await expect(createTuiSession({ cwd: "/test/cwd" })).resolves.toBeDefined();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreateAgentSessionServices.mockImplementation(async () => mockServices as any);
   });
 });

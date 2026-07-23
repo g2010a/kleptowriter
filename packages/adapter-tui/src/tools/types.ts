@@ -88,6 +88,7 @@ export const MetadataEntityTypeSchema = Type.Union([
   Type.Literal("characters"),
   Type.Literal("locations"),
   Type.Literal("plotThreads"),
+  Type.Literal("stylometry"),
 ]);
 
 export const QueryMetadataParamsSchema = Type.Object({
