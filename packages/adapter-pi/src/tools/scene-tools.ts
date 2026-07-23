@@ -47,15 +47,9 @@ export function getSceneStore(): SceneDatastore {
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-function validateSceneId(sceneId: string): string {
+function validateSceneId(sceneId: string): string | null {
   const sanitized = sceneId.replace(/\.md$/i, "");
-  if (!SCENE_ID_RE.test(sanitized)) {
-    return (
-      `Invalid scene ID "${sceneId}". ` +
-      `Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`
-    );
-  }
-  return sanitized;
+  return SCENE_ID_RE.test(sanitized) ? sanitized : null;
 }
 
 function sceneFilePath(sceneId: string, dir = DEFAULT_SCENES_DIR): string {
@@ -117,12 +111,14 @@ export const writeSceneTool = defineTool({
     "motifs. Returns the file path and success status.",
   parameters: WriteSceneParamsSchema,
   execute: async (_toolCallId, params: WriteSceneParams) => {
-    const validationResult = validateSceneId(params.sceneId);
-    if (!SCENE_ID_RE.test(validationResult)) {
-      const result: WriteSceneResult = { ok: false, path: "", error: validationResult };
+    const sanitizedSceneId = validateSceneId(params.sceneId);
+    if (!sanitizedSceneId) {
+      const result: WriteSceneResult = {
+        ok: false, path: "",
+        error: `Invalid scene ID "${params.sceneId}". Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`,
+      };
       return okResult(result);
     }
-    const sanitizedSceneId = validationResult;
 
     // Check stylometry profile in bible
     const bible = await loadBible("./story/story-metadata.json");
@@ -188,12 +184,14 @@ export const readSceneTool = defineTool({
     "on success, or an error message when the scene does not exist.",
   parameters: ReadSceneParamsSchema,
   execute: async (_toolCallId, params: ReadSceneParams) => {
-    const validationResult = validateSceneId(params.sceneId);
-    if (!SCENE_ID_RE.test(validationResult)) {
-      const result: ReadSceneResult = { ok: false, error: validationResult };
+    const sanitizedSceneId = validateSceneId(params.sceneId);
+    if (!sanitizedSceneId) {
+      const result: ReadSceneResult = {
+        ok: false,
+        error: `Invalid scene ID "${params.sceneId}". Expected format: {beat-slug}-{sequence:02d}-{slug} (e.g. setup-01-opening)`,
+      };
       return okResult(result);
     }
-    const sanitizedSceneId = validationResult;
 
     const path = sceneFilePath(sanitizedSceneId);
     const coreResult = await readScene(path);
