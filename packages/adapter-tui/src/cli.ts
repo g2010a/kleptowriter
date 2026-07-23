@@ -8,8 +8,8 @@ import type { StartupCheckResult } from "@kleptowriter/kleptowriter-core";
 import type { ExtensionFactory } from "@earendil-works/pi-coding-agent";
 import type { InteractiveMode } from "@earendil-works/pi-coding-agent";
 import { darkTheme, lightTheme } from "./themes.js";
-import { mkdtempSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 
 export interface MainOptions {
@@ -75,13 +75,38 @@ export async function detectOrInitProject(): Promise<{ name: string; path: strin
 
 // ── Theme directory setup for compiled binary ────────────────────────────────
 
+/**
+ * Detect if running as a compiled Bun binary.
+ * Pi SDK uses the same heuristic in its config.js.
+ */
+const isBunBinary =
+  import.meta.url.includes("$bunfs") ||
+  import.meta.url.includes("~BUN") ||
+  import.meta.url.includes("%7EBUN");
+
 let _themeDir: string | null = null;
 
 export function ensureThemeDir(): string[] {
+  if (isBunBinary) {
+    // Write themes next to the compiled binary so Pi SDK's getBuiltinThemes()
+    // finds them via getThemesDir() → join(dirname(execPath), "theme").
+    const themeDir = join(dirname(process.execPath), "theme");
+    try {
+      mkdirSync(themeDir, { recursive: true });
+      const darkPath = join(themeDir, "dark.json");
+      const lightPath = join(themeDir, "light.json");
+      writeFileSync(darkPath, JSON.stringify(darkTheme, null, 2), "utf-8");
+      writeFileSync(lightPath, JSON.stringify(lightTheme, null, 2), "utf-8");
+      return [darkPath, lightPath];
+    } catch {
+      // Not writable — fall through to temp dir
+    }
+  }
+
+  // Fallback (dev mode / edge cases): temp dir for additionalThemePaths mechanism
   const dir = mkdtempSync(join(tmpdir(), "kleptowriter-themes-"));
   const themeDir = join(dir, "theme");
   mkdirSync(themeDir, { recursive: true });
-
   const darkPath = join(themeDir, "dark.json");
   const lightPath = join(themeDir, "light.json");
   writeFileSync(darkPath, JSON.stringify(darkTheme, null, 2), "utf-8");
