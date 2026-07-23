@@ -56,6 +56,7 @@ export async function createKleptowriterSession(
       model.compat = {
         ...model.compat,
         thinkingFormat: "deepseek" as const,
+        supportsReasoningEffort: false,
       };
     }
   }

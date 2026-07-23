@@ -52,6 +52,7 @@ export async function createTuiSession(
       model.compat = {
         ...model.compat,
         thinkingFormat: "deepseek" as const,
+        supportsReasoningEffort: false,
       };
     }
   }
@@ -59,7 +60,7 @@ export async function createTuiSession(
   const sessionDir = join(cwd, "story", ".pi-session");
   const sessionManager = SessionManager.create(cwd, sessionDir);
 
-const { session, extensionsResult, modelFallbackMessage } =
+  const { session, extensionsResult, modelFallbackMessage } =
       await createAgentSessionFromServices({
         services,
         sessionManager,
@@ -96,6 +97,7 @@ const { session, extensionsResult, modelFallbackMessage } =
           model.compat = {
             ...model.compat,
             thinkingFormat: "deepseek" as const,
+            supportsReasoningEffort: false,
           };
         }
       }
